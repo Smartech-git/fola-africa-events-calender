@@ -10,7 +10,7 @@ export default function HomePage() {
       />
 
       <SectionWrapper className="flex h-full flex-col overflow-hidden bg-primary-light max-lg:justify-between md:py-0 lg:flex-row lg:pr-0!">
-        
+        <div></div>
       </SectionWrapper>
     </div>
   );
