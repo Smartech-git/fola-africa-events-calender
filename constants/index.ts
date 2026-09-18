@@ -1,0 +1,1 @@
+export const TICKET_LINK = 'https://awariapp.com/event/blackcoffeelagos?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQPMTI0MDI0NTc0Mjg3NDE0AAGnxUNjDkKBDGfOykFG6ixh-2HLdwQP1TLvDyVL19D5ec6eueR-Vj6Klbi2Kl0_aem_6h94jn5jcHeVMrqs4gFwfA'

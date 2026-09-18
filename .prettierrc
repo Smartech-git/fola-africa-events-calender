@@ -1,0 +1,5 @@
+{
+  "tailwindStylesheet": "./app/styles/globals.css",
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindFunctions": ["cva"]
+}

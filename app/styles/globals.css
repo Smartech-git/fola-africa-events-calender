@@ -1,0 +1,142 @@
+@import "tailwindcss";
+@import "tailwindcss-animated";
+@import "tw-animate-css";
+@import "lenis/dist/lenis.css";
+
+@plugin "tailwind-scrollbar";
+@plugin "./hero-ui.ts";
+
+@source "../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
+@custom-variant dark (&:is(.dark *));
+
+@layer utilities {
+  .no-spinners {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  .no-spinners::-webkit-outer-spin-button,
+  .no-spinners::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .cta {
+    background: linear-gradient(
+      90deg,
+      var(--color-primary),
+      var(--color-primary-end)
+    );
+    color: #fff;
+  }
+  .cta-y {
+    background: linear-gradient(
+      180deg,
+      var(--color-primary),
+      var(--color-primary-end)
+    );
+    color: #fff;
+  }
+}
+
+@theme {
+  --breakpoint-xs: 420px; /* 420px */
+  --breakpoint-3xl: 120rem; /* 1920px */
+  --breakpoint-4k: 160rem; /* 2560px */
+
+  --spacing-pg-4k: 8dvw;
+  --spacing-pg-2xl: 4dvw;
+  --spacing-pg: 2dvw;
+  --spacing-pg-sm: 0.5rem;
+  --spacing-header: 50px;
+  --spacing-sm-header: 50px;
+
+  --color-primary: #838061;
+  --color-dark-gray: #201D1D;
+  --color-light-gray: #ADB0A6;
+  --color-primary-light: #F4F1EE;
+  --color-secondary: #EFE4DB;
+  --text-xxs: 9px;
+  --text-1.5xl: 22px;
+
+  --shadow-card-float: 0px 3px 6px -2px #14151a0d, 0px 10px 16px -3px #14151a14;
+
+  --animate-loading-screen: exitToTop 1000ms ease-in-out 4500ms forwards;
+  --animate-grow-height: growHeight 1000ms ease-out 500ms forwards;
+  --animate-grow-width: growWidth 1000ms ease-out 500ms forwards;
+
+  --animate-loading-screen-counter: loadingScreenCounter 3500ms ease-in-out
+    1000ms forwards;
+  --animate-marquee-image-zoom: marqueeImageZoomPulse 30s ease infinite;
+  --animate-fade-in: fadeIn 450ms ease forwards;
+
+  @keyframes exitToTop {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    80% {
+      opacity: 0;
+      transform: translateY(-10%);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+  }
+
+  @keyframes loadingScreenCounter {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-558px);
+    }
+  }
+
+  @keyframes growHeight {
+    from {
+      height: 0;
+    }
+    to {
+      height: 100%;
+    }
+  }
+
+  @keyframes growWidth {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+       opacity: 0;
+    }
+    to {
+       opacity: 100%;
+    }
+  }
+
+  @keyframes marqueeImageZoomPulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+}
+
+#detach-button-host {
+  display: none !important;
+}
+
+@theme inline {
+  --font-apris: var(--apris);
+  --font-inter: var(--font-inter);
+}

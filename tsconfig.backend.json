@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "incremental": false },
+  "include": [
+    "payload.config.ts",
+    "payload-types.ts",
+    "collections/**/*.ts",
+    "globals/**/*.ts",
+    "lib/calendar/**/*.ts",
+    "scripts/**/*.ts",
+    "tests/**/*.ts",
+    "migrations/**/*.ts"
+  ],
+  "exclude": ["node_modules", ".next"]
+}
