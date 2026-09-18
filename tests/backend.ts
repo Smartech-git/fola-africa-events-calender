@@ -5,7 +5,7 @@ import type { Event } from "@/types/payload-types";
 import { EventReviews } from "../collections/event-reviews";
 import { Events } from "../collections/events";
 import { Organisers } from "../collections/organisers";
-import { CITIES } from "../lib/calendar/constants";
+import { SEED_CITIES } from "../lib/calendar/constants";
 import { validateEvent } from "../lib/calendar/event-hooks";
 import { toPublicEvent } from "../lib/calendar/public-event";
 import {
@@ -55,9 +55,9 @@ const hook = (
     } as any,
   });
 
-await check("Six valid IANA city time zones", () => {
-  assert.equal(CITIES.length, 6);
-  for (const city of CITIES)
+await check("Starter cities have valid IANA time zones", () => {
+  assert.equal(SEED_CITIES.length, 6);
+  for (const city of SEED_CITIES)
     assert.doesNotThrow(() =>
       new Intl.DateTimeFormat("en", { timeZone: city.timezone }).format(
         new Date(),

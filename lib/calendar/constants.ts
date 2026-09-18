@@ -1,4 +1,4 @@
-export const CITIES = [
+export const SEED_CITIES = [
   {
     name: "Lagos",
     slug: "lagos",

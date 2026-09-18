@@ -9,7 +9,10 @@ import { toPublicEvent } from "../lib/calendar/public-event";
 const payload = await getPayload({ config });
 try {
   const cities = await payload.find({ collection: "cities", limit: 10, depth: 0 });
-  assert.equal(cities.totalDocs, 6);
+  assert.ok(
+    cities.totalDocs >= 6,
+    "Expected at least the six starter cities; additional cities are allowed.",
+  );
   const events = await payload.find({ collection: "events", where: { isDemo: { equals: true } }, limit: 100, depth: 2 });
   assert.equal(events.totalDocs, 6);
   for (const event of events.docs) {

@@ -1,30 +1,20 @@
-import { APIError, type CollectionConfig } from "payload";
+import type { CollectionConfig } from "payload";
 
-import { CITIES } from "../lib/calendar/constants";
-import { noAccess } from "../lib/calendar/access";
+import { isStaff, noAccess } from "../lib/calendar/access";
 
 export const Cities: CollectionConfig = {
   slug: "cities",
   admin: {
     useAsTitle: "name",
     group: "Calendar",
-    description: "Fixed beta lookup. Managed by the seed script.",
+    description:
+      "Add cities and update their names, countries and local time zones. The seeded cities are starter data.",
   },
   access: {
     read: () => true,
-    create: noAccess,
-    update: noAccess,
+    create: isStaff,
+    update: isStaff,
     delete: noAccess,
-  },
-  hooks: {
-    beforeValidate: [
-      ({ data }) => {
-        const city = CITIES.find((entry) => entry.slug === data?.slug);
-        if (!city)
-          throw new APIError("Only the six beta cities are supported.", 400);
-        return { ...data, ...city };
-      },
-    ],
   },
   fields: [
     { name: "name", type: "text", required: true },

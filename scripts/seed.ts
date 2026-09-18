@@ -2,13 +2,13 @@ import { getPayload } from "payload";
 
 import config from "@payload-config";
 
-import { CITIES, DEFAULT_REVIEW_PROMPT } from "../lib/calendar/constants";
+import { SEED_CITIES, DEFAULT_REVIEW_PROMPT } from "../lib/calendar/constants";
 
 const payload = await getPayload({ config });
 
 try {
   let created = 0;
-  for (const city of CITIES) {
+  for (const city of SEED_CITIES) {
     const existing = await payload.find({
       collection: "cities",
       where: { slug: { equals: city.slug } },
@@ -89,7 +89,7 @@ try {
     if (!seasons.docs[0]) created++;
 
     // Cover public, industry and held-date visibility, including ticketed/RSVP examples.
-    const index = CITIES.findIndex((entry) => entry.slug === city.slug);
+    const index = SEED_CITIES.findIndex((entry) => entry.slug === city.slug);
     const access = (
       ["free", "tickets", "rsvp", "invitation-only", "private", "free"] as const
     )[index];

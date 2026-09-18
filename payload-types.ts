@@ -12,6 +12,7 @@
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "supportedTimezones".
  */
+
 export type SupportedTimezones =
   | 'Pacific/Midway'
   | 'Pacific/Niue'
@@ -190,7 +191,7 @@ export interface Media {
   focalY?: number | null;
 }
 /**
- * Fixed beta lookup. Managed by the seed script.
+ * Add cities and update their names, countries and local time zones. The seeded cities are starter data.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "cities".
