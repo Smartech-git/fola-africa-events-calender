@@ -119,10 +119,4 @@ export default defineConfig([
       "import/no-restricted-paths": "off",
     },
   },
-  {
-    files: ["./app/studio/**/*.tsx"],
-    rules: {
-      "import/no-restricted-paths": "off",
-    },
-  },
 ]);
