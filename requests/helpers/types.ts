@@ -3,3 +3,7 @@ export type RequestOptions = {
   page?: number;
   limit?: number;
 };
+
+export type ErrorResponse = {
+  errors?: { message: string }[];
+};

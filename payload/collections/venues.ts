@@ -1,7 +1,7 @@
 import type { CollectionConfig } from "payload";
 
-import { staffAccess } from "../access";
-import { httpURL } from "../validation";
+import { staffAccess } from "@/payload/access";
+import { httpURL } from "@/payload/validation";
 
 export const venues: CollectionConfig = {
   slug: "venues",

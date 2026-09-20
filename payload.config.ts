@@ -6,15 +6,15 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 
-import { media } from "./payload/collections/media";
-import { users } from "./payload/collections/users";
-import { cities } from "./payload/collections/cities";
-import { organisers } from "./payload/collections/organisers";
-import { venues } from "./payload/collections/venues";
-import { seasons } from "./payload/collections/seasons";
-import { events } from "./payload/collections/events";
-import { eventReviews } from "./payload/collections/event-reviews";
-import { ReviewSettings } from "./payload/globals/review-settings";
+import { cities } from "@/payload/collections/cities";
+import { eventReviews } from "@/payload/collections/event-reviews";
+import { events } from "@/payload/collections/events";
+import { media } from "@/payload/collections/media";
+import { organisers } from "@/payload/collections/organisers";
+import { seasons } from "@/payload/collections/seasons";
+import { users } from "@/payload/collections/users";
+import { venues } from "@/payload/collections/venues";
+import { ReviewSettings } from "@/payload/globals/review-settings";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);

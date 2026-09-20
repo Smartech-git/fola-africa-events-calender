@@ -411,6 +411,7 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
     composer?: EffectComposer;
     touch?: ReturnType<typeof createTouchTexture>;
     liquidEffect?: Effect;
+    dispose: () => void;
   } | null>(null);
   const prevConfigRef = useRef<ReinitConfig | null>(null);
   useEffect(() => {
@@ -430,15 +431,7 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
     }
     if (mustReinit) {
       if (threeRef.current) {
-        const t = threeRef.current;
-        t.resizeObserver?.disconnect();
-        cancelAnimationFrame(t.raf!);
-        t.quad?.geometry.dispose();
-        t.material.dispose();
-        t.composer?.dispose();
-        t.renderer.dispose();
-        t.renderer.forceContextLoss();
-        if (t.renderer.domElement.parentElement === container) container.removeChild(t.renderer.domElement);
+        threeRef.current.dispose();
         threeRef.current = null;
       }
       const canvas = document.createElement('canvas');
@@ -488,14 +481,14 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
       const quad = new THREE.Mesh(quadGeom, material);
       scene.add(quad);
       const clock = new THREE.Clock();
+      let composer: EffectComposer | undefined;
       const setSize = () => {
         const w = container.clientWidth || 1;
         const h = container.clientHeight || 1;
-        renderer.setSize(w, h, false);
-        uniforms.uResolution.value.set(renderer.domElement.width, renderer.domElement.height);
-        if (threeRef.current?.composer)
-          threeRef.current.composer.setSize(renderer.domElement.width, renderer.domElement.height);
-        uniforms.uPixelSize.value = pixelSize * renderer.getPixelRatio();
+        // Both APIs take CSS pixels and apply the renderer's pixel ratio themselves.
+        if (composer) composer.setSize(w, h, false);
+        else renderer.setSize(w, h, false);
+        renderer.getDrawingBufferSize(uniforms.uResolution.value);
       };
       setSize();
       const ro = new ResizeObserver(setSize);
@@ -509,7 +502,6 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
         return Math.random();
       };
       const timeOffset = randomFloat() * 1000;
-      let composer: EffectComposer | undefined;
       let touch: ReturnType<typeof createTouchTexture> | undefined;
       let liquidEffect: Effect | undefined;
       if (liquid) {
@@ -551,7 +543,8 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
         }
         composer.addPass(noisePass);
       }
-      if (composer) composer.setSize(renderer.domElement.width, renderer.domElement.height);
+      // Size again after creating postprocessing, before the first rendered frame.
+      setSize();
       const mapToPixels = (e: PointerEvent) => {
         const rect = renderer.domElement.getBoundingClientRect();
         const scaleX = renderer.domElement.width / rect.width;
@@ -584,7 +577,9 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
         passive: true
       });
       let raf = 0;
+      let disposed = false;
       const animate = () => {
+        if (disposed) return;
         if (autoPauseOffscreen && !visibilityRef.current.visible) {
           raf = requestAnimationFrame(animate);
           return;
@@ -625,7 +620,21 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
         timeOffset,
         composer,
         touch,
-        liquidEffect
+        liquidEffect,
+        dispose: () => {
+          disposed = true;
+          cancelAnimationFrame(raf);
+          ro.disconnect();
+          renderer.domElement.removeEventListener('pointerdown', onPointerDown);
+          renderer.domElement.removeEventListener('pointermove', onPointerMove);
+          quadGeom.dispose();
+          material.dispose();
+          composer?.dispose();
+          touch?.texture.dispose();
+          renderer.dispose();
+          renderer.forceContextLoss();
+          renderer.domElement.remove();
+        }
       };
     } else {
       const t = threeRef.current!;
@@ -652,20 +661,6 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
       if (t.touch) t.touch.radiusScale = liquidRadius;
     }
     prevConfigRef.current = cfg;
-    return () => {
-      if (threeRef.current && mustReinit) return;
-      if (!threeRef.current) return;
-      const t = threeRef.current;
-      t.resizeObserver?.disconnect();
-      cancelAnimationFrame(t.raf!);
-      t.quad?.geometry.dispose();
-      t.material.dispose();
-      t.composer?.dispose();
-      t.renderer.dispose();
-      t.renderer.forceContextLoss();
-      if (t.renderer.domElement.parentElement === container) container.removeChild(t.renderer.domElement);
-      threeRef.current = null;
-    };
   }, [
     antialias,
     liquid,
@@ -688,6 +683,11 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
     color,
     speed
   ]);
+
+  useEffect(() => () => {
+    threeRef.current?.dispose();
+    threeRef.current = null;
+  }, []);
 
   return (
     <div

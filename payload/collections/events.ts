@@ -1,15 +1,15 @@
 import type { CollectionConfig } from "payload";
 
-import { isStaff, noAccess } from "../access";
+import { isStaff, noAccess } from "@/payload/access";
 import {
   ACCESS_OPTIONS,
   EVENT_STATUSES,
   EVENT_TYPES,
   INDUSTRIES,
   VISIBILITY_OPTIONS,
-} from "../constants";
-import { queueEventReview, validateEvent } from "../event-hooks";
-import { httpURL, shortDescription } from "../validation";
+} from "@/payload/constants";
+import { queueEventReview, validateEvent } from "@/payload/event-hooks";
+import { httpURL, shortDescription } from "@/payload/validation";
 
 export const events: CollectionConfig = {
   slug: "events",

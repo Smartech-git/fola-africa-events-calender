@@ -14,7 +14,7 @@ export default function Hero() {
   return (
     <SectionWrapper className="py-8">
       <FadeUpText
-        className="relative z-10 font-apris text-5xl font-medium tracking-wider uppercase md:text-7xl lg:text-8xl"
+        className="relative z-10 font-apris text-6xl font-medium tracking-wider uppercase md:text-7xl lg:text-8xl"
         text={`AFRICA’S\nEVENTS CALENDAR`}
       />
       <FadeUpText
@@ -42,7 +42,7 @@ export default function Hero() {
         </Button>
       </div>
 
-      <DrawHorizontalLine className="absolute bottom-0 left-0" />
+      <DrawHorizontalLine className="absolute bottom-0 left-0 animate-delay-300" />
 
       <PixelBlast
         variant="square"

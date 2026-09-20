@@ -16,10 +16,10 @@ export default defineConfig([
       "public/",
       "types/",
       "app/(payload)/**",
-      "payload/**",
-      "payload.config.ts",
-      "payload-types.ts",
-      "app/my-route/**"
+      "payload/migrations/**",
+      // "payload.config.ts",
+      // "payload-types.ts",
+      // "app/my-route/**"
     ],
   },
   ...nextCoreWebVitals,
@@ -53,18 +53,14 @@ export default defineConfig([
         },
       ],
 
-      // Enforce Absolute Imports (using @/ alias)
-      "import/no-restricted-paths": [
+      // Require the project alias for maintained source imports.
+      "no-restricted-imports": [
         "error",
         {
-          zones: [
-            {
-              target: "**/*",
-              from: "./*",
-              message:
-                "Avoid using relative './' imports. Use absolute '@/' instead.",
-            },
-          ],
+          patterns: [{
+            group: ["./*", "../*", "@payload-config"],
+            message: "Use the '@/...' alias for project-owned imports.",
+          }],
         },
       ],
 
@@ -109,14 +105,6 @@ export default defineConfig([
         typescript: true,
         node: true,
       },
-    },
-  },
-  {
-    // Payload helpers/scripts need root-level generated types and config. The
-    // restricted-paths zone rejects those files even when imported via aliases.
-    files: ["payload/*.ts", "scripts/**/*.ts", "tests/**/*.ts"],
-    rules: {
-      "import/no-restricted-paths": "off",
     },
   },
 ]);

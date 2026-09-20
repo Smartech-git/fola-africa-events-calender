@@ -1,6 +1,6 @@
 import { APIError, type CollectionConfig } from "payload";
 
-import { isAdmin, isStaff } from "../access";
+import { isAdmin, isStaff } from "@/payload/access";
 
 export const seasons: CollectionConfig = {
   slug: "seasons",

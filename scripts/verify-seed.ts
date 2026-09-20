@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 
 import { getPayload } from "payload";
 
-import config from "@payload-config";
+import { toPublicEvent } from "@/payload/public-event";
+import config from "@/payload.config";
 
-import { toPublicEvent } from "../payload/public-event";
 
 const payload = await getPayload({ config });
 try {

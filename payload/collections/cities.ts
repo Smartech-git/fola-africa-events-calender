@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 
-import { isStaff, noAccess } from "../access";
+import { isStaff, noAccess } from "@/payload/access";
 
 export const cities: CollectionConfig = {
   slug: "cities",

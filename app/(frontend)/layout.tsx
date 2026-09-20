@@ -3,9 +3,10 @@ import localFont from "next/font/local";
 
 import type { Metadata, Viewport } from "next";
 
-import "../styles/globals.css";
+import "@/app/styles/globals.css";
 import LenisProvider from "@/components/providers/lenis-provider";
 import Toast from "@/components/ui/toast";
+import Header from "@/components/header/header";
 
 const apris = localFont({
   src: [
@@ -55,6 +56,7 @@ export default function RootLayout({
     >
       <body className="w-full bg-primary-light text-dark-gray">
         <LenisProvider>
+          <Header hideLogo className="flex-none bg-primary-light" />
           {children}
           <Toast />
         </LenisProvider>

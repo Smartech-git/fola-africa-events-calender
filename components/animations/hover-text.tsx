@@ -12,9 +12,6 @@ gsap.registerPlugin(SplitText);
 interface HoverTextProps {
   text: string;
   className?: string;
-  inView?: boolean;
-  /** Delay in seconds for the initial in-view animation only. */
-  delay?: number;
   lineStagger?: number;
   duration?: number;
   y?: number;
@@ -25,8 +22,6 @@ interface HoverTextProps {
 export default function HoverText({
   text,
   className,
-  inView = false,
-  delay = 0,
   lineStagger,
   duration = 0.3,
   y = 0,
@@ -51,8 +46,6 @@ export default function HoverText({
       let cancelled = false;
       let split: SplitText | undefined;
       let animation: gsap.core.Timeline | undefined;
-      let observer: IntersectionObserver | undefined;
-      let entranceAnimation: gsap.core.Tween | undefined;
       let hovered = trigger.matches(":hover");
       const hasKeyboardFocus = () =>
         trigger.matches(":focus-visible") ||
@@ -60,14 +53,6 @@ export default function HoverText({
       let focused = hasKeyboardFocus();
 
       const updateDirection = () => {
-        if (entranceAnimation) {
-          if (!hovered && !focused) return;
-          entranceAnimation.kill();
-          entranceAnimation = undefined;
-          // Interaction takes over immediately, including during the delay.
-          animation?.restart();
-          return;
-        }
         if (hovered || focused) animation?.play();
         else animation?.reverse();
       };
@@ -105,8 +90,6 @@ export default function HoverText({
           autoSplit: true,
           linesClass: "hover-text-line",
           onSplit(self) {
-            entranceAnimation?.kill();
-            entranceAnimation = undefined;
             const copies = self.lines.map((line, index) => {
               const mask = self.masks[index] as HTMLElement;
               const copy = line.cloneNode(true) as HTMLElement;
@@ -131,36 +114,10 @@ export default function HoverText({
             return animation;
           },
         });
-
-        if (inView && typeof IntersectionObserver !== "undefined") {
-          observer = new IntersectionObserver(([entry]) => {
-            if (cancelled || !entry?.isIntersecting) return;
-            observer?.disconnect();
-            // An active interaction already plays this same effect.
-            if (hovered || focused || !animation) return;
-            // Drive the paused timeline separately so hover never inherits delay
-            // or completion callbacks from the entrance animation.
-            animation.pause(0);
-            entranceAnimation = gsap.to(animation, {
-              progress: 1,
-              duration: animation.duration(),
-              delay: Math.max(0, delay),
-              ease: "none",
-              onComplete: () => {
-                entranceAnimation = undefined;
-                // Reset identical text copies so the next hover can play again.
-                animation?.pause(0);
-              },
-            });
-          });
-          observer.observe(container);
-        }
       });
 
       return () => {
         cancelled = true;
-        observer?.disconnect();
-        entranceAnimation?.kill();
         trigger.removeEventListener("mouseenter", handleEnter);
         trigger.removeEventListener("mouseleave", handleLeave);
         trigger.removeEventListener("focusin", handleFocus);
@@ -170,7 +127,7 @@ export default function HoverText({
     });
 
     return () => media.revert();
-  }, [text, className, duration, stagger, y, ease, inView, delay]);
+  }, [text, className, duration, stagger, y, ease]);
 
   return (
     <div

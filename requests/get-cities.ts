@@ -1,5 +1,5 @@
 import { request } from "@/lib/api/request";
-import { RequestOptions } from "@/requests/helpers/types";
+import { ErrorResponse, RequestOptions } from "@/requests/helpers/types";
 import type { City } from "@/types/payload-types";
 
 export type CitySummary = Pick<
@@ -31,9 +31,8 @@ export interface Cities {
   nextPage: number | null;
 }
 
-export interface GetCitiesResponse {
+export interface GetCitiesResponse extends ErrorResponse {
   data?: { Cities: Cities | null } | null;
-  errors?: { message: string }[];
 }
 
 /** Fetch a fresh, alphabetically sorted page from the public Payload GraphQL API. */

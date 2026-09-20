@@ -1,8 +1,8 @@
 import { getPayload } from "payload";
 
-import config from "@payload-config";
+import { SEED_CITIES, DEFAULT_REVIEW_PROMPT } from "@/payload/constants";
+import config from "@/payload.config";
 
-import { SEED_CITIES, DEFAULT_REVIEW_PROMPT } from "../payload/constants";
 
 const payload = await getPayload({ config });
 

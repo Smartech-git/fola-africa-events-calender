@@ -1,6 +1,6 @@
+import { INDUSTRIES, PUBLIC_STATUSES } from "@/payload/constants";
 import type { Event } from "@/types/payload-types";
 
-import { INDUSTRIES, PUBLIC_STATUSES } from "./constants";
 
 /** The only projection that should be used for public pages, exports or API responses. */
 export function toPublicEvent(event: Event) {

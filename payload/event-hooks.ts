@@ -4,9 +4,9 @@ import {
   type CollectionAfterChangeHook,
 } from "payload";
 
-import { roleOf } from "./access";
-import { PRIVATE_ACCESS, PUBLIC_STATUSES } from "./constants";
-import { eventProblems, relationID } from "./validation";
+import { roleOf } from "@/payload/access";
+import { PRIVATE_ACCESS, PUBLIC_STATUSES } from "@/payload/constants";
+import { eventProblems, relationID } from "@/payload/validation";
 
 const editorialFields = [
   "title",

@@ -1,11 +1,11 @@
 "use client";
 
+import DrawHorizontalLine from "@/components/animations/draw-horizontal-line";
+import HoverText from "@/components/animations/hover-text";
 import Logo from "@/components/header/logo";
 import Button from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-import DrawHorizontalLine from "../animations/draw-horizontal-line";
-import HoverText from "../animations/hover-text";
 
 interface Props {
   className?: string;

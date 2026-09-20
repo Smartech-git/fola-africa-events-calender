@@ -3,6 +3,11 @@
 - Use `kebab-case` for project-owned file and folder names (for example, `event-reviews.ts` and `calendar-helpers/`). Apply this to new files and folders and to renames; update affected imports and references when renaming.
 - Preserve filenames and route conventions required by frameworks or tools, such as `AGENTS.md`, `package.json`, `next.config.ts`, `eslint.config.mjs`, Next.js route files and special route segments, and generated or externally supplied filenames unless their configuration and references are deliberately updated.
 
+# Import conventions
+
+- Use `@/...` for all project-owned imports and re-exports, including type-only and dynamic imports. Do not use `./...`, `../...`, or `@payload-config` in maintained source files; use `@/payload.config` for the Payload config.
+- Keep external package and Node built-in imports unchanged. Preserve imports in generated, tool-managed files (including Payload-generated app files and migrations). Filesystem paths and URLs are not module imports.
+
 # API work
 
 - For future API work, do not add Markdown documentation files or tests unless the user explicitly requests them. Explain API usage in the response instead. Existing documentation and tests may remain; this preference does not request their deletion.

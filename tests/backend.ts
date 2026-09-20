@@ -1,18 +1,18 @@
 import assert from "node:assert/strict";
 
-import type { Event } from "@/types/payload-types";
 
-import { eventReviews } from "../payload/collections/event-reviews";
-import { events } from "../payload/collections/events";
-import { organisers } from "../payload/collections/organisers";
-import { SEED_CITIES } from "../payload/constants";
-import { validateEvent } from "../payload/event-hooks";
-import { toPublicEvent } from "../payload/public-event";
+import { eventReviews } from "@/payload/collections/event-reviews";
+import { events } from "@/payload/collections/events";
+import { organisers } from "@/payload/collections/organisers";
+import { SEED_CITIES } from "@/payload/constants";
+import { validateEvent } from "@/payload/event-hooks";
+import { toPublicEvent } from "@/payload/public-event";
 import {
   eventProblems,
   httpURL,
   shortDescription,
-} from "../payload/validation";
+} from "@/payload/validation";
+import type { Event } from "@/types/payload-types";
 
 let checks = 0;
 async function check(name: string, fn: () => unknown | Promise<unknown>) {
