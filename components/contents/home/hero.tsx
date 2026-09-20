@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 import { Dot } from "lucide-react";
 
@@ -6,6 +6,7 @@ import DrawHorizontalLine from "@/components/animations/draw-horizontal-line";
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
 import PixelBlast from "@/components/animations/pixel-blast";
+import ExploreEvent from "@/components/contents/home/explore-event";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
 import { INDUSTRIES } from "@/payload/constants";
@@ -34,9 +35,9 @@ export default function Hero() {
         ))}
       </div>
       <div className="relative z-10 mt-8 flex w-full flex-col items-center gap-4 sm:w-fit sm:flex-row">
-        <Button className="max-sm:w-full!">
-          <HoverText text="Explore events" />
-        </Button>
+        <Suspense>
+          <ExploreEvent />
+        </Suspense>
         <Button variant="bordered" className="max-sm:w-full!">
           <HoverText text="Submit an event" />
         </Button>

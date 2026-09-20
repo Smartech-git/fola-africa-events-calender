@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import Link from "next/link";
 
 import HoverText from "@/components/animations/hover-text";
 import SectionWrapper from "@/components/layout/section-wrapper";
@@ -33,18 +33,19 @@ export default function Cities({ cities }: Props) {
 
       <div className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
         {cities?.data?.map((item) => (
-          <Button
-            onPress={() => handleParamSet("city", item.name)}
-            key={item.id}
-            variant="flat"
-            size="fit"
-            className={cn(
-              "justify-self-center font-apris text-4xl font-medium max-md:nth-[2n]:justify-self-end max-md:nth-[2n+1]:justify-self-start md:text-4xl md:max-lg:nth-[3n]:justify-self-end md:max-lg:nth-[3n+1]:justify-self-start lg:text-5xl lg:nth-[5n]:justify-self-end lg:nth-[5n+1]:justify-self-start",
-              getFilterValue(CITIES_ID_KEY) === item.slug && "text-primary",
-            )}
-          >
-            <HoverText text={item.name} />
-          </Button>
+          <Link key={item.id} href={`/events/${item.slug}`}>
+            <Button
+              onPress={() => handleParamSet("city", item.name)}
+              variant="flat"
+              size="fit"
+              className={cn(
+                "justify-self-center font-apris text-4xl font-medium max-md:nth-[2n]:justify-self-end max-md:nth-[2n+1]:justify-self-start md:text-4xl md:max-lg:nth-[3n]:justify-self-end md:max-lg:nth-[3n+1]:justify-self-start lg:text-5xl lg:nth-[5n]:justify-self-end lg:nth-[5n+1]:justify-self-start",
+                getFilterValue(CITIES_ID_KEY) === item.slug && "text-primary",
+              )}
+            >
+              <HoverText text={item.name} />
+            </Button>
+          </Link>
         ))}
       </div>
     </SectionWrapper>
