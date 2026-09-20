@@ -2,17 +2,17 @@ import assert from "node:assert/strict";
 
 import type { Event } from "@/types/payload-types";
 
-import { EventReviews } from "../collections/event-reviews";
-import { Events } from "../collections/events";
-import { Organisers } from "../collections/organisers";
-import { SEED_CITIES } from "../lib/calendar/constants";
-import { validateEvent } from "../lib/calendar/event-hooks";
-import { toPublicEvent } from "../lib/calendar/public-event";
+import { eventReviews } from "../payload/collections/event-reviews";
+import { events } from "../payload/collections/events";
+import { organisers } from "../payload/collections/organisers";
+import { SEED_CITIES } from "../payload/constants";
+import { validateEvent } from "../payload/event-hooks";
+import { toPublicEvent } from "../payload/public-event";
 import {
   eventProblems,
   httpURL,
   shortDescription,
-} from "../lib/calendar/validation";
+} from "../payload/validation";
 
 let checks = 0;
 async function check(name: string, fn: () => unknown | Promise<unknown>) {
@@ -93,7 +93,7 @@ await check(
 await check(
   "Raw events, organiser contacts and review queue deny anonymous reads",
   async () => {
-    for (const collection of [Events, Organisers, EventReviews])
+    for (const collection of [events, organisers, eventReviews])
       assert.equal(
         await collection.access!.read!({ req: { user: null } } as any),
         false,

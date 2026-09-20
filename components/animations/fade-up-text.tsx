@@ -1,15 +1,30 @@
 "use client";
 
-import { type ReactNode } from "react";
+import {
+  Fragment,
+  type ReactNode,
+  type RefObject,
+  useLayoutEffect,
+  useRef,
+} from "react";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { gsap } from "gsap";
+import { SplitText } from "gsap/SplitText";
 
 import { cn } from "@/lib/utils";
 
+gsap.registerPlugin(SplitText);
+
 interface FadeUpTextProps {
+  /** String newlines and JSX <br /> elements create explicit line breaks. */
   text: ReactNode;
+  as?: "p" | "div" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   className?: string;
-  wordStagger?: number;
+  inView?: boolean;
+  once?: boolean;
+  amount?: number;
+  viewportRef?: RefObject<HTMLElement | null>;
+  lineStagger?: number;
   duration?: number;
   delay?: number;
   y?: number;
@@ -17,68 +32,129 @@ interface FadeUpTextProps {
 
 export default function FadeUpText({
   text,
+  as,
   className,
-  wordStagger = 0.055,
-  duration = 0.42,
+  inView = true,
+  once = true,
+  amount = 0.6,
+  viewportRef,
+  lineStagger,
+  duration = 1.2,
   delay = 0,
-  y = 8,
+  y = 0,
 }: FadeUpTextProps) {
-  const reduceMotion = useReducedMotion();
-  const textValue =
-    typeof text === "string" || typeof text === "number" ? String(text) : null;
+  const textRef = useRef<HTMLElement | null>(null);
+  const stagger = lineStagger ?? 0.1;
+  const Tag =
+    as ?? (typeof text === "string" || typeof text === "number" ? "p" : "div");
 
-  if (!textValue) {
-    return (
-      <motion.div
-        className={className}
-        initial={{ opacity: 0, y }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration, delay, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {text}
-      </motion.div>
-    );
-  }
+  useLayoutEffect(() => {
+    const element = textRef.current;
+    if (!element) return;
 
-  const tokens = textValue.match(/\S+\s*/g) ?? [];
+    const media = gsap.matchMedia();
 
-  if (reduceMotion) {
-    return <p className={className}>{textValue}</p>;
-  }
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      let cancelled = false;
+      let split: SplitText | undefined;
+      let animation: gsap.core.Tween | undefined;
+      let observer: IntersectionObserver | undefined;
+      let visible = !inView;
+      const visibility = element.style.visibility;
+
+      // Keep the layout in place while waiting for accurate font measurements.
+      element.style.visibility = "hidden";
+
+      if (inView && typeof IntersectionObserver !== "undefined") {
+        const threshold = Math.min(1, Math.max(0, amount));
+        observer = new IntersectionObserver(
+          ([entry]) => {
+            if (cancelled || !entry) return;
+
+            visible =
+              entry.isIntersecting && entry.intersectionRatio >= threshold;
+            if (visible) {
+              animation?.play();
+              if (once) observer?.disconnect();
+            } else if (!once) {
+              animation?.reverse();
+            }
+          },
+          { root: viewportRef?.current ?? null, threshold },
+        );
+        observer.observe(element);
+      } else {
+        visible = true;
+      }
+
+      void document.fonts.ready.then(() => {
+        if (cancelled) return;
+
+        split = SplitText.create(element, {
+          type: "words,lines",
+          mask: "lines",
+          autoSplit: true,
+          linesClass: "fade-up-text-line",
+          onSplit(self) {
+            element.style.visibility = visibility;
+
+            // Returning the tween lets SplitText preserve progress on resize.
+            animation = gsap.from(self.lines, {
+              paused: true,
+              yPercent: 100,
+              y,
+              opacity: 0,
+              duration,
+              delay,
+              stagger,
+              ease: "expo.out",
+            });
+
+            if (visible) animation.play();
+            else animation.reverse();
+            return animation;
+          },
+        });
+      });
+
+      return () => {
+        cancelled = true;
+        observer?.disconnect();
+        split?.revert();
+        element.style.visibility = visibility;
+      };
+    });
+
+    return () => media.revert();
+  }, [
+    text,
+    as,
+    className,
+    duration,
+    delay,
+    stagger,
+    y,
+    inView,
+    once,
+    amount,
+    viewportRef,
+  ]);
 
   return (
-    <motion.p
-      className={cn("w-fit", className)}
-      initial="hidden"
-      animate="show"
-      variants={{
-        hidden: {},
-        show: {
-          transition: {
-            staggerChildren: wordStagger,
-            delayChildren: delay,
-          },
-        },
+    <Tag
+      ref={(element) => {
+        textRef.current = element;
       }}
+      className={cn("w-fit", className)}
     >
-      {tokens.map((token, index) => (
-        <motion.span
-          key={`word-${index}`}
-          className="whitespace-pre"
-          style={{ display: "inline-block" }}
-          variants={{
-            hidden: { opacity: 0, y, filter: "blur(6px)" },
-            show: {
-              opacity: 1,
-              y: 0,
-              filter: "blur(0px)",
-              transition: { duration, ease: [0.22, 1, 0.36, 1] },
-            },
-          }}
-        >
-          {token}
-        </motion.span>
-      ))}
-    </motion.p>
+      {typeof text === "string"
+        ? text.split(/\r\n|\r|\n/).map((line, index) => (
+            <Fragment key={index}>
+              {index > 0 && <br />}
+              {line}
+            </Fragment>
+          ))
+        : text}
+    </Tag>
   );
 }

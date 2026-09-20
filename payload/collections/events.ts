@@ -1,17 +1,17 @@
 import type { CollectionConfig } from "payload";
 
-import { isStaff, noAccess } from "../lib/calendar/access";
+import { isStaff, noAccess } from "../access";
 import {
   ACCESS_OPTIONS,
   EVENT_STATUSES,
   EVENT_TYPES,
   INDUSTRIES,
   VISIBILITY_OPTIONS,
-} from "../lib/calendar/constants";
-import { queueEventReview, validateEvent } from "../lib/calendar/event-hooks";
-import { httpURL, shortDescription } from "../lib/calendar/validation";
+} from "../constants";
+import { queueEventReview, validateEvent } from "../event-hooks";
+import { httpURL, shortDescription } from "../validation";
 
-export const Events: CollectionConfig = {
+export const events: CollectionConfig = {
   slug: "events",
   admin: {
     useAsTitle: "title",

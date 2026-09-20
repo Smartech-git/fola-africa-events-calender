@@ -51,9 +51,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${apris.variable} ${inter.variable} scrollbar-thin h-full bg-primary-light font-apris antialiased scrollbar-thumb-primary scrollbar-track-primary-light max-sm:scrollbar-none`}
+      className={`${apris.variable} ${inter.variable} scrollbar-thin h-full bg-primary-light font-inter antialiased scrollbar-thumb-primary scrollbar-track-primary-light max-sm:scrollbar-none`}
     >
-      <body className="w-full bg-primary-light text-black">
+      <body className="w-full bg-primary-light text-dark-gray">
         <LenisProvider>
           {children}
           <Toast />

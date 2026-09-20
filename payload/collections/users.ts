@@ -1,8 +1,8 @@
 import type { CollectionConfig } from "payload";
 
-import { adminField, isAdmin, roleOf } from "../lib/calendar/access";
+import { adminField, isAdmin, roleOf } from "../access";
 
-export const Users: CollectionConfig = {
+export const users: CollectionConfig = {
   slug: "users",
   admin: {
     useAsTitle: "email",

@@ -23,10 +23,10 @@ export default function Fade({
   inView = true,
   translateY = 24,
   translateX = 0,
-  duration = 0.45,
+  duration = 0.3,
   delay = 0,
   once = true,
-  amount = 0.6,
+  amount = 0.2,
   viewportRef,
   ...props
 }: FadeProps) {

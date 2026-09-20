@@ -7,7 +7,7 @@ import pg from "pg";
 const baseline = "20260917_100736_baseline";
 const snapshot = JSON.parse(
   await readFile(
-    new URL(`../migrations/${baseline}.json`, import.meta.url),
+    new URL(`../payload/migrations/${baseline}.json`, import.meta.url),
     "utf8",
   ),
 );

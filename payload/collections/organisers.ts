@@ -1,9 +1,9 @@
 import type { CollectionConfig } from "payload";
 
-import { staffAccess } from "../lib/calendar/access";
-import { httpURL } from "../lib/calendar/validation";
+import { staffAccess } from "../access";
+import { httpURL } from "../validation";
 
-export const Organisers: CollectionConfig = {
+export const organisers: CollectionConfig = {
   slug: "organisers",
   admin: {
     useAsTitle: "name",

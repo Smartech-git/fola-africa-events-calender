@@ -1,8 +1,8 @@
 import { APIError, type CollectionConfig } from "payload";
 
-import { isStaff, noAccess } from "../lib/calendar/access";
+import { isStaff, noAccess } from "../access";
 
-export const EventReviews: CollectionConfig = {
+export const eventReviews: CollectionConfig = {
   slug: "event-reviews",
   admin: {
     group: "Review",

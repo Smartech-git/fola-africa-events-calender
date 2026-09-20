@@ -42,9 +42,9 @@
   --breakpoint-3xl: 120rem; /* 1920px */
   --breakpoint-4k: 160rem; /* 2560px */
 
-  --spacing-pg-4k: 8dvw;
-  --spacing-pg-2xl: 4dvw;
-  --spacing-pg: 2dvw;
+  --spacing-pg-4k: 12dvw;
+  --spacing-pg-2xl: 8dvw;
+  --spacing-pg: 6dvw;
   --spacing-pg-sm: 0.5rem;
   --spacing-header: 50px;
   --spacing-sm-header: 50px;
@@ -54,7 +54,7 @@
   --color-light-gray: #ADB0A6;
   --color-primary-light: #F4F1EE;
   --color-secondary: #EFE4DB;
-  --text-xxs: 9px;
+  --text-xxs: 10px;
   --text-1.5xl: 22px;
 
   --shadow-card-float: 0px 3px 6px -2px #14151a0d, 0px 10px 16px -3px #14151a14;

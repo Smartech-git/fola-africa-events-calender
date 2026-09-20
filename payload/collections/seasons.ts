@@ -1,8 +1,8 @@
 import { APIError, type CollectionConfig } from "payload";
 
-import { isAdmin, isStaff } from "../lib/calendar/access";
+import { isAdmin, isStaff } from "../access";
 
-export const Seasons: CollectionConfig = {
+export const seasons: CollectionConfig = {
   slug: "seasons",
   admin: {
     useAsTitle: "name",

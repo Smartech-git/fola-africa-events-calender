@@ -16,7 +16,7 @@ export default defineConfig([
       "public/",
       "types/",
       "app/(payload)/**",
-      "collections/**",
+      "payload/**",
       "payload.config.ts",
       "payload-types.ts",
       "app/my-route/**"
@@ -114,7 +114,7 @@ export default defineConfig([
   {
     // Payload helpers/scripts need root-level generated types and config. The
     // restricted-paths zone rejects those files even when imported via aliases.
-    files: ["lib/calendar/**/*.ts", "scripts/**/*.ts", "tests/**/*.ts"],
+    files: ["payload/*.ts", "scripts/**/*.ts", "tests/**/*.ts"],
     rules: {
       "import/no-restricted-paths": "off",
     },

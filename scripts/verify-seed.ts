@@ -4,7 +4,7 @@ import { getPayload } from "payload";
 
 import config from "@payload-config";
 
-import { toPublicEvent } from "../lib/calendar/public-event";
+import { toPublicEvent } from "../payload/public-event";
 
 const payload = await getPayload({ config });
 try {

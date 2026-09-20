@@ -1,7 +1,7 @@
 import type { GlobalConfig } from "payload";
 
-import { isAdmin, isStaff } from "../lib/calendar/access";
-import { DEFAULT_REVIEW_PROMPT } from "../lib/calendar/constants";
+import { isAdmin, isStaff } from "../access";
+import { DEFAULT_REVIEW_PROMPT } from "../constants";
 
 export const ReviewSettings: GlobalConfig = {
   slug: "review-settings",

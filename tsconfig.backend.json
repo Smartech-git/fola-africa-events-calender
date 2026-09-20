@@ -4,12 +4,10 @@
   "include": [
     "payload.config.ts",
     "payload-types.ts",
-    "collections/**/*.ts",
-    "globals/**/*.ts",
-    "lib/calendar/**/*.ts",
+    "payload/**/*.ts",
+    "request/**/*.ts",
     "scripts/**/*.ts",
-    "tests/**/*.ts",
-    "migrations/**/*.ts"
+    "tests/**/*.ts"
   ],
   "exclude": ["node_modules", ".next"]
 }

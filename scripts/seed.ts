@@ -2,7 +2,7 @@ import { getPayload } from "payload";
 
 import config from "@payload-config";
 
-import { SEED_CITIES, DEFAULT_REVIEW_PROMPT } from "../lib/calendar/constants";
+import { SEED_CITIES, DEFAULT_REVIEW_PROMPT } from "../payload/constants";
 
 const payload = await getPayload({ config });
 

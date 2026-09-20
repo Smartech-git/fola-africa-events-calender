@@ -52,7 +52,16 @@ export interface BaseResponse {
   data?: any;
 }
 
-export type FetchFunction = <T = BaseResponse>(
-  url: string,
-  options: FetcherOptions,
-) => Promise<T>;
+export interface RequestFailure {
+  success: false;
+  message: unknown;
+  status?: number;
+}
+
+export type FetchFunction = <T = BaseResponse>({
+  endpoint,
+  options,
+}: {
+  endpoint?: string;
+  options: FetcherOptions;
+}) => Promise<T | RequestFailure>;

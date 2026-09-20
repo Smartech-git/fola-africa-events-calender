@@ -4,7 +4,7 @@ import { FetchFunction } from "@/lib/api/types";
 import { baseUrl, sleep } from "@/lib/api/utils";
 import { getCookies } from "@/lib/cookies";
 
-export const request: FetchFunction = async (url, options) => {
+export const request: FetchFunction = async ({ endpoint = "", options }) => {
   const {
     method = "GET",
     data = null,
@@ -12,7 +12,7 @@ export const request: FetchFunction = async (url, options) => {
     fetchOptions = {},
     useAuth = false,
     retry = 3,
-    delay = 3000,
+    delay = 10000,
   } = options;
 
   const isFormData = data instanceof FormData;
@@ -40,8 +40,10 @@ export const request: FetchFunction = async (url, options) => {
     requestOptions.body = isFormData ? data : JSON.stringify(data);
   }
 
-  const URL = baseUrl || options.baseUrl;
-  const fullUrl = `${URL}${url}`;
+  const requestBaseUrl = options.baseUrl || baseUrl;
+  const fullUrl = endpoint
+    ? new URL(endpoint, requestBaseUrl).toString()
+    : requestBaseUrl;
   const timeoutId = setTimeout(() => controller.abort(), 10000);
 
   let attempts = 0;
@@ -57,6 +59,7 @@ export const request: FetchFunction = async (url, options) => {
         return {
           message: errorData || "Something went wrong",
           success: false,
+          status: response.status,
         };
       }
       return await response.json();
@@ -85,7 +88,7 @@ export const request: FetchFunction = async (url, options) => {
       }
 
       console.warn(
-        `Retrying ${url} (${retry - attempts + 1} attempts left): ${lastError.message}`,
+        `Retrying ${endpoint} (${retry - attempts + 1} attempts left): ${lastError.message}`,
       );
       await sleep(delay * Math.pow(2, attempts - 1));
     }
@@ -98,4 +101,3 @@ export const request: FetchFunction = async (url, options) => {
     success: false,
   };
 };
-

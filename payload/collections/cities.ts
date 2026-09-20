@@ -1,8 +1,8 @@
 import type { CollectionConfig } from "payload";
 
-import { isStaff, noAccess } from "../lib/calendar/access";
+import { isStaff, noAccess } from "../access";
 
-export const Cities: CollectionConfig = {
+export const cities: CollectionConfig = {
   slug: "cities",
   admin: {
     useAsTitle: "name",
