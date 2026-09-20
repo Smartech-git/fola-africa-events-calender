@@ -31,15 +31,19 @@ export default function Cities({ cities }: Props) {
         </span>
       </div>
 
-      <div className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
+      <div className="mt-8 grid grid-cols-2 items-center gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-5">
         {cities?.data?.map((item) => (
-          <Link key={item.id} href={`/events/${item.slug}`}>
+          <Link
+            key={item.id}
+            href={`/events/${item.slug}`}
+            className="max-w-full min-w-0 self-start justify-self-center max-md:nth-[2n]:justify-self-end max-md:nth-[2n+1]:justify-self-start md:max-lg:nth-[3n]:justify-self-end md:max-lg:nth-[3n+1]:justify-self-start lg:nth-[5n]:justify-self-end lg:nth-[5n+1]:justify-self-start"
+          >
             <Button
               onPress={() => handleParamSet("city", item.name)}
               variant="flat"
               size="fit"
               className={cn(
-                "justify-self-center font-apris text-4xl font-medium max-md:nth-[2n]:justify-self-end max-md:nth-[2n+1]:justify-self-start md:text-4xl md:max-lg:nth-[3n]:justify-self-end md:max-lg:nth-[3n+1]:justify-self-start lg:text-5xl lg:nth-[5n]:justify-self-end lg:nth-[5n+1]:justify-self-start",
+                "max-w-full font-apris text-3xl font-medium whitespace-normal max-sm:wrap-break-word md:text-4xl lg:text-5xl",
                 getFilterValue(CITIES_ID_KEY) === item.slug && "text-primary",
               )}
             >

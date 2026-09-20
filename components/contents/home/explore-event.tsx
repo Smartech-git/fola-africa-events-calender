@@ -10,7 +10,10 @@ export default function ExploreEvent() {
   const { getFilterValue } = useRouteParam();
 
   return (
-    <Link className="w-fit" href={`/events/${getFilterValue(CITIES_ID_KEY) ?? "lagos"}`}>
+    <Link
+      className="w-fit max-sm:w-full"
+      href={`/events/${getFilterValue(CITIES_ID_KEY) ?? "lagos"}`}
+    >
       <Button className="max-sm:w-full!">
         <HoverText text="Explore events" />
       </Button>
