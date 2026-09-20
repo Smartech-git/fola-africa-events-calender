@@ -4,9 +4,9 @@ import localFont from "next/font/local";
 import type { Metadata, Viewport } from "next";
 
 import "@/app/styles/globals.css";
+import Header from "@/components/header/header";
 import LenisProvider from "@/components/providers/lenis-provider";
 import Toast from "@/components/ui/toast";
-import Header from "@/components/header/header";
 
 const apris = localFont({
   src: [
