@@ -31,26 +31,28 @@ export default function Cities({ cities }: Props) {
         </span>
       </div>
 
-      <div className="mt-8 grid grid-cols-2 items-center gap-4 gap-x-1 sm:gap-6 md:grid-cols-3 lg:grid-cols-5">
-        {cities?.data?.map((item) => (
-          <Link
-            key={item.id}
-            href={`/events/${item.slug}`}
-            className="max-w-full min-w-0 self-start justify-self-center max-md:nth-[2n]:justify-self-end max-md:nth-[2n+1]:justify-self-start md:max-lg:nth-[3n]:justify-self-end md:max-lg:nth-[3n+1]:justify-self-start lg:nth-[5n]:justify-self-end lg:nth-[5n+1]:justify-self-start"
-          >
-            <Button
-              onPress={() => handleParamSet("city", item.name)}
-              variant="flat"
-              size="fit"
-              className={cn(
-                "max-w-full font-apris text-3xl font-medium max-xs:whitespace-normal max-xs:wrap-break-word xs:whitespace-nowrap xs:wrap-normal md:text-4xl lg:text-5xl",
-                getFilterValue(CITIES_ID_KEY) === item.slug && "text-primary",
-              )}
+      <div className="mt-8 w-full min-w-0 overflow-visible">
+        <div className="grid w-full grid-cols-2 items-center gap-4 gap-x-1 overflow-visible sm:gap-6 md:grid-cols-3 lg:grid-cols-5">
+          {cities?.data?.map((item) => (
+            <Link
+              key={item.id}
+              href={`/events/${item.slug}`}
+              className="max-w-full min-w-0 self-start justify-self-center max-md:nth-[2n]:justify-self-end max-md:nth-[2n+1]:justify-self-start xs:max-w-none md:max-lg:nth-[3n]:justify-self-end md:max-lg:nth-[3n+1]:justify-self-start lg:nth-[5n]:justify-self-end lg:nth-[5n+1]:justify-self-start"
             >
-              <HoverText text={item.name} />
-            </Button>
-          </Link>
-        ))}
+              <Button
+                onPress={() => handleParamSet("city", item.name)}
+                variant="flat"
+                size="fit"
+                className={cn(
+                  "max-w-full overflow-visible font-apris text-3xl font-medium max-xs:wrap-break-word max-xs:whitespace-normal xs:max-w-none xs:wrap-normal xs:whitespace-nowrap md:text-4xl lg:text-5xl",
+                  getFilterValue(CITIES_ID_KEY) === item.slug && "text-primary",
+                )}
+              >
+                <HoverText text={item.name} />
+              </Button>
+            </Link>
+          ))}
+        </div>
       </div>
     </SectionWrapper>
   );

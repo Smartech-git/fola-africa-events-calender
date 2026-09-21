@@ -50,7 +50,7 @@ export default function Hero() {
         pixelSize={6}
         color="#EBC9AC"
         patternScale={2}
-        patternDensity={1.2}
+        patternDensity={1.1}
         pixelSizeJitter={0}
         enableRipples
         rippleSpeed={0.4}
