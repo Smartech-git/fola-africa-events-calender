@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -15,16 +15,25 @@ export const useRouteParam = (defaultParams?: DefaultParam[]) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const pendingParams = useRef(new URLSearchParams(searchParams.toString()));
+  const pendingPath = useRef(pathname);
+
+  useEffect(() => {
+    pendingParams.current = new URLSearchParams(searchParams.toString());
+    pendingPath.current = pathname;
+  }, [pathname, searchParams]);
 
   const updateUrl = useCallback(
-    (params: URLSearchParams, path: string = pathname) => {
+    (params: URLSearchParams, path: string = pendingPath.current) => {
+      pendingParams.current = new URLSearchParams(params);
+      pendingPath.current = path;
       const queryString = params.toString();
       const url = queryString ? `${path}?${queryString}` : path;
       router.replace(url, {
         scroll: false,
       });
     },
-    [pathname, router],
+    [router],
   );
 
   useEffect(() => {
@@ -55,35 +64,33 @@ export const useRouteParam = (defaultParams?: DefaultParam[]) => {
 
   const getFilterValues = (key: string): string[] => searchParams.getAll(key);
 
-  const handleParamSet = (
-    keyOrPairs: string | KeyValuePairs,
-    value?: string,
-  ) => {
-    const params = new URLSearchParams(searchParams.toString());
+  const handleParamSet = useCallback(
+    (keyOrPairs: string | KeyValuePairs, value?: string, path?: string) => {
+      const params = new URLSearchParams(pendingParams.current);
 
-    if (typeof keyOrPairs === "string" && value !== undefined) {
-      const key = keyOrPairs;
-      params.delete(key);
-      params.set(key, value);
-    } else if (typeof keyOrPairs === "object" && value === undefined) {
-      for (const [key, val] of Object.entries(keyOrPairs)) {
+      if (typeof keyOrPairs === "string" && value !== undefined) {
+        const key = keyOrPairs;
         params.delete(key);
-        if (Array.isArray(val)) {
-          val.forEach((v) => params.append(key, v));
-        } else {
-          if (val) {
+        params.set(key, value);
+      } else if (typeof keyOrPairs === "object" && value === undefined) {
+        for (const [key, val] of Object.entries(keyOrPairs)) {
+          params.delete(key);
+          if (Array.isArray(val)) {
+            val.forEach((v) => params.append(key, v));
+          } else if (val !== undefined) {
             params.set(key, val);
           }
         }
+      } else {
+        throw new Error(
+          "handleParamSet requires either (key, value) or (object of key/value pairs)",
+        );
       }
-    } else {
-      throw new Error(
-        "handleParamSet requires either (key, value) or (object of key/value pairs)",
-      );
-    }
 
-    updateUrl(params);
-  };
+      updateUrl(params, path);
+    },
+    [updateUrl],
+  );
 
   const handleParamAdd = (
     keyOrPairs: string | KeyValuePairs,
@@ -225,6 +232,10 @@ export const useRouteParam = (defaultParams?: DefaultParam[]) => {
     updateUrl(params);
   };
 
+  const clearAllParams = useCallback(() => {
+    updateUrl(new URLSearchParams());
+  }, [updateUrl]);
+
   return {
     getFilterValue,
     handleParamSet,
@@ -234,6 +245,7 @@ export const useRouteParam = (defaultParams?: DefaultParam[]) => {
     handleParamToggle,
     hasParam,
     clearParam,
+    clearAllParams,
     updateUrl,
   };
 };

@@ -20,10 +20,10 @@ export default function Hero() {
       />
       <FadeUpText
         delay={0.3}
-        className="relative z-10 font-inter text-xs uppercase sm:text-sm"
-        text={`The industry calendar for Africa’s key cities.`}
+        className="relative z-10 mt-8 ml-auto w-fit text-right font-apris text-lg uppercase sm:text-xl"
+        text={`The industry calendar for\nAfrica’s key cities.`}
       />
-      <div className="relative z-10 mt-12 flex flex-wrap items-center">
+      <div className="relative z-10 mt-4 flex max-w-[500px] flex-wrap items-center">
         {INDUSTRIES.map((item) => (
           <span
             className="group flex items-center text-xs uppercase"
@@ -34,7 +34,7 @@ export default function Hero() {
           </span>
         ))}
       </div>
-      <div className="relative z-10 mt-8 flex w-full flex-col items-center gap-4 sm:w-fit sm:flex-row">
+      <div className="relative z-10 mt-4 flex w-full flex-col items-center gap-4 sm:w-fit sm:flex-row">
         <Suspense>
           <ExploreEvent />
         </Suspense>
@@ -48,7 +48,7 @@ export default function Hero() {
       <PixelBlast
         variant="square"
         pixelSize={6}
-        color="#EBC9AC"
+        color="#EDC09C"
         patternScale={2}
         patternDensity={1.1}
         pixelSizeJitter={0}

@@ -6,7 +6,6 @@ import Logo from "@/components/header/logo";
 import Button from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-
 interface Props {
   className?: string;
   isLight?: boolean;
@@ -25,11 +24,7 @@ export default function Header({ className, isLight }: Props) {
         isLight={isLight}
         wrapperClassName="justify-self-center border-black/20"
       />
-      <Button
-        variant="flat"
-        size="fit"
-        className={cn("hover:text-none text-sm sm:text-sm")}
-      >
+      <Button variant="flat" size="fit">
         <HoverText text="Log in" />
       </Button>
       <DrawHorizontalLine className="absolute bottom-0 left-0" />

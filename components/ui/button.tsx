@@ -122,7 +122,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {bubbleContent && (
           <div
             className={cn(
-              "absolute -top-2 -right-2 z-40 flex h-5 min-w-5 animate-jump-in items-center justify-center rounded-full border border-white bg-red-500 text-xs font-bold text-white",
+              "absolute -top-2 -right-2 z-40 flex h-5 min-w-5 animate-jump-in items-center justify-center rounded-full border border-white bg-dark-gray text-xs font-bold text-white",
               bubbleClassName,
             )}
           >

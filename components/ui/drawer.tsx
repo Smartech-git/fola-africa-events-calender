@@ -1,6 +1,11 @@
 "use client";
 
-import { createContext, useContext, ComponentProps } from "react";
+import {
+  createContext,
+  useContext,
+  type ComponentProps,
+  type ComponentType,
+} from "react";
 
 import {
   Drawer as HeroDrawer,
@@ -35,9 +40,26 @@ const Drawer = {
     );
   },
 
-  Trigger: function DrawerTrigger(props: ButtonProps) {
+  Trigger: function DrawerTrigger({
+    button: CustomButton,
+    ...props
+  }: ButtonProps & {
+    button?: ComponentType<ButtonProps & { onOpen: () => void }>;
+  }) {
     const { onOpen } = useDrawer();
-    return <Button onPress={onOpen} {...props} />;
+    if (CustomButton) {
+      return <CustomButton {...props} onOpen={onOpen} />;
+    }
+
+    return (
+      <Button
+        {...props}
+        onPress={(event) => {
+          props.onPress?.(event);
+          onOpen();
+        }}
+      />
+    );
   },
 
   Content: function DrawerContent({
@@ -45,26 +67,25 @@ const Drawer = {
     className,
     ...drawerProps
   }: {
-    children: (
-      onClose: () => void,
-    ) => React.ReactNode | ((onClose: () => void) => React.ReactNode);
-  } & Omit<ComponentProps<typeof HeroDrawer>, "isOpen" | "onOpenChange">) {
+    children: React.ReactNode | ((onClose: () => void) => React.ReactNode);
+  } & Omit<
+    ComponentProps<typeof HeroDrawer>,
+    "children" | "isOpen" | "onOpenChange"
+  >) {
     const { isOpen, onOpenChange, onClose } = useDrawer();
-
-    const motionProps = {
-      initial: { opacity: 0, y: 0, scale: 1.02 },
-      animate: { opacity: 1, y: 0, scale: 1 },
-      exit: { opacity: 0, y: 0, scale: 1.02 },
-    };
 
     return (
       <HeroDrawer
-        size="full"
+        size="sm"
         hideCloseButton={true}
-        motionProps={motionProps}
-        className={cn("max-w-125 rounded-none", className)}
+        // motionProps={motionProps}
+        className={cn("w-full rounded-none", className)}
         isOpen={isOpen}
-        classNames={{ backdrop: ["z-99"], wrapper: ["z-99"] }}
+        placement="bottom"
+        classNames={{
+          backdrop: ["z-99 bg-transparent!"],
+          wrapper: ["z-99"],
+        }}
         onOpenChange={onOpenChange}
         {...drawerProps}
       >

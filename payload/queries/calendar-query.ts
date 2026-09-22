@@ -222,15 +222,25 @@ export async function queryEventsByCity(
   return publicPage(result, data);
 }
 
-export async function querySeasonsByCity(
+export async function queryEventsHeader(
   payload: Payload,
   params: URLSearchParams,
 ) {
-  const paging = pagination(params);
   const city = await findCity(payload, params);
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: city.timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const part = (type: string) =>
+    parts.find((entry) => entry.type === type)!.value;
+  const today = `${part("year")}-${part("month")}-${part("day")}`;
+  const startOfToday = dayBoundary(today, city.timezone);
   const result = await payload.find({
     collection: "seasons",
-    ...paging,
+    pagination: false,
+    limit: 0,
     depth: 0,
     sort: ["startDate", "id"],
     where: {
@@ -238,7 +248,7 @@ export async function querySeasonsByCity(
         { city: { equals: city.id } },
         { isPublished: { equals: true } },
         { isDemo: { not_equals: true } },
-        { startDate: { exists: true } },
+        { startDate: { greater_than_equal: startOfToday } },
         { endDate: { exists: true } },
       ],
     },
@@ -254,7 +264,7 @@ export async function querySeasonsByCity(
       status: true,
     },
   });
-  const data = result.docs.map(
+  const seasons = result.docs.map(
     ({ id, name, slug, startDate, endDate, description, status }) => ({
       id,
       name,
@@ -265,5 +275,12 @@ export async function querySeasonsByCity(
       status,
     }),
   );
-  return publicPage(result, data);
+  return {
+    city: {
+      name: city.name,
+      timezone: city.timezone,
+      timezoneLabel: city.timezoneLabel,
+    },
+    seasons,
+  };
 }

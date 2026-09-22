@@ -1,6 +1,6 @@
 import { APIError, type CollectionConfig } from "payload";
 
-import { isStaff, noAccess } from "@/payload/access";
+import { adminField, isStaff, noAccess, roleOf } from "@/payload/access";
 
 export const eventReviews: CollectionConfig = {
   slug: "event-reviews",
@@ -15,7 +15,7 @@ export const eventReviews: CollectionConfig = {
       "createdAt",
     ],
     description:
-      "AI findings and the original listing are retained alongside the human decision. Pending AI reviews need the review worker integration.",
+      "AI findings and the original listing are retained alongside the human decision. Administrators can update AI status or record a manual decision without AI review.",
   },
   access: {
     create: noAccess,
@@ -39,7 +39,10 @@ export const eventReviews: CollectionConfig = {
               "A staff member must record the recommendation decision.",
               403,
             );
-          if ((data.aiStatus || originalDoc?.aiStatus) !== "completed")
+          if (
+            roleOf(req.user) !== "admin" &&
+            (data.aiStatus || originalDoc?.aiStatus) !== "completed"
+          )
             throw new APIError(
               "Complete the AI review before recording a human decision.",
               400,
@@ -78,8 +81,11 @@ export const eventReviews: CollectionConfig = {
       required: true,
       defaultValue: "pending",
       options: ["pending", "processing", "completed", "failed"],
-      access: { update: () => false },
-      admin: { readOnly: true },
+      access: { update: adminField },
+      admin: {
+        description:
+          "Administrators can update this status manually. Manual event approval does not require marking AI review as completed.",
+      },
     },
     {
       name: "promptVersion",

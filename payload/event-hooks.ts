@@ -86,7 +86,8 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
       400,
     );
   }
-  const approver = ["admin", "approver"].includes(roleOf(req.user) || "");
+  const administrator = roleOf(req.user) === "admin";
+  const approver = administrator || roleOf(req.user) === "approver";
 
   // Content edits invalidate approval and require a new review, including edits by an approver.
   if (changed) {
@@ -104,7 +105,7 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
       "Demo events must remain unpublished and submitted.",
       400,
     );
-  if (!originalDoc && nextStatus !== "submitted")
+  if (!originalDoc && nextStatus !== "submitted" && !administrator)
     throw new APIError(
       "New events must enter the review queue as Submitted.",
       400,
@@ -115,25 +116,32 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
         "A FOLA approver must make publication decisions.",
         403,
       );
-    if (nextStatus === "approved") {
-      const reviews = await req.payload.find({
-        collection: "event-reviews",
-        where: { event: { equals: originalDoc.id } },
-        sort: "-createdAt",
-        limit: 1,
-        depth: 0,
-        req,
-      });
-      const review = reviews.docs[0];
-      if (
-        !review ||
-        review.aiStatus !== "completed" ||
-        !["accepted", "amended"].includes(review.humanDecision || "")
-      )
-        throw new APIError(
-          "Complete the AI review and human recommendation before approval.",
-          400,
-        );
+    if (
+      nextStatus === "approved" ||
+      (administrator &&
+        nextStatus === "published" &&
+        originalDoc?.status !== "approved")
+    ) {
+      if (!administrator) {
+        const reviews = await req.payload.find({
+          collection: "event-reviews",
+          where: { event: { equals: originalDoc.id } },
+          sort: "-createdAt",
+          limit: 1,
+          depth: 0,
+          req,
+        });
+        const review = reviews.docs[0];
+        if (
+          !review ||
+          review.aiStatus !== "completed" ||
+          !["accepted", "amended"].includes(review.humanDecision || "")
+        )
+          throw new APIError(
+            "Complete the AI review and human recommendation before approval.",
+            400,
+          );
+      }
       if (PRIVATE_ACCESS.includes(event.access) && !event.organiserConfirmed)
         throw new APIError(
           "Confirm private listings directly with the organiser before approval.",
@@ -141,14 +149,16 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
         );
       data.approvedBy = req.user!.id;
       data.approvedAt = new Date().toISOString();
-    } else if (
+    }
+    if (
       nextStatus === "published" &&
-      originalDoc.status !== "approved"
+      !administrator &&
+      originalDoc?.status !== "approved"
     ) {
       throw new APIError("Only an approved event can be published.", 400);
     } else if (
       ["cancelled", "postponed"].includes(nextStatus) &&
-      !originalDoc.publishedAt
+      !originalDoc?.publishedAt
     ) {
       throw new APIError(
         "Only a previously published event can be cancelled or postponed.",
@@ -156,7 +166,7 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
       );
     }
     if (nextStatus === "published")
-      data.publishedAt = originalDoc.publishedAt || new Date().toISOString();
+      data.publishedAt = originalDoc?.publishedAt || new Date().toISOString();
   }
   if (
     !changed &&
@@ -187,6 +197,8 @@ export const queueEventReview: CollectionAfterChangeHook = async ({
   operation,
   req,
 }) => {
+  // Administrator entries follow the manual approval path without an AI job.
+  if (roleOf(req.user) === "admin") return doc;
   const changed =
     operation === "create" ||
     editorialFields.some(

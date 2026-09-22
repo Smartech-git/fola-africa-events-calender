@@ -25,7 +25,7 @@ export const events: CollectionConfig = {
       "isDemo",
     ],
     description:
-      "All entries start Submitted. Complete review, approve, then publish in separate saves. Content changes require reapproval.",
+      "Administrators can create, approve and publish events without AI review. Other staff must complete AI review and human approval before publication. Content changes require reapproval.",
   },
   // Raw records and counts stay private. Public callers use the whitelisted calendar projection.
   access: {

@@ -9,7 +9,7 @@ export default function DrawHorizontalLine({ className }: Props) {
   return (
     <div
       className={cn(
-        "h-px w-px flex-none animate-grow-width bg-black/20",
+        "pointer-events-none h-px w-px flex-none animate-grow-width bg-light-gray",
         className,
       )}
     />
