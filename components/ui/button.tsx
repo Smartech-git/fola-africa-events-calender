@@ -11,7 +11,7 @@ import { LoaderCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const button = cva(
-  "group relative flex w-fit flex-none cursor-pointer items-center justify-center gap-2 overflow-hidden font-inter text-sm font-medium text-nowrap whitespace-nowrap uppercase transition-all outline-none hover:opacity-100 data-[pressed=true]:scale-[0.97]",
+  "group relative flex w-fit flex-none cursor-pointer items-center justify-center gap-1 overflow-hidden font-inter text-xs font-medium text-nowrap whitespace-nowrap uppercase transition-all outline-none hover:opacity-100 data-[pressed=true]:scale-[0.97]",
   {
     variants: {
       variant: {
@@ -19,7 +19,7 @@ const button = cva(
           "border-none bg-dark-gray text-primary-light hover:bg-dark-gray data-[disabled=true]:border-1.5 data-[disabled=true]:border-none data-[disabled=true]:bg-gray-100! data-[disabled=true]:bg-none! data-[disabled=true]:text-gray-500 data-[disabled=true]:opacity-100!",
         bordered: "border border-primary bg-transparent text-dark-gray",
         flat: "rounded-none! bg-transparent text-dark-gray hover:text-primary",
-        link: "rounded-none! text-dark-gray underline-offset-2 hover:underline",
+        link: "rounded-none! hover:text-primary text-dark-gray underline-offset-2 hover:underline",
         light: "text-black",
       },
       size: {

@@ -18,8 +18,11 @@ export async function requestCalendarPage<T>(
   const separator = endpoint.includes("?") ? "&" : "?";
   const response = await request<CalendarPage<T> & ErrorResponse>({
     endpoint: endpoint + separator + params.toString(),
-    options: { method: "GET", fetchOptions: { cache: "no-store" } },
+    options: { method: "GET" },
   });
+
+  console.log(response, endpoint + separator + params.toString());
+  
   if (response && "success" in response) {
     throw new Error(
       typeof response.message === "string"

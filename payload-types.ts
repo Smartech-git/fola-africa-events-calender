@@ -276,7 +276,7 @@ export interface Season {
   createdAt: string;
 }
 /**
- * All entries start Submitted. Complete review, approve, then publish in separate saves. Content changes require reapproval.
+ * Administrators can create, approve and publish events without AI review. Other staff must complete AI review and human approval before publication. Content changes require reapproval.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
@@ -370,7 +370,7 @@ export interface Event {
   createdAt: string;
 }
 /**
- * AI findings and the original listing are retained alongside the human decision. Pending AI reviews need the review worker integration.
+ * AI findings and the original listing are retained alongside the human decision. Administrators can update AI status or record a manual decision without AI review.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "event-reviews".
@@ -387,6 +387,9 @@ export interface EventReview {
     | number
     | boolean
     | null;
+  /**
+   * Administrators can update this status manually. Manual event approval does not require marking AI review as completed.
+   */
   aiStatus: 'pending' | 'processing' | 'completed' | 'failed';
   promptVersion?: string | null;
   promptSnapshot?: string | null;

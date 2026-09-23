@@ -35,7 +35,7 @@ export default function FadeUpText({
   as,
   className,
   inView = true,
-  once = true,
+  once = false,
   amount = 0.6,
   viewportRef,
   lineStagger,

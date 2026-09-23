@@ -3,13 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useLenis } from "lenis/react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import FadeUpText from "@/components/animations/fade-up-text";
+import HoverText from "@/components/animations/hover-text";
 import EventLayout from "@/components/contents/events/event-layout";
 import EventListCard from "@/components/contents/events/event-list-card";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
-import { EVENTS_LAYOUT_KEY, FILTER_KEYS } from "@/constants/filters";
 import { useRouteParam } from "@/hooks/use-route-param";
 import { shareLink } from "@/lib/events/event-actions";
 import {
@@ -17,7 +17,6 @@ import {
   formatDay,
   getListQuery,
   groupEventsByDay,
-  shiftDate,
 } from "@/lib/events/event-list";
 import { getEventList } from "@/requests/events/get-event-list";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
@@ -52,12 +51,11 @@ export default function EventList({
   const scrolledHash = useRef(false);
   // Uses the LenisProvider already wrapping the frontend page.
   const lenis = useLenis();
-  const { handleParamSet, clearAllParams } = useRouteParam();
+  const { clearAllParams } = useRouteParam();
   const days = useMemo(
     () => groupEventsByDay(events, timezone, query.range),
     [events, timezone, query.range],
   );
-  const activeDate = query.range.from ?? today;
 
   useEffect(() => {
     mounted.current = true;
@@ -93,56 +91,13 @@ export default function EventList({
     }
   };
 
-  const navigate = (date: string) => {
-    handleParamSet({
-      [EVENTS_LAYOUT_KEY]: "list",
-      [FILTER_KEYS.date]: date,
-      [FILTER_KEYS.dateFrom]: undefined,
-      [FILTER_KEYS.dateTo]: undefined,
-      [FILTER_KEYS.page]: undefined,
-    });
-    if (container.current)
-      lenis?.scrollTo(container.current, { offset: -50, immediate: true });
-  };
-
   return (
     <div ref={container}>
-      <EventLayout>
-        <div
-          role="group"
-          aria-label="Date navigation"
-          className="flex flex-wrap gap-4"
-        >
-          <Button
-            variant="flat"
-            size="fit"
-            className="min-h-11 text-xs"
-            aria-label="Previous day"
-            onPress={() => navigate(shiftDate(activeDate, -1))}
-            startContent={<ChevronLeft size={16} aria-hidden="true" />}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="flat"
-            size="fit"
-            className="min-h-11 text-xs"
-            onPress={() => navigate(today)}
-          >
-            Today
-          </Button>
-          <Button
-            variant="flat"
-            size="fit"
-            className="min-h-11 text-xs"
-            aria-label="Next day"
-            onPress={() => navigate(shiftDate(activeDate, 1))}
-            endContent={<ChevronRight size={16} aria-hidden="true" />}
-          >
-            Next
-          </Button>
-        </div>
-      </EventLayout>
+      <EventLayout
+        date={query.range.from}
+        today={today}
+        scrollTarget={container}
+      />
 
       <SectionWrapper
         className="pt-0 sm:pt-0"
@@ -150,13 +105,13 @@ export default function EventList({
       >
         {days.map((day) => (
           <section key={day.date} aria-labelledby={`day-${day.date}`}>
-            <header className="sticky top-header z-30 bg-primary-light pt-8 pb-2">
+            <header className="sticky top-header z-30 bg-primary-light pt-4 pb-2">
               <h2
                 id={`day-${day.date}`}
-                className="font-inter text-4xl leading-tight font-light tracking-tight uppercase sm:text-[64px]"
+                className="font-inter text-2xl leading-tight font-light tracking-tight uppercase sm:text-4xl"
               >
                 <time dateTime={day.date}>
-                  {formatDay(day.date, "dd MMMM")}
+                  <FadeUpText text={formatDay(day.date, "dd MMMM")} />
                 </time>
               </h2>
               <div className="flex flex-wrap items-center justify-between gap-x-4">
@@ -166,7 +121,7 @@ export default function EventList({
                 <Button
                   variant="flat"
                   size="fit"
-                  className="min-h-11 text-xs focus-visible:outline-2 focus-visible:outline-primary"
+                  className="text-xs focus-visible:outline-2 focus-visible:outline-primary"
                   aria-label={`Share events on ${formatDay(day.date, "d MMMM yyyy")}`}
                   onPress={() => {
                     void shareLink(
@@ -175,7 +130,7 @@ export default function EventList({
                     );
                   }}
                 >
-                  Share day
+                  <HoverText text="Share day" />
                 </Button>
               </div>
             </header>

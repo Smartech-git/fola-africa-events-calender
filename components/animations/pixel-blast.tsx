@@ -28,6 +28,7 @@ interface ReinitConfig {
   antialias: boolean;
   liquid: boolean;
   noiseAmount: number;
+  interactionTarget: HTMLElement | null;
 }
 
 type PixelBlastProps = {
@@ -36,6 +37,7 @@ type PixelBlastProps = {
   color?: string;
   className?: string;
   style?: React.CSSProperties;
+  interactionRef?: React.RefObject<HTMLElement | null>;
   antialias?: boolean;
   patternScale?: number;
   patternDensity?: number;
@@ -358,6 +360,7 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
   color = '#B497CF',
   className,
   style,
+  interactionRef,
   antialias = true,
   patternScale = 2,
   patternDensity = 1,
@@ -418,8 +421,8 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
     const container = containerRef.current;
     if (!container) return;
     speedRef.current = speed;
-    const needsReinitKeys: (keyof ReinitConfig)[] = ['antialias', 'liquid', 'noiseAmount'];
-    const cfg: ReinitConfig = { antialias, liquid, noiseAmount };
+    const needsReinitKeys: (keyof ReinitConfig)[] = ['antialias', 'liquid', 'noiseAmount', 'interactionTarget'];
+    const cfg: ReinitConfig = { antialias, liquid, noiseAmount, interactionTarget: interactionRef?.current ?? null };
     let mustReinit = false;
     if (!threeRef.current) mustReinit = true;
     else if (prevConfigRef.current) {
@@ -570,10 +573,12 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
         const { fx, fy, w, h } = mapToPixels(e);
         touch.addTouch({ x: fx / w, y: fy / h });
       };
-      renderer.domElement.addEventListener('pointerdown', onPointerDown, {
+      // A foreground container can drive the effect without the canvas blocking its controls.
+      const interactionTarget = cfg.interactionTarget ?? renderer.domElement;
+      interactionTarget.addEventListener('pointerdown', onPointerDown, {
         passive: true
       });
-      renderer.domElement.addEventListener('pointermove', onPointerMove, {
+      interactionTarget.addEventListener('pointermove', onPointerMove, {
         passive: true
       });
       let raf = 0;
@@ -625,8 +630,8 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
           disposed = true;
           cancelAnimationFrame(raf);
           ro.disconnect();
-          renderer.domElement.removeEventListener('pointerdown', onPointerDown);
-          renderer.domElement.removeEventListener('pointermove', onPointerMove);
+          interactionTarget.removeEventListener('pointerdown', onPointerDown);
+          interactionTarget.removeEventListener('pointermove', onPointerMove);
           quadGeom.dispose();
           material.dispose();
           composer?.dispose();
@@ -662,6 +667,7 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
     }
     prevConfigRef.current = cfg;
   }, [
+    interactionRef,
     antialias,
     liquid,
     noiseAmount,

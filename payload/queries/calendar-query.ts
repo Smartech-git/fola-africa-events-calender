@@ -152,7 +152,7 @@ export function publicPage<T, U>(result: PaginatedDocs<T>, data: U[]) {
   };
 }
 
-export async function queryEventsByCity(
+export async function  queryEventsByCity(
   payload: Payload,
   params: URLSearchParams,
 ) {
@@ -168,6 +168,7 @@ export async function queryEventsByCity(
     ACCESS_OPTIONS.map((item) => item.value),
   );
   const city = await findCity(payload, params);
+  
   const { start, end } = dateRange(params, city.timezone);
   const filters: Where[] = [
     { city: { equals: city.id } },
@@ -206,6 +207,8 @@ export async function queryEventsByCity(
         { startAt: { greater_than_equal: start } },
       ],
     });
+
+  console.log("filters", filters)
   const result = await payload.find({
     collection: "events",
     where: { and: filters },
@@ -219,6 +222,8 @@ export async function queryEventsByCity(
     const projected = toPublicEvent(event);
     return projected ? [projected] : [];
   });
+
+  console.log("Data", data)
   return publicPage(result, data);
 }
 
