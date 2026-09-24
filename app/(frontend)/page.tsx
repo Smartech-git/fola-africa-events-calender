@@ -31,7 +31,7 @@ export default async function Home() {
           <div className="flex w-full flex-col items-end gap-12 md:w-60 md:shrink-0">
             <FadeUpText
               text={"Put your next event\non Africa’s\ncalendar."}
-              className="text-right text-sm uppercase"
+              className="text-right sm:text-sm text-xs uppercase"
             />
             <Button size="sm" className="w-full md:max-w-fit">
               <HoverText text="Submit an event" />

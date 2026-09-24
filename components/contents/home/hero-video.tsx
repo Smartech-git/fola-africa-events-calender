@@ -55,7 +55,7 @@ export default function HeroVideo() {
           grayscale={false}
           duration={1.1}
           stagger={0.09}
-          className="absolute z-10 w-auto text-4xl font-medium tracking-tight text-balance uppercase sm:text-7xl lg:text-9xl"
+          className="absolute z-10 w-auto text-6xl font-medium tracking-tight text-balance uppercase sm:text-7xl lg:text-9xl"
         />
         <Button
           onClick={() => setMuted((prev) => !prev)}

@@ -52,13 +52,13 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
         />
         <FadeUpText
           text={"The people. The places.\nThe moments that move us."}
-          className="text-right text-xs uppercase"
+          className="text-right max-sm:ml-auto text-xs uppercase"
         />
       </div>
 
       <div className="grid items-start gap-12 md:grid-cols-[1.592fr_1fr] lg:gap-12">
         <article className="flex min-w-0 flex-col items-start gap-4">
-          <div className="relative aspect-[796/508] w-full overflow-hidden bg-secondary">
+          <div className="relative aspect-796/508 w-full overflow-hidden bg-secondary">
             <Image
               src="/assets/images/home/01-technology.png"
               alt="Panel discussions at the Africa Technology Expo"
@@ -119,11 +119,11 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           />
           <FadeUpText
             text={"From first set to last dance.\nFind your next night out."}
-            className="leading-relaxed uppercase text-xs"
+            className="leading-relaxed max-sm:text-right max-sm:ml-auto uppercase text-xs"
           />
           <ExploreIndustry industry="music" citySlug={citySlug} />
         </div>
-        <div className="order-1 aspect-[820/508] w-full overflow-hidden bg-secondary md:order-2">
+        <div className="order-1 aspect-820/508 w-full overflow-hidden bg-secondary md:order-2">
           <video
             autoPlay
             muted

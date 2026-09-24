@@ -12,7 +12,7 @@ export default function MarqueeText({ text, className }: MarqueeTextProps) {
       <span className="sr-only">{text}</span>
       <div
         aria-hidden="true"
-        className="flex w-max shrink-0 animate-marquee whitespace-nowrap will-change-transform motion-reduce:animate-none"
+        className="flex w-max shrink-0 animate-marquee whitespace-nowrap will-change-transform"
       >
         {[0, 1].map((copy) => (
           <div
