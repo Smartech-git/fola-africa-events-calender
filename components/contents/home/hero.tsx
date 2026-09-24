@@ -23,7 +23,7 @@ export default function Hero() {
         className="relative z-10 mt-8 ml-auto w-fit text-right font-apris text-lg uppercase sm:text-xl"
         text={`The industry calendar for\nAfrica’s key cities.`}
       />
-      <div className="relative z-10 mt-4 flex max-w-[500px] flex-wrap items-center">
+      <div className="relative z-10 mt-4 flex max-w-125 flex-wrap items-center">
         {INDUSTRIES.map((item) => (
           <span
             className="group flex items-center text-xs uppercase"

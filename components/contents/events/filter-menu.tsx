@@ -338,6 +338,7 @@ function FilterOptions({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
         <Button
           type="button"
+          size="sm"
           onPress={applyFilters}
           disabled={!selectedCity || invalidRange}
           className={cn("w-full sm:w-fit", focusStyle)}
@@ -346,6 +347,7 @@ function FilterOptions({
         </Button>
         <Button
           variant="bordered"
+          size="sm"
           type="button"
           onPress={clearFilters}
           className={cn("w-full sm:w-fit", focusStyle)}

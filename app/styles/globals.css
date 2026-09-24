@@ -65,8 +65,10 @@
 
   --animate-loading-screen-counter: loadingScreenCounter 3500ms ease-in-out
     1000ms forwards;
+  --animate-marquee: marquee 60s linear infinite;
   --animate-marquee-image-zoom: marqueeImageZoomPulse 30s ease infinite;
   --animate-fade-in: fadeIn 450ms ease forwards;
+
 
   @keyframes exitToTop {
     0% {
@@ -109,13 +111,22 @@
       width: 100%;
     }
   }
-  
+
   @keyframes fadeIn {
     from {
        opacity: 0;
     }
     to {
        opacity: 100%;
+    }
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
     }
   }
 

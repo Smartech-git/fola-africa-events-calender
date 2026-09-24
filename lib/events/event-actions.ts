@@ -39,7 +39,7 @@ export function downloadEventCalendar(
   const objectUrl = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = objectUrl;
-  link.download = `fola-event-${event.id}.ics`;
+  link.download = `${event.title}-${event.id}.ics`;
   document.body.appendChild(link);
   link.click();
   link.remove();

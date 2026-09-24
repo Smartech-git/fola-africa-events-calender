@@ -14,7 +14,7 @@ export default function ExploreEvent() {
       className="w-fit max-sm:w-full"
       href={`/events/${getFilterValue(CITIES_ID_KEY) ?? "lagos"}`}
     >
-      <Button className="max-sm:w-full!">
+      <Button size="sm" className="max-sm:w-full!">
         <HoverText text="Explore events" />
       </Button>
     </Link>

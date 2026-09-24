@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Dot } from "lucide-react";
 
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
@@ -77,21 +77,30 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
       onPointerLeave={() => setIsHovered(false)}
       onPointerCancel={() => setIsHovered(false)}
     >
-      <h3
+      <FadeUpText
+        as="h3"
         id={`${anchor}-title`}
-        className="relative z-10 font-apris text-xl leading-tight break-words uppercase sm:text-3xl"
-      >
-        <FadeUpText delay={0.3} text={event.title} />
-      </h3>
+        delay={0.3}
+        className="relative z-10 font-medium font-apris text-xl leading-tight wrap-break-word text-primary uppercase sm:text-3xl"
+        text={event.title}
+      />
       <div className="relative z-10 mt-1 space-y-1 text-sm leading-relaxed uppercase sm:text-[15px]">
         <p>
           <time dateTime={event.startAt}>{eventTime(event, timezone)}</time>
         </p>
         {event.eventType && (
-          <p>
-            {[type ?? event.eventType, industry]
-              .filter(Boolean)
-              .join(" \u00b7 ")}
+          <p className="flex flex-wrap items-center">
+            <span>{type ?? event.eventType}</span>
+            {industry && (
+              <>
+                <Dot
+                  size={24}
+                  className="shrink-0 text-primary"
+                  aria-hidden="true"
+                />
+                <span>{industry}</span>
+              </>
+            )}
           </p>
         )}
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
@@ -140,8 +149,14 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
           <p className="font-medium">Cancelled</p>
         )}
         {event.status === "postponed" && (
-          <p className="font-medium">
-            Postponed \u00b7 New date to be confirmed
+          <p className="flex flex-wrap items-center font-medium">
+            <span>Postponed</span>
+            <Dot
+              size={24}
+              className="shrink-0 text-primary"
+              aria-hidden="true"
+            />
+            <span>New date to be confirmed</span>
           </p>
         )}
       </div>
@@ -210,7 +225,7 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
               interactionRef={cardRef}
               variant="square"
               pixelSize={6}
-              color="#EFE4DB"
+              color="#F5D3B7"
               patternScale={2}
               patternDensity={0.8}
               pixelSizeJitter={0}

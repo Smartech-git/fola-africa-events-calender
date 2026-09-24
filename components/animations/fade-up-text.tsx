@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 gsap.registerPlugin(SplitText);
 
 interface FadeUpTextProps {
+  id?: string;
   /** String newlines and JSX <br /> elements create explicit line breaks. */
   text: ReactNode;
   as?: "p" | "div" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
@@ -31,6 +32,7 @@ interface FadeUpTextProps {
 }
 
 export default function FadeUpText({
+  id,
   text,
   as,
   className,
@@ -142,6 +144,7 @@ export default function FadeUpText({
 
   return (
     <Tag
+      id={id}
       ref={(element) => {
         textRef.current = element;
       }}

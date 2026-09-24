@@ -49,7 +49,6 @@ export default function EventList({
   const mounted = useRef(true);
   const container = useRef<HTMLDivElement>(null);
   const scrolledHash = useRef(false);
-  // Uses the LenisProvider already wrapping the frontend page.
   const lenis = useLenis();
   const { clearAllParams } = useRouteParam();
   const days = useMemo(
@@ -156,7 +155,7 @@ export default function EventList({
             <Button
               variant="link"
               size="fit"
-              className="min-h-11"
+              className=""
               onPress={clearAllParams}
             >
               Clear filters
@@ -165,7 +164,7 @@ export default function EventList({
         )}
         {error && (
           <div role="alert" className="space-y-3 py-8">
-            <p className="text-sm">{error}</p>
+            <p className="text-xs">{error}</p>
             <Button
               variant="bordered"
               onPress={
