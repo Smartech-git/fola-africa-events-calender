@@ -17,7 +17,7 @@ export default function Cities({ cities }: Props) {
       id="cities"
       role="region"
       aria-labelledby="cities-heading"
-      className="gap-10 bg-secondary py-12 sm:py-16 lg:flex-row lg:gap-12"
+      className="gap-10 bg-secondary py-12 sm:py-16 lg:flex-row lg:gap-18"
     >
       <div className="flex flex-col items-start gap-6 lg:w-[35%] lg:shrink-0">
         <FadeUpText
@@ -28,7 +28,7 @@ export default function Cities({ cities }: Props) {
           id="cities-heading"
           as="h2"
           text={"Find your city."}
-          className="font-apris text-6xl sm:max-w-60 font-light  uppercase sm:text-7xl lg:text-[108px]"
+          className="font-apris text-6xl sm:max-w-80 font-light  uppercase sm:text-7xl lg:text-[108px]"
         />
         <FadeUpText
           text={`${cities.totalDocs === 6 ? "Six cultural capitals." : "Cultural capitals across Africa."}\nOne connected continent.`}
