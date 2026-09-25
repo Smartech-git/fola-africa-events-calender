@@ -208,7 +208,6 @@ export async function  queryEventsByCity(
       ],
     });
 
-  console.log("filters", filters)
   const result = await payload.find({
     collection: "events",
     where: { and: filters },
@@ -223,7 +222,6 @@ export async function  queryEventsByCity(
     return projected ? [projected] : [];
   });
 
-  console.log("Data", data)
   return publicPage(result, data);
 }
 

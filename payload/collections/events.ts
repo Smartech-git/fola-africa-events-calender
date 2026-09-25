@@ -55,13 +55,13 @@ export const events: CollectionConfig = {
       index: true,
       admin: {
         description: "Enter with a timezone offset. Stored as UTC.",
-        date: { pickerAppearance: "dayAndTime", timeFormat: "HH:mm" },
+        date: { pickerAppearance: "dayAndTime", timeFormat: "h:mm a" },
       },
     },
     {
       name: "endAt",
       type: "date",
-      admin: { date: { pickerAppearance: "dayAndTime", timeFormat: "HH:mm" } },
+      admin: { date: { pickerAppearance: "dayAndTime", timeFormat: "h:mm a" } },
     },
     { name: "allDay", type: "checkbox", defaultValue: false },
     {

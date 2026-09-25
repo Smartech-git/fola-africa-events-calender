@@ -26,12 +26,12 @@ export default async function Home() {
             id="closing-heading"
             as="h2"
             text={"Make it\na date."}
-            className="font-apris text-7xl leading-[0.9] font-light tracking-tight uppercase md:text-8xl lg:text-[144px]"
+            className="font-apris text-7xl leading-[0.9] font-light uppercase md:text-8xl lg:text-[144px]"
           />
           <div className="flex w-full flex-col items-end gap-12 md:w-60 md:shrink-0">
             <FadeUpText
               text={"Put your next event\non Africa’s\ncalendar."}
-              className="text-right sm:text-sm text-xs uppercase"
+              className="text-right text-xs uppercase sm:text-sm"
             />
             <Button size="sm" className="w-full md:max-w-fit">
               <HoverText text="Submit an event" />

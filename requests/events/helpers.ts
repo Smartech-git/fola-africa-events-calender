@@ -20,8 +20,6 @@ export async function requestCalendarPage<T>(
     endpoint: endpoint + separator + params.toString(),
     options: { method: "GET" },
   });
-
-  console.log(response, endpoint + separator + params.toString());
   
   if (response && "success" in response) {
     throw new Error(

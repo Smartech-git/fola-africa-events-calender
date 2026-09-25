@@ -6,6 +6,7 @@ import { useLenis } from "lenis/react";
 
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
+import EventDateNavigation from "@/components/contents/events/event-date-navigation";
 import EventLayout from "@/components/contents/events/event-layout";
 import EventListCard from "@/components/contents/events/event-list-card";
 import SectionWrapper from "@/components/layout/section-wrapper";
@@ -93,10 +94,16 @@ export default function EventList({
   return (
     <div ref={container}>
       <EventLayout
-        date={query.range.from}
-        today={today}
-        scrollTarget={container}
-      />
+        view="list"
+        date={query.range.from ?? query.range.to ?? today}
+      >
+        <EventDateNavigation
+          view="list"
+          date={query.range.from ?? query.range.to}
+          today={today}
+          scrollTarget={container}
+        />
+      </EventLayout>
 
       <SectionWrapper
         className="pt-0 sm:pt-0"
@@ -107,7 +114,7 @@ export default function EventList({
             <header className="sticky top-header z-30 bg-primary-light pt-4 pb-2">
               <h2
                 id={`day-${day.date}`}
-                className="font-inter text-2xl leading-tight font-light tracking-tight uppercase sm:text-4xl"
+                className="font-inter text-2xl font-light uppercase sm:text-4xl"
               >
                 <time dateTime={day.date}>
                   <FadeUpText text={formatDay(day.date, "dd MMMM")} />
@@ -167,6 +174,7 @@ export default function EventList({
             <p className="text-xs">{error}</p>
             <Button
               variant="bordered"
+              size="sm"
               onPress={
                 invalidFilters
                   ? clearAllParams

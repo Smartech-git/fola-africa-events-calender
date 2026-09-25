@@ -28,11 +28,11 @@ export default function Cities({ cities }: Props) {
           id="cities-heading"
           as="h2"
           text={"Find your city."}
-          className="font-apris text-6xl sm:max-w-80 font-light  uppercase sm:text-7xl lg:text-[108px]"
+          className="font-apris text-6xl font-light uppercase sm:max-w-80 sm:text-7xl lg:text-[108px]"
         />
         <FadeUpText
           text={`${cities.totalDocs === 6 ? "Six cultural capitals." : "Cultural capitals across Africa."}\nOne connected continent.`}
-          className="text-xs w-full max-sm:text-right uppercase"
+          className="w-full text-xs uppercase max-sm:text-right"
         />
       </div>
 
@@ -46,7 +46,7 @@ export default function Cities({ cities }: Props) {
             >
               <HoverText
                 text={city.name}
-                className="font-apris text-3xl leading-tight font-light tracking-tight uppercase sm:text-5xl xl:text-6xl"
+                className="font-apris text-3xl font-light uppercase sm:text-5xl xl:text-6xl"
               />
               <span className="flex shrink-0 items-center gap-3 sm:gap-5">
                 <HoverText

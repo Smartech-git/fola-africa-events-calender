@@ -28,7 +28,7 @@ const button = cva(
         sm: "h-[40px] px-3 py-1.5",
         md: "h-[48px] px-6 py-2.5",
         lg: "h-[56px] px-6 py-2.5",
-        fit: "p-0 pb-0",
+        fit: "p-0 min-h-[32px] pb-0",
       },
       disabled: {
         false: null,

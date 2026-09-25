@@ -8,6 +8,10 @@
 - Use `@/...` for all project-owned imports and re-exports, including type-only and dynamic imports. Do not use `./...`, `../...`, or `@payload-config` in maintained source files; use `@/payload.config` for the Payload config.
 - Keep external package and Node built-in imports unchanged. Preserve imports in generated, tool-managed files (including Payload-generated app files and migrations). Filesystem paths and URLs are not module imports.
 
+# Icon conventions
+
+- Use `lucide-react` for all icons. Import icon components directly from `lucide-react`; do not use other icon libraries, custom SVG icons, or image assets for icons, including icons supplied by Figma designs.
+
 # API work
 
 - For future API work, do not add Markdown documentation files or tests unless the user explicitly requests them. Explain API usage in the response instead. Existing documentation and tests may remain; this preference does not request their deletion.

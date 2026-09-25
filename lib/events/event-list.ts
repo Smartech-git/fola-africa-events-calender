@@ -132,18 +132,20 @@ export function groupEventsByDay(
     .map(([date, entries]) => ({ date, events: entries }));
 }
 
+export function formatTime(instant: string, timezone: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: timezone,
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).format(new Date(instant));
+}
+
 export function eventTime(event: PublicEvent, timezone: string) {
   if (event.allDay) return "All day";
-  const time = (instant: string) =>
-    new Intl.DateTimeFormat("en-GB", {
-      timeZone: timezone,
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
-    }).format(new Date(instant));
-  const start = time(event.startAt);
+  const start = formatTime(event.startAt, timezone);
   if (!event.endAt) return start;
-  const end = time(event.endAt);
+  const end = formatTime(event.endAt, timezone);
   const startDate = cityDate(event.startAt, timezone);
   const endDate = cityDate(event.endAt, timezone);
   if (startDate !== endDate) {

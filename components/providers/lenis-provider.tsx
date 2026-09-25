@@ -35,7 +35,7 @@ export default function LenisProvider({
         allowNestedScroll: true,
       }}
       className={cn(
-        "relative scrollbar-thin scrollbar-none h-dvh w-full overflow-y-scroll *:min-h-dvh",
+        "relative scrollbar-thin overscroll-contain scrollbar-none h-dvh w-full overflow-y-scroll *:min-h-dvh",
         className,
       )}
     >
