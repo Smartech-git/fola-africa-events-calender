@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
-import Image from "next/image";
-
 import { motion, useInView, useReducedMotion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
@@ -38,6 +36,7 @@ export default function HoverMedia({
   interval = 4500,
 }: HoverMediaProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
   const inView = useInView(ref, { amount: 0.25 });
   const shouldLoad = useInView(ref, { once: true, margin: "100px" });
   const canHover = useSyncExternalStore(
@@ -78,6 +77,32 @@ export default function HoverMedia({
       : null;
   const visible = inView && selectedId != null;
 
+  useEffect(() => {
+    for (const item of items) {
+      const video = videoRefs.current[item.id];
+      if (!video) continue;
+      if (
+        visible &&
+        selectedId === item.id &&
+        !reduceMotion &&
+        loaded[item.id] === item.src
+      ) {
+        void video.play().catch(() => {
+          // Playback can be interrupted when the active control changes.
+        });
+      } else {
+        video.pause();
+      }
+    }
+  }, [items, loaded, reduceMotion, selectedId, visible]);
+
+  useEffect(() => {
+    const videos = videoRefs.current;
+    return () => {
+      Object.values(videos).forEach((video) => video?.pause());
+    };
+  }, []);
+
   return (
     <div
       ref={ref}
@@ -117,14 +142,18 @@ export default function HoverMedia({
               }}
               transition={{ duration: reduceMotion ? 0 : 0.4, ease: "easeOut" }}
             >
-              <Image
+              <video
+                ref={(video) => {
+                  videoRefs.current[item.id] = video;
+                }}
                 src={item.src}
-                alt=""
-                fill
-                unoptimized
-                sizes="128px"
-                className="object-cover"
-                onLoad={() =>
+                autoPlay={visible && selectedId === item.id && !reduceMotion}
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className="size-full object-cover"
+                onLoadedData={() =>
                   setLoaded((current) => ({ ...current, [item.id]: item.src }))
                 }
               />

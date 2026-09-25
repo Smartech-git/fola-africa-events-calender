@@ -1,6 +1,5 @@
 "use client";
 
-import DrawHorizontalLine from "@/components/animations/draw-horizontal-line";
 import HoverText from "@/components/animations/hover-text";
 import Logo from "@/components/header/logo";
 import Button from "@/components/ui/button";
@@ -27,7 +26,6 @@ export default function Header({ className, isLight }: Props) {
       <Button variant="flat" size="fit">
         <HoverText text="Log in" />
       </Button>
-      <DrawHorizontalLine className="absolute bottom-0 left-0" />
     </header>
   );
 }

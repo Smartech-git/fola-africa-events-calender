@@ -47,10 +47,10 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
   mediaType = "image",
   src = "",
   poster = "",
-  fillScale = 3,
+  fillScale = 2,
   parallax = 26,
   drift = 18,
-  brightness = 1,
+  brightness = 8,
   saturation = 1,
   grayscale = false,
   reveal = "rise",
@@ -353,7 +353,7 @@ const MaskedHeading: React.FC<MaskedHeadingProps> = ({
     <TagAny
       ref={rootRef}
       className={cn(
-        "relative m-0 w-full p-0 text-center text-[clamp(1.25rem,11.5vw,12.5rem)] leading-[1.06] font-bold tracking-[-0.03em] text-balance antialiased",
+        "relative m-0 w-full p-0 text-center text-[clamp(1.25rem,11.5vw,12.5rem)] leading-[1.06] font-bold tracking-[-0.03em]",
         className,
       )}
       style={{

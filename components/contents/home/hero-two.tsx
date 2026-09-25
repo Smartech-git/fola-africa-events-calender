@@ -13,8 +13,8 @@ import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
 
 const heroMedia = [
-  { id: "explore", src: "/assets/gifs/explore-event.gif" },
-  { id: "submit", src: "/assets/gifs/submit-event.gif" },
+  { id: "explore", src: "/assets/home/explore-event.mp4" },
+  { id: "submit", src: "/assets/home/submit-event.mp4" },
 ];
 
 export default function Hero() {
@@ -71,7 +71,7 @@ export default function Hero() {
             <HoverMedia
               items={heroMedia}
               activeId={hoveredMedia ?? focusedMedia}
-              className="sm:ml-8"
+              className="sm:ml-12 max-md:hidden"
             />
           </div>
           <FadeUpText
@@ -82,7 +82,7 @@ export default function Hero() {
         </div>
         <HeroVideo />
       </SectionWrapper>
-      <div className="py-8">
+      <div className="pt-12 pb-4">
         <ScrollVelocity
           texts={[
             "FASHION  ·  ART  ·  MUSIC  ·  DESIGN  ·  FILM & TELEVISION ",

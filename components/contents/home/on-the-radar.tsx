@@ -60,7 +60,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
         <article className="flex min-w-0 flex-col items-start gap-4">
           <div className="relative aspect-796/508 w-full overflow-hidden bg-secondary">
             <Image
-              src="/assets/images/home/01-technology.png"
+              src="/assets/home/01-technology.png"
               alt="Panel discussions at the Africa Technology Expo"
               fill
               sizes="(min-width: 768px) 55vw, 100vw"
@@ -74,7 +74,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           <FadeUpText
             as="h3"
             text={"The next\nbig idea."}
-            className="font-apris text-5xl leading-[0.95] font-light uppercase sm:text-6xl lg:text-[80px]"
+            className="font-apris text-5xl font-light uppercase sm:text-6xl lg:text-[80px]"
           />
           <ExploreIndustry industry="technology" citySlug={citySlug} />
         </article>
@@ -90,7 +90,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
               aria-label="Art and creative expression across Africa"
               className="size-full object-cover"
             >
-              <source src="/assets/images/home/02-arts.mp4" type="video/mp4" />
+              <source src="/assets/home/02-arts.mp4" type="video/mp4" />
             </video>
           </div>
           <FadeUpText
@@ -100,7 +100,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           <FadeUpText
             as="h3"
             text={"New ways\nof seeing."}
-            className="font-apris text-5xl leading-[0.97] font-light uppercase italic lg:text-6xl"
+            className="font-apris text-5xl uppercase lg:text-6xl"
           />
           <ExploreIndustry industry="art" citySlug={citySlug} />
         </article>
@@ -115,7 +115,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           <FadeUpText
             as="h3"
             text={"The city\ndoesn’t\nsleep."}
-            className="font-apris text-5xl leading-[0.95] font-light uppercase sm:text-6xl lg:text-[76px]"
+            className="font-apris text-5xl font-light uppercase sm:text-6xl lg:text-[76px]"
           />
           <FadeUpText
             text={"From first set to last dance.\nFind your next night out."}
@@ -133,7 +133,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
             aria-label="Live music and nightlife in Lagos"
             className="size-full object-cover"
           >
-            <source src="/assets/images/home/03-music.mp4" type="video/mp4" />
+            <source src="/assets/home/03-music.mp4" type="video/mp4" />
           </video>
         </div>
       </article>

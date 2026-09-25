@@ -18,7 +18,7 @@ export default function HeroVideo() {
   return (
     <div
       ref={containerRef}
-      className="relative mt-4 flex sm:aspect-video aspect-2/3 w-full justify-center overflow-hidden"
+      className="relative mt-4 flex aspect-2/3 w-full justify-center overflow-hidden sm:aspect-video"
     >
       <motion.div
         className="relative flex h-full items-center justify-center overflow-hidden bg-dark-gray"
@@ -37,25 +37,20 @@ export default function HeroVideo() {
           muted={muted}
           playsInline
           preload="metadata"
-          poster="/assets/images/home/hero-video-thumbnail.jpg"
+          poster="/assets/home/hero-video-thumbnail.jpg"
           className="size-full object-cover"
         >
-          <source src="/assets/videos/hero-video.mp4" type="video/mp4" />
+          <source src="/assets/home/hero-video.mp4" type="video/mp4" />
         </video>
         <MaskedHeading
           text="Be where it happens"
           mediaType="video"
-          src="/assets/videos/hero-video.mp4"
+          src="/assets/home/hero-video.mp4"
           poster="/assets/images/home/hero-video-thumbnail.jpg"
           parallax={26}
           trigger="view"
           drift={18}
-          brightness={1}
-          saturation={1}
-          grayscale={false}
-          duration={1.1}
-          stagger={0.09}
-          className="absolute z-10 w-auto text-6xl font-medium tracking-tight text-balance uppercase sm:text-7xl lg:text-9xl"
+          className="absolute z-10 w-auto text-6xl font-medium tracking-tight  uppercase sm:text-7xl lg:text-9xl"
         />
         <Button
           onClick={() => setMuted((prev) => !prev)}

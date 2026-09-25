@@ -297,8 +297,8 @@ const syncUniforms = (program: Program, props: RuntimeProps): void => {
 const WarpText = ({
   text = "Bend the moment",
   color = "#f8f5ff",
-  warpStrength = 0.08,
-  warpScale = 1.7,
+  warpStrength = 0,
+  warpScale = 1,
   speed = 0.55,
   pointerInfluence = 0.42,
   pointerStrength = 0.38,
