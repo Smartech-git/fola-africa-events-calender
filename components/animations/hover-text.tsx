@@ -37,9 +37,11 @@ export default function HoverText({
     const element = textRef.current;
     if (!container || !element) return;
 
-    // Include the surrounding control's padding and keyboard focus, if present.
+    // Use the nearest control or explicitly marked hover group as the trigger.
     const trigger =
-      container.closest<HTMLElement>("a, button, [role='button']") ?? container;
+      container.closest<HTMLElement>(
+        "a, button, [role='button'], [data-hover-text]",
+      ) ?? container;
     const media = gsap.matchMedia();
 
     media.add("(prefers-reduced-motion: no-preference)", () => {

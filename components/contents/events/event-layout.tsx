@@ -53,7 +53,7 @@ export default function EventLayout({ view, date, children }: Props) {
             variant="flat"
             size="fit"
             className={cn(
-              "border-b-2 border-transparent px-0 text-xs focus-visible:outline-2 focus-visible:outline-primary sm:px-0 sm:py-1",
+              "border-b-2 border-transparent min-h-8 px-0 text-xs focus-visible:outline-2 focus-visible:outline-primary sm:px-0 sm:py-1",
               item.value === view && "border-primary",
             )}
           >

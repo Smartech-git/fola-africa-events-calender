@@ -46,7 +46,7 @@ export default function Hero() {
           />
           <FadeUpText
             delay={0.3}
-            className="text-xxs w-fit uppercase max-sm:text-right sm:text-xs"
+            className="w-fit text-xxs uppercase max-sm:text-right sm:text-xs"
             text={`BROUGHT TO YOU BY FOLA LABS`}
           />
         </div>
@@ -61,22 +61,19 @@ export default function Hero() {
               </Suspense>
             </div>
             <div className="w-full sm:w-fit" {...mediaTrigger("submit")}>
-              <Button variant="link" size="sm" className="max-sm:w-full!">
-                <HoverText
-                  className="border-b border-inherit"
-                  text="Submit an event"
-                />
+              <Button variant="link" size="fit" className="max-sm:w-full!">
+                <HoverText text="Submit an event" />
               </Button>
             </div>
             <HoverMedia
               items={heroMedia}
               activeId={hoveredMedia ?? focusedMedia}
-              className="sm:ml-12 max-md:hidden"
+              className="max-md:hidden sm:ml-12"
             />
           </div>
           <FadeUpText
             delay={0.6}
-            className="sm:text-right max-sm:my-4 sm:text-xs text-xxs uppercase sm:max-w-60"
+            className="text-xxs uppercase max-sm:my-4 sm:max-w-60 sm:text-right sm:text-xs"
             text={` SIX CITIES. TEN INDUSTRIES. ONE PLACE TO BE IN THE KNOW.`}
           />
         </div>

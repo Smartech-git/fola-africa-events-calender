@@ -37,7 +37,6 @@ interface Props {
   date: string;
 }
 
-const utilityClass = "text-xs";
 const attendanceLabels: Record<string, string> = {
   tickets: "Buy tickets",
   rsvp: "RSVP",
@@ -84,7 +83,7 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
         className="relative z-10 font-apris text-xl font-medium wrap-break-word text-primary uppercase sm:text-3xl"
         text={event.title}
       />
-      <div className="relative z-10 mt-1 space-y-1 text-sm leading-relaxed uppercase sm:text-[15px]">
+      <div className="relative z-10 mt-1 space-y-1 text-sm leading-relaxed uppercase sm:text-base">
         <p>
           <time dateTime={event.startAt}>{eventTime(event, timezone)}</time>
         </p>
@@ -107,9 +106,8 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
           <p>{access}</p>
           {actionUrl && (
             <Button
-              variant="link"
+              variant="flat"
               size="fit"
-              className={utilityClass}
               aria-label={`${actionLabel} for ${event.title} (opens in a new tab)`}
               onPress={() => openExternal(actionUrl)}
               endContent={
@@ -166,7 +164,7 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
             <Button
               variant="link"
               size="fit"
-              className={utilityClass}
+              className="border-b border-dark-gray"
               aria-label={`Add ${event.title} to calendar`}
             >
               <HoverText text="Add to calendar" />
@@ -200,7 +198,7 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
         <Button
           variant="link"
           size="fit"
-          className={utilityClass}
+          className="border-b border-dark-gray"
           aria-label={`Share ${event.title}`}
           onPress={() => {
             void shareLink(event.title, path);

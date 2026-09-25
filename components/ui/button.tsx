@@ -19,7 +19,7 @@ const button = cva(
           "border-none bg-dark-gray text-primary-light hover:bg-dark-gray data-[disabled=true]:border-1.5 data-[disabled=true]:border-none data-[disabled=true]:bg-gray-100! data-[disabled=true]:bg-none! data-[disabled=true]:text-gray-500 data-[disabled=true]:opacity-100!",
         bordered: "border border-primary bg-transparent text-dark-gray",
         flat: "rounded-none! bg-transparent text-dark-gray hover:text-primary",
-        link: "rounded-none! hover:text-primary text-dark-gray underline-offset-2 hover:underline",
+        link: "rounded-none! border-b border-inherit hover:text-primary text-dark-gray underline-offset-2 hover:underline",
         light: "text-black",
       },
       size: {
@@ -28,7 +28,7 @@ const button = cva(
         sm: "h-[40px] px-3 py-1.5",
         md: "h-[48px] px-6 py-2.5",
         lg: "h-[56px] px-6 py-2.5",
-        fit: "p-0 min-h-[32px] pb-0",
+        fit: "p-0 min-h-fit pb-0",
       },
       disabled: {
         false: null,

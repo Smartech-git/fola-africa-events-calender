@@ -125,7 +125,7 @@ export default function EventList({
                   {formatDay(day.date, "EEEE \u00b7 yyyy")}
                 </p>
                 <Button
-                  variant="flat"
+                  variant="link"
                   size="fit"
                   className="text-xs focus-visible:outline-2 focus-visible:outline-primary"
                   aria-label={`Share events on ${formatDay(day.date, "d MMMM yyyy")}`}
