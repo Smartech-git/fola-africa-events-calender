@@ -94,7 +94,7 @@ const DatePicker = forwardRef<HTMLElement, DatePickerProps>(
             calendarProps?.classNames?.gridHeaderCell,
           ),
           cellButton: cn(
-            "rounded-none text-dark-gray data-[hover=true]:bg-secondary data-[selected=true]:bg-dark-gray data-[selected=true]:text-white data-[hover=true]:data-[selected=true]:bg-dark-gray data-[focus-visible=true]:outline-primary",
+            "rounded-none text-dark-gray data-[hover=true]:text-primary data-[hover=true]:bg-secondary data-[selected=true]:bg-dark-gray data-[selected=true]:text-white data-[hover=true]:data-[selected=true]:bg-dark-gray data-[focus-visible=true]:outline-primary",
             calendarProps?.classNames?.cellButton,
           ),
           prevButton: cn(

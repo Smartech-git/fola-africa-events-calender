@@ -8,6 +8,7 @@ import HoverText from "@/components/animations/hover-text";
 import Button from "@/components/ui/button";
 import { useRouteParam } from "@/hooks/use-route-param";
 import { shiftDate } from "@/lib/events/event-list";
+import { shiftMonth } from "@/lib/events/event-month";
 import { calendarDateParams, type CalendarView } from "@/lib/events/event-week";
 
 interface Props {
@@ -27,7 +28,11 @@ export default function EventDateNavigation({
   const lenis = useLenis();
   const activeDate = date ?? today;
   const step = view === "week" ? 7 : 1;
-  const unit = view === "week" ? "week" : "day";
+  const unit = view === "month" ? "month" : view === "week" ? "week" : "day";
+  const shift = (direction: number) =>
+    view === "month"
+      ? shiftMonth(activeDate, direction)
+      : shiftDate(activeDate, direction * step);
   const navigate = (target: string) => {
     handleParamSet(calendarDateParams(view, target));
     if (scrollTarget?.current) {
@@ -46,16 +51,16 @@ export default function EventDateNavigation({
       <Button
         variant="flat"
         size="fit"
-        className="text-xs border-b-2 border-b-transparent focus-visible:outline-2 focus-visible:outline-primary"
+        className="border-b-2 border-b-transparent text-xs focus-visible:outline-2 focus-visible:outline-primary"
         aria-label={`Previous ${unit}`}
-        onPress={() => navigate(shiftDate(activeDate, -step))}
+        onPress={() => navigate(shift(-1))}
       >
         <HoverText text="Previous" />
       </Button>
       <Button
         variant="flat"
         size="fit"
-        className="text-xs border-b-2 border-b-transparent focus-visible:outline-2 focus-visible:outline-primary"
+        className="border-b-2 border-b-transparent text-xs focus-visible:outline-2 focus-visible:outline-primary"
         onPress={() => navigate(today)}
       >
         <HoverText text="Today" />
@@ -63,9 +68,9 @@ export default function EventDateNavigation({
       <Button
         variant="flat"
         size="fit"
-        className="text-xs border-b-2 border-b-transparent focus-visible:outline-2 focus-visible:outline-primary"
+        className="border-b-2 border-b-transparent text-xs focus-visible:outline-2 focus-visible:outline-primary"
         aria-label={`Next ${unit}`}
-        onPress={() => navigate(shiftDate(activeDate, step))}
+        onPress={() => navigate(shift(1))}
       >
         <HoverText text="Next" />
       </Button>

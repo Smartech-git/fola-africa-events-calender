@@ -38,10 +38,11 @@ function calendarDates(event: PublicEvent, timezone: string) {
   const start = cityDate(event.startAt, timezone);
   const lastDay =
     event.endAt && Date.parse(event.endAt) > Date.parse(event.startAt)
-      ? cityDate(new Date(Date.parse(event.endAt) - 1), timezone)
+      ? cityDate(event.endAt, timezone)
       : start;
   return {
     start: start.replaceAll("-", ""),
+    // Calendar exports use an exclusive end date; include our final display day.
     end: shiftDate(lastDay, 1).replaceAll("-", ""),
   };
 }

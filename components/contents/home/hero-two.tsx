@@ -54,14 +54,14 @@ export default function Hero() {
       <MarqueeText text="AFRICA’S EVENTS CALENDAR" />
       <SectionWrapper className="py-0 sm:py-0">
         <div className="flex w-full flex-col items-start justify-between sm:flex-row">
-          <div className="relative flex w-full flex-col items-center gap-4 sm:w-fit sm:flex-row">
+          <div className="relative flex w-full flex-col items-center gap-x-4  gap-6 sm:w-fit sm:flex-row">
             <div className="w-full sm:w-fit" {...mediaTrigger("explore")}>
               <Suspense>
                 <ExploreEvent />
               </Suspense>
             </div>
-            <div className="w-full sm:w-fit" {...mediaTrigger("submit")}>
-              <Button variant="link" size="fit" className="max-sm:w-full!">
+            <div className="w-fit" {...mediaTrigger("submit")}>
+              <Button variant="link" size="fit">
                 <HoverText text="Submit an event" />
               </Button>
             </div>
@@ -73,7 +73,7 @@ export default function Hero() {
           </div>
           <FadeUpText
             delay={0.6}
-            className="text-xxs uppercase max-sm:my-4 sm:max-w-60 sm:text-right sm:text-xs"
+            className="text-xxs uppercase max-sm:mt-6 max-sm:mb-4 sm:max-w-60 sm:text-right sm:text-xs"
             text={` SIX CITIES. TEN INDUSTRIES. ONE PLACE TO BE IN THE KNOW.`}
           />
         </div>

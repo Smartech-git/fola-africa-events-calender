@@ -111,10 +111,10 @@ export function groupEventsByDay(
   );
   for (const event of unique) {
     const start = cityDate(event.startAt, timezone);
-    // Ends are exclusive: midnight belongs to the preceding day.
+    // Include the end date, even when the event ends at local midnight.
     const end =
       event.endAt && Date.parse(event.endAt) > Date.parse(event.startAt)
-        ? cityDate(new Date(Date.parse(event.endAt) - 1), timezone)
+        ? cityDate(event.endAt, timezone)
         : start;
     const last = range.to && range.to < end ? range.to : end;
     for (

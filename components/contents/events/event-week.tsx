@@ -87,7 +87,7 @@ export default function EventWeek({
         aria-label={`${cityName} weekly events`}
         className="sm:pt-0"
       >
-        <header className="mb-8 space-y-2">
+        <header className="sm:mb-8 mb-4 space-y-2">
           <FadeUpText
             className="font-inter text-3xl uppercase sm:text-4xl"
             text={heading.title}
@@ -98,7 +98,6 @@ export default function EventWeek({
           <div role="alert" className="space-y-3 py-8">
             <p className="text-sm">{error}</p>
             <Button
-              variant="bordered"
               size="sm"
               disabled={pending}
               isLoading={pending}

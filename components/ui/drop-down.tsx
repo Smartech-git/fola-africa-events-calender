@@ -91,7 +91,7 @@ const DropdownMenu = ({
     itemClasses={{
       ...itemClasses,
       base: cn(
-        "min-h-11 cursor-pointer rounded-none px-3 py-2 text-dark-gray data-[hover=true]:bg-secondary data-[hover=true]:text-primary data-[selectable=true]:focus:bg-secondary data-[selected=true]:text-primary data-[focus-visible=true]:outline-primary",
+        "min-h-7 cursor-pointer rounded-none px-2 py-2 text-dark-gray data-[hover=true]:bg-secondary data-[hover=true]:text-primary data-[selectable=true]:focus:bg-secondary data-[selected=true]:text-primary data-[focus-visible=true]:outline-primary",
         itemClasses?.base,
       ),
       title: cn("font-inter text-xs font-normal uppercase", itemClasses?.title),

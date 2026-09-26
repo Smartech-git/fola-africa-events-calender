@@ -24,7 +24,7 @@ export default function HeroVideo() {
         className="relative flex h-full items-center justify-center overflow-hidden bg-dark-gray"
         initial={{ width: "0%" }}
         animate={{ width: inView || reduceMotion ? "100%" : "0%" }}
-        transition={{ duration: reduceMotion ? 0 : 1, ease: "easeIn" }}
+        transition={{ duration: reduceMotion ? 0 : 0.8, ease: "circOut" }}
       >
         <FadeUpText
           delay={1.3}

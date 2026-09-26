@@ -198,12 +198,12 @@ export async function  queryEventsByCity(
           : []),
       ],
     });
-  // Include events spanning the requested dates; end times are exclusive.
+  // Include events ending at the start of a requested day as well.
   if (end) filters.push({ startAt: { less_than: end } });
   if (start)
     filters.push({
       or: [
-        { endAt: { greater_than: start } },
+        { endAt: { greater_than_equal: start } },
         { startAt: { greater_than_equal: start } },
       ],
     });

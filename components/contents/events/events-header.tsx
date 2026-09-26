@@ -82,7 +82,7 @@ export default function EventsHeader({ data: { city, seasons } }: Props) {
                 >
                   <div
                     data-hover-text
-                    className="group relative min-h-28 w-75 cursor-pointer border border-light-gray/50 p-4"
+                    className="group flex flex-col justify-between relative min-h-28 w-75 cursor-pointer border border-light-gray/50 p-4"
                   >
                     <div>
                       <div className="flex flex-wrap items-center">

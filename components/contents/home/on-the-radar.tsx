@@ -48,7 +48,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           id="radar-heading"
           as="h2"
           text="On the radar"
-          className="font-apris text-5xl leading-none font-light uppercase sm:text-6xl lg:text-7xl"
+          className="font-apris text-5xl leading-none uppercase sm:text-6xl lg:text-7xl"
         />
         <FadeUpText
           text={"The people. The places.\nThe moments that move us."}
@@ -74,7 +74,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           <FadeUpText
             as="h3"
             text={"The next\nbig idea."}
-            className="font-apris text-5xl font-light uppercase sm:text-6xl lg:text-[80px]"
+            className="font-apris text-5xl uppercase sm:text-6xl lg:text-[80px]"
           />
           <ExploreIndustry industry="technology" citySlug={citySlug} />
         </article>
@@ -115,7 +115,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           <FadeUpText
             as="h3"
             text={"The city\ndoesn’t\nsleep."}
-            className="font-apris text-5xl font-light uppercase sm:text-6xl lg:text-[76px]"
+            className="font-apris text-5xl uppercase sm:text-6xl lg:text-[76px]"
           />
           <FadeUpText
             text={"From first set to last dance.\nFind your next night out."}

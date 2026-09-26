@@ -1,4 +1,5 @@
 import EventList from "@/components/contents/events/event-list";
+import EventMonth from "@/components/contents/events/event-month";
 import EventWeek from "@/components/contents/events/event-week";
 import EventsHeader from "@/components/contents/events/events-header";
 import FilterMenu from "@/components/contents/events/filter-menu";
@@ -8,6 +9,7 @@ import {
   getListQuery,
   type EventSearchParams,
 } from "@/lib/events/event-list";
+import { getMonthQuery } from "@/lib/events/event-month";
 import { getWeekQuery } from "@/lib/events/event-week";
 import { getEventList } from "@/requests/events/get-event-list";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
@@ -31,15 +33,21 @@ export default async function Page({ params, searchParams }: Props) {
   const viewParam = filters[EVENTS_LAYOUT_KEY];
   const isWeek =
     (Array.isArray(viewParam) ? viewParam[0] : viewParam) === "week";
+  const isMonth =
+    (Array.isArray(viewParam) ? viewParam[0] : viewParam) === "month";
 
   let query = getListQuery({}, slug);
   let weekQuery = getWeekQuery({}, slug, today);
+  let monthQuery = getMonthQuery({}, slug, today);
 
   let initialError: string | undefined;
   let invalidFilters = false;
   let events: PublicEvent[] = [];
   try {
-    if (isWeek) {
+    if (isMonth) {
+      monthQuery = getMonthQuery(filters, slug, today);
+      query = monthQuery;
+    } else if (isWeek) {
       weekQuery = getWeekQuery(filters, slug, today);
       query = weekQuery;
     } else {
@@ -56,7 +64,7 @@ export default async function Page({ params, searchParams }: Props) {
     try {
       events = await getEventList(query.filters);
     } catch {
-      initialError = "We couldn't load events. Please try again.";
+      initialError = "We couldn't load the calendar. Please try again.";
     }
   }
 
@@ -64,7 +72,19 @@ export default async function Page({ params, searchParams }: Props) {
     <>
       <EventsHeader data={eventsHeader} />
       <FilterMenu cities={cities.data} currentCity={slug} />
-      {isWeek ? (
+      {isMonth ? (
+        <EventMonth
+          key={JSON.stringify([slug, filters])}
+          cityName={eventsHeader.city.name}
+          timezone={eventsHeader.city.timezone}
+          today={today}
+          query={monthQuery}
+          events={events}
+          seasons={eventsHeader.seasons}
+          error={initialError}
+          invalidFilters={invalidFilters}
+        />
+      ) : isWeek ? (
         <EventWeek
           key={JSON.stringify([slug, filters])}
           cityName={eventsHeader.city.name}

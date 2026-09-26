@@ -159,12 +159,7 @@ export default function EventList({
               There are no published events matching these filters. Try another
               date or clear your filters.
             </p>
-            <Button
-              variant="link"
-              size="fit"
-              className=""
-              onPress={clearAllParams}
-            >
+            <Button size="sm" className="" onPress={clearAllParams}>
               Clear filters
             </Button>
           </div>
@@ -173,7 +168,6 @@ export default function EventList({
           <div role="alert" className="space-y-3 py-8">
             <p className="text-xs">{error}</p>
             <Button
-              variant="bordered"
               size="sm"
               onPress={
                 invalidFilters

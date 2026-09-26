@@ -220,6 +220,7 @@ function FilterOptions({
       industry: [],
       access: [],
     });
+    onClose();
   };
 
   return (

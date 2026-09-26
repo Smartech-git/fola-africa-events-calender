@@ -24,7 +24,7 @@ export default function EventLayout({ view, date, children }: Props) {
   const { handleParamSet } = useRouteParam();
 
   return (
-    <SectionWrapper className="flex-row justify-between gap-x-4 py-2 sm:py-2 lg:flex-row lg:items-center">
+    <SectionWrapper className="flex-row flex-wrap items-center justify-between gap-x-4 gap-y-2 py-2 sm:py-2">
       <div
         role="group"
         aria-label="Calendar view"
@@ -35,25 +35,19 @@ export default function EventLayout({ view, date, children }: Props) {
             key={item.value}
             onPress={() =>
               handleParamSet(
-                item.value === "week"
-                  ? calendarDateParams("week", date)
+                item.value === "week" || item.value === "month"
+                  ? calendarDateParams(item.value, date)
                   : {
                       [EVENTS_LAYOUT_KEY]: "list",
                       [FILTER_KEYS.page]: undefined,
                     },
               )
             }
-            disabled={item.value === "month"}
             aria-pressed={item.value === view}
-            title={
-              item.value === "month"
-                ? "Month view is coming soon"
-                : `${item.label} view`
-            }
             variant="flat"
             size="fit"
             className={cn(
-              "border-b-2 border-transparent min-h-8 px-0 text-xs focus-visible:outline-2 focus-visible:outline-primary sm:px-0 sm:py-1",
+              "min-h-8 border-b-2 border-transparent px-0 text-xs focus-visible:outline-2 focus-visible:outline-primary sm:px-0 sm:py-1",
               item.value === view && "border-primary",
             )}
           >

@@ -5,8 +5,9 @@ import {
   shiftDate,
   type EventSearchParams,
 } from "@/lib/events/event-list";
+import { monthRange } from "@/lib/events/event-month";
 
-export type CalendarView = "list" | "week";
+export type CalendarView = "list" | "week" | "month";
 
 export function weekRange(date: string) {
   const from = shiftDate(date, -new Date(`${date}T12:00:00Z`).getUTCDay());
@@ -32,12 +33,12 @@ export function getWeekQuery(
 }
 
 export function calendarDateParams(view: CalendarView, date: string) {
-  const range = weekRange(date);
+  const range = view === "month" ? monthRange(date) : weekRange(date);
   return {
     [EVENTS_LAYOUT_KEY]: view,
     [FILTER_KEYS.date]: view === "list" ? date : undefined,
-    [FILTER_KEYS.dateFrom]: view === "week" ? range.from : undefined,
-    [FILTER_KEYS.dateTo]: view === "week" ? range.to : undefined,
+    [FILTER_KEYS.dateFrom]: view !== "list" ? range.from : undefined,
+    [FILTER_KEYS.dateTo]: view !== "list" ? range.to : undefined,
     [FILTER_KEYS.page]: undefined,
   };
 }
