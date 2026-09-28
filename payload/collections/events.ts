@@ -64,14 +64,21 @@ export const events: CollectionConfig = {
       required: true,
       index: true,
       admin: {
-        description: "Enter with a timezone offset. Stored as UTC.",
+        components: {
+          Field: "@/payload/components/city-date-input#CityDateInput",
+        },
         date: { pickerAppearance: "dayAndTime", timeFormat: "h:mm a" },
       },
     },
     {
       name: "endAt",
       type: "date",
-      admin: { date: { pickerAppearance: "dayAndTime", timeFormat: "h:mm a" } },
+      admin: {
+        components: {
+          Field: "@/payload/components/city-date-input#CityDateInput",
+        },
+        date: { pickerAppearance: "dayAndTime", timeFormat: "h:mm a" },
+      },
     },
     { name: "allDay", type: "checkbox", defaultValue: false },
     {

@@ -36,13 +36,13 @@ const DatePicker = forwardRef<HTMLElement, DatePickerProps>(
           "text-xs font-normal uppercase text-dark-gray",
           classNames?.label,
         ),
-        input: cn("text-sm text-dark-gray", classNames?.input),
+        input: cn("text-xs text-dark-gray", classNames?.input),
         inputWrapper: cn(
           "h-[46px] min-h-[46px] rounded-none border border-light-gray bg-transparent px-3 shadow-none data-[hover=true]:bg-transparent data-[hover=true]:border-primary group-data-[focus=true]:border-primary group-data-[focus=true]:bg-transparent group-data-[focus-visible=true]:outline-2 group-data-[focus-visible=true]:outline-offset-2 group-data-[focus-visible=true]:outline-primary",
           classNames?.inputWrapper,
         ),
         segment: cn(
-          "rounded-none uppercase text-sm text-dark-gray data-[placeholder=true]:text-primary focus:bg-secondary focus:text-dark-gray",
+          "rounded-none uppercase text-xs text-dark-gray data-[placeholder=true]:text-primary focus:bg-secondary focus:text-dark-gray",
           classNames?.segment,
         ),
         selectorButton: cn(
@@ -86,7 +86,7 @@ const DatePicker = forwardRef<HTMLElement, DatePickerProps>(
           ),
           header: cn("bg-primary-light", calendarProps?.classNames?.header),
           title: cn(
-            "text-sm font-medium text-dark-gray",
+            "text-xs font-medium text-dark-gray",
             calendarProps?.classNames?.title,
           ),
           gridHeader: cn(

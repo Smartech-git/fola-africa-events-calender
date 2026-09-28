@@ -203,7 +203,13 @@ export interface City {
    */
   slug: string;
   country: string;
+  /**
+   * Suggested from matching city names. Enter or correct the IANA timezone when needed.
+   */
   timezone: string;
+  /**
+   * Automatically suggested from the timezone; you can edit it.
+   */
   timezoneLabel: string;
   updatedAt: string;
   createdAt: string;
@@ -301,9 +307,6 @@ export interface Event {
    */
   slug: string;
   city: number | City;
-  /**
-   * Enter with a timezone offset. Stored as UTC.
-   */
   startAt: string;
   endAt?: string | null;
   allDay?: boolean | null;
