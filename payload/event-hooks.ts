@@ -2,6 +2,7 @@ import {
   APIError,
   type CollectionBeforeChangeHook,
   type CollectionAfterChangeHook,
+  type CollectionBeforeDeleteHook,
 } from "payload";
 
 import { roleOf } from "@/payload/access";
@@ -25,6 +26,27 @@ const editorialFields = [
   "seasons",
   "description",
 ];
+
+export const deleteEventReviews: CollectionBeforeDeleteHook = async ({
+  id,
+  req,
+}) => {
+  // The parent deletion has already passed access control. Share its transaction
+  // so review/version cleanup rolls back if deleting the event fails.
+  const result = await req.payload.delete({
+    collection: "event-reviews",
+    where: { event: { equals: id } },
+    req,
+    overrideAccess: true,
+    depth: 0,
+  });
+  if (result.errors.length) {
+    throw new APIError(
+      "Unable to delete the event's linked reviews. Please try again.",
+      409,
+    );
+  }
+};
 
 export const validateEvent: CollectionBeforeChangeHook = async ({
   data,

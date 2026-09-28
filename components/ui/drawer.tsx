@@ -31,8 +31,15 @@ function useDrawer() {
 }
 
 const Drawer = {
-  Root: function DrawerRoot({ children }: { children: React.ReactNode }) {
-    const disclosure = useDisclosure();
+  Root: function DrawerRoot({
+    children,
+    ...props
+  }: {
+    children: React.ReactNode;
+    isOpen?: boolean;
+    onOpenChange?: (isOpen: boolean) => void;
+  }) {
+    const disclosure = useDisclosure(props);
     return (
       <DrawerContext.Provider value={disclosure}>
         {children}

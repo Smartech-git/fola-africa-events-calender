@@ -8,7 +8,7 @@ import { ArrowLeft, ChevronDown } from "lucide-react";
 import DrawHorizontalLine from "@/components/animations/draw-horizontal-line";
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
-import Title from "@/components/common/title";
+import LabelTitle from "@/components/common/label-title";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import LenisProvider from "@/components/providers/lenis-provider";
 import Button from "@/components/ui/button";
@@ -371,7 +371,7 @@ function FilterLabel({
 }) {
   return (
     <div id={id} className="flex items-center gap-2">
-      <Title title={title} />
+      <LabelTitle title={title} />
       {count > 0 && (
         <span className="inline-flex h-4 min-w-4 items-center justify-center bg-dark-gray font-inter text-xs text-white">
           <span className="sr-only">Active filters: </span>

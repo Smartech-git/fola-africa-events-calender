@@ -1,14 +1,20 @@
 import type { CollectionConfig } from "payload";
 
-import { isStaff, noAccess } from "@/payload/access";
+import { isAdmin, isStaff } from "@/payload/access";
 import {
   ACCESS_OPTIONS,
   EVENT_STATUSES,
   EVENT_TYPES,
   INDUSTRIES,
+  SUBMITTER_RELATIONSHIPS,
   VISIBILITY_OPTIONS,
 } from "@/payload/constants";
-import { queueEventReview, validateEvent } from "@/payload/event-hooks";
+import {
+  deleteEventReviews,
+  queueEventReview,
+  validateEvent,
+} from "@/payload/event-hooks";
+import { slugField } from "@/payload/fields/slug-field";
 import { httpURL, shortDescription } from "@/payload/validation";
 
 export const events: CollectionConfig = {
@@ -32,15 +38,19 @@ export const events: CollectionConfig = {
     create: isStaff,
     read: isStaff,
     update: isStaff,
-    delete: noAccess,
+    delete: isAdmin,
     readVersions: isStaff,
   },
   versions: { maxPerDoc: 30 },
   indexes: [{ fields: ["city", "status", "startAt"] }],
-  hooks: { beforeChange: [validateEvent], afterChange: [queueEventReview] },
+  hooks: {
+    beforeChange: [validateEvent],
+    afterChange: [queueEventReview],
+    beforeDelete: [deleteEventReviews],
+  },
   fields: [
     { name: "title", type: "text", required: true },
-    { name: "slug", type: "text", required: true, unique: true },
+    slugField("title"),
     {
       name: "city",
       type: "relationship",
@@ -191,12 +201,7 @@ export const events: CollectionConfig = {
         {
           name: "relationship",
           type: "select",
-          options: [
-            { label: "Organiser", value: "organiser" },
-            { label: "PR / authorised representative", value: "pr" },
-            { label: "Venue", value: "venue" },
-            { label: "Other", value: "other" },
-          ],
+          options: SUBMITTER_RELATIONSHIPS,
         },
       ],
     },

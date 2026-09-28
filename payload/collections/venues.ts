@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 
 import { staffAccess } from "@/payload/access";
+import { slugField } from "@/payload/fields/slug-field";
 import { httpURL } from "@/payload/validation";
 
 export const venues: CollectionConfig = {
@@ -13,7 +14,7 @@ export const venues: CollectionConfig = {
   access: staffAccess,
   fields: [
     { name: "name", type: "text", required: true, index: true },
-    { name: "slug", type: "text", required: true, unique: true },
+    slugField("name"),
     {
       name: "city",
       type: "relationship",

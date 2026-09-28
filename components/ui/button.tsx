@@ -16,7 +16,7 @@ const button = cva(
     variants: {
       variant: {
         solid:
-          "border-none bg-dark-gray text-primary-light hover:bg-dark-gray data-[disabled=true]:border-1.5 data-[disabled=true]:border-none data-[disabled=true]:bg-gray-100! data-[disabled=true]:bg-none! data-[disabled=true]:text-gray-500 data-[disabled=true]:opacity-100!",
+          "border-none bg-dark-gray text-primary-light hover:bg-dark-gray data-[disabled=true]:border-1.5 data-[disabled=true]:border-none data-[disabled=true]:bg-dark-gray! data-[disabled=true]:text-primary-light data-[disabled=true]:opacity-70!",
         bordered: "border border-primary bg-transparent text-dark-gray",
         flat: "rounded-none! bg-transparent text-dark-gray hover:text-primary",
         link: "rounded-none! border-b border-inherit hover:text-primary text-dark-gray",
@@ -32,7 +32,7 @@ const button = cva(
       },
       disabled: {
         false: null,
-        true: "opacity-60",
+        true: "opacity-70",
       },
     },
 

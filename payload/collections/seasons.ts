@@ -1,6 +1,7 @@
 import { APIError, type CollectionConfig } from "payload";
 
 import { isAdmin, isStaff } from "@/payload/access";
+import { slugField } from "@/payload/fields/slug-field";
 
 export const seasons: CollectionConfig = {
   slug: "seasons",
@@ -37,7 +38,7 @@ export const seasons: CollectionConfig = {
   },
   fields: [
     { name: "name", type: "text", required: true },
-    { name: "slug", type: "text", required: true, unique: true },
+    slugField("name"),
     {
       name: "city",
       type: "relationship",

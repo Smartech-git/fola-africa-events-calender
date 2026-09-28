@@ -2,6 +2,8 @@
 
 import { Suspense, useState, type FocusEvent, type PointerEvent } from "react";
 
+import Link from "next/link";
+
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
 import MarqueeText from "@/components/animations/marquee-text";
@@ -54,16 +56,18 @@ export default function Hero() {
       <MarqueeText text="AFRICA’S EVENTS CALENDAR" />
       <SectionWrapper className="py-0 sm:py-0">
         <div className="flex w-full flex-col items-start justify-between sm:flex-row">
-          <div className="relative flex w-full flex-col items-center gap-x-4  gap-6 sm:w-fit sm:flex-row">
+          <div className="relative flex w-full flex-col items-center gap-6 gap-x-4 sm:w-fit sm:flex-row">
             <div className="w-full sm:w-fit" {...mediaTrigger("explore")}>
               <Suspense>
                 <ExploreEvent />
               </Suspense>
             </div>
             <div className="w-fit" {...mediaTrigger("submit")}>
-              <Button variant="link" size="fit">
-                <HoverText text="Submit an event" />
-              </Button>
+              <Link href={`/submit-event`} className="w-fit">
+                <Button variant="link" size="fit">
+                  <HoverText text="Submit an event" />
+                </Button>
+              </Link>
             </div>
             <HoverMedia
               items={heroMedia}

@@ -1,6 +1,8 @@
 import type { CollectionConfig } from "payload";
 
 import { staffAccess } from "@/payload/access";
+import { ORGANISER_TYPES } from "@/payload/constants";
+import { slugField } from "@/payload/fields/slug-field";
 import { httpURL } from "@/payload/validation";
 
 export const organisers: CollectionConfig = {
@@ -13,19 +15,12 @@ export const organisers: CollectionConfig = {
   access: staffAccess,
   fields: [
     { name: "name", type: "text", required: true, index: true },
-    { name: "slug", type: "text", required: true, unique: true },
+    slugField("name"),
     {
       name: "type",
       type: "select",
       required: true,
-      options: [
-        "brand",
-        "label",
-        "gallery",
-        "promoter",
-        "institution",
-        "individual",
-      ],
+      options: ORGANISER_TYPES,
     },
     { name: "website", type: "text", validate: httpURL },
     {

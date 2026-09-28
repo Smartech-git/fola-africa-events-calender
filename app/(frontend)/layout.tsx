@@ -31,10 +31,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "FOLA",
+  title: "Africa’s Events Calendar",
   description:
-    "We’re a communications and experiential agency dedicated to bridging Africa and the world.",
-  metadataBase: new URL("https://wewantfola.com"),
+    "A single, authoritative schedule of what is happening across Africa’s creative and business capitals",
+  // metadataBase: new URL("https://wewantfola.com"),
 };
 
 export const viewport: Viewport = {

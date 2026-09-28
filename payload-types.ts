@@ -198,6 +198,9 @@ export interface Media {
 export interface City {
   id: number;
   name: string;
+  /**
+   * Automatically filled from name. You can edit it manually.
+   */
   slug: string;
   country: string;
   timezone: string;
@@ -212,6 +215,9 @@ export interface City {
 export interface Organiser {
   id: number;
   name: string;
+  /**
+   * Automatically filled from name. You can edit it manually.
+   */
   slug: string;
   type: 'brand' | 'label' | 'gallery' | 'promoter' | 'institution' | 'individual';
   website?: string | null;
@@ -234,6 +240,9 @@ export interface Organiser {
 export interface Venue {
   id: number;
   name: string;
+  /**
+   * Automatically filled from name. You can edit it manually.
+   */
   slug: string;
   city: number | City;
   area?: string | null;
@@ -250,6 +259,9 @@ export interface Venue {
 export interface Season {
   id: number;
   name: string;
+  /**
+   * Automatically filled from name. You can edit it manually.
+   */
   slug: string;
   city: number | City;
   startDate?: string | null;
@@ -284,6 +296,9 @@ export interface Season {
 export interface Event {
   id: number;
   title: string;
+  /**
+   * Automatically filled from title. You can edit it manually.
+   */
   slug: string;
   city: number | City;
   /**

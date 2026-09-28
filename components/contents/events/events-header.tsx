@@ -9,9 +9,9 @@ import {
 import { ArrowRight, Dot } from "lucide-react";
 
 import Fade from "@/components/animations/fade";
-import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
-import Title from "@/components/common/title";
+import HeaderTitle from "@/components/common/header-title";
+import LabelTitle from "@/components/common/label-title";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import LenisProvider from "@/components/providers/lenis-provider";
 import type {
@@ -56,17 +56,14 @@ export default function EventsHeader({ data: { city, seasons } }: Props) {
   return (
     <SectionWrapper className="gap-6 pb-2 sm:pb-4">
       <div className="flex w-full flex-col">
-        <FadeUpText
-          className="font-apris text-3xl font-medium tracking-wider text-primary uppercase sm:text-4xl"
-          text={city.name}
-        />
+        <HeaderTitle text={city.name} />
         <span className="text-xs uppercase">
           Time in {city.timezoneLabel || city.timezone}
         </span>
       </div>
       {seasons.length > 0 && (
         <div className="flex flex-col gap-2">
-          <Title title="Upcoming seasons" />
+          <LabelTitle title="Upcoming seasons" />
           <LenisProvider
             orientation="horizontal"
             className="h-auto overflow-x-auto overflow-y-hidden *:flex *:min-h-0 *:w-max *:gap-2"
@@ -82,7 +79,7 @@ export default function EventsHeader({ data: { city, seasons } }: Props) {
                 >
                   <div
                     data-hover-text
-                    className="group flex flex-col justify-between relative min-h-28 w-75 cursor-pointer border border-light-gray/50 p-4"
+                    className="group relative flex min-h-28 w-75 cursor-pointer flex-col justify-between border border-light-gray/50 p-4"
                   >
                     <div>
                       <div className="flex flex-wrap items-center">

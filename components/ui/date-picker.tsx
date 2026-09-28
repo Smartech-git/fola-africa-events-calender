@@ -49,11 +49,15 @@ const DatePicker = forwardRef<HTMLElement, DatePickerProps>(
           "text-dark-gray data-[hover=true]:bg-secondary data-[hover=true]:text-dark-gray! data-[focus-visible=true]:outline-primary",
           classNames?.selectorButton,
         ),
-        errorMessage: cn("text-xs text-danger", classNames?.errorMessage),
+        errorMessage: cn(
+          "text-xs uppercase text-danger",
+          classNames?.errorMessage,
+        ),
         popoverContent: cn(
           "rounded-none bg-primary-light",
           classNames?.popoverContent,
         ),
+        description: "uppercase text-xs text-dark-gray/75",
       }}
       selectorButtonProps={{ radius: "none", ...selectorButtonProps }}
       popoverProps={{

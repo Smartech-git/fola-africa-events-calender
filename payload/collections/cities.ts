@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 
 import { isStaff, noAccess } from "@/payload/access";
+import { slugField } from "@/payload/fields/slug-field";
 
 export const cities: CollectionConfig = {
   slug: "cities",
@@ -18,7 +19,7 @@ export const cities: CollectionConfig = {
   },
   fields: [
     { name: "name", type: "text", required: true },
-    { name: "slug", type: "text", required: true, unique: true },
+    slugField("name"),
     { name: "country", type: "text", required: true },
     { name: "timezone", type: "text", required: true },
     { name: "timezoneLabel", type: "text", required: true },

@@ -1,6 +1,12 @@
 import { APIError, type CollectionConfig } from "payload";
 
-import { adminField, isStaff, noAccess, roleOf } from "@/payload/access";
+import {
+  adminField,
+  isAdmin,
+  isStaff,
+  noAccess,
+  roleOf,
+} from "@/payload/access";
 
 export const eventReviews: CollectionConfig = {
   slug: "event-reviews",
@@ -21,7 +27,7 @@ export const eventReviews: CollectionConfig = {
     create: noAccess,
     read: isStaff,
     update: isStaff,
-    delete: noAccess,
+    delete: isAdmin,
     readVersions: isStaff,
   },
   versions: { maxPerDoc: 30 },
