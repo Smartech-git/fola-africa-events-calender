@@ -6,6 +6,7 @@ import {
   DateTimeField,
   useConfig,
   useField,
+  useForm,
   useFormFields,
 } from "@payloadcms/ui";
 import type { DateFieldClientProps } from "payload";
@@ -25,6 +26,12 @@ async function getCityTimezone(url: string): Promise<string> {
 
 export function CityDateInput(props: DateFieldClientProps) {
   const { config } = useConfig();
+  const { path, formInitializing } = useField({
+    potentiallyStalePath: props.path,
+  });
+  const { dispatchFields } = useForm();
+  const timezonePath = `${path}_tz`;
+  const value = useFormFields(([fields]) => fields[timezonePath]?.value);
   const city = useFormFields(([fields]) => relationID(fields.city?.value));
   const { data: timezone, error } = useSWR<string>(
     city == null
@@ -34,15 +41,17 @@ export function CityDateInput(props: DateFieldClientProps) {
   );
   // Payload reads this companion field to display and convert local dates.
   // Keep it out of saved data: the city is the source of truth for timezone.
-  const { value, setValue } = useField<string | null>({
-    path: `${props.path}_tz`,
-    disableFormData: true,
-  });
-
   useEffect(() => {
+    if (formInitializing) return;
     const next = timezone ?? null;
-    if (value !== next) setValue(next, true);
-  }, [timezone, value, setValue]);
+    if (value !== next)
+      dispatchFields({
+        type: "UPDATE",
+        path: timezonePath,
+        value: next,
+        disableFormData: true,
+      });
+  }, [timezone, value, timezonePath, dispatchFields, formInitializing]);
 
   return (
     <>
@@ -53,16 +62,16 @@ export function CityDateInput(props: DateFieldClientProps) {
           ...props.field,
           timezone: {
             required: true,
-            supportedTimezones: timezone
-              ? [{ label: timezone, value: timezone }]
-              : [],
+            supportedTimezones: [],
           },
         }}
       />
       <p className="field-description">
         {timezone
-          ? `Times are shown in ${timezone}, the selected city's timezone. Stored as UTC.`
-          : "Select a city to use its local timezone."}
+          ? `Timezone: ${timezone}`
+          : city != null
+            ? "Loading city timezone..."
+            : "Select a city to use its local timezone."}
       </p>
       {error && (
         <p role="alert">

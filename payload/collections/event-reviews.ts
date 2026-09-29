@@ -55,11 +55,6 @@ export const eventReviews: CollectionConfig = {
               "Complete the AI review before recording a human decision.",
               400,
             );
-          if (!data.decisionNotes && !originalDoc?.decisionNotes)
-            throw new APIError(
-              "Record the reason for the human decision.",
-              400,
-            );
           data.decidedBy = req.user.id;
           data.decidedAt = new Date().toISOString();
         }
@@ -163,7 +158,11 @@ export const eventReviews: CollectionConfig = {
         "rejected",
       ],
     },
-    { name: "decisionNotes", type: "textarea" },
+    {
+      name: "decisionNotes",
+      type: "textarea",
+      admin: { description: "Optional notes explaining the human decision." },
+    },
     {
       name: "decidedBy",
       type: "relationship",
