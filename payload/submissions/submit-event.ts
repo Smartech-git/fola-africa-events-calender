@@ -1,7 +1,5 @@
 import "server-only";
 
-import { randomUUID } from "node:crypto";
-
 import { parseDateTime, toZoned } from "@internationalized/date";
 
 import { formatSlug } from "@/payload/fields/format-slug";
@@ -111,12 +109,66 @@ export async function createEventSubmission(
           "You've submitted several events recently. Please try again in an hour.",
       };
 
+    const eventSlug = formatSlug(data.title);
+    if (!eventSlug)
+      return {
+        success: false,
+        status: 400,
+        fieldErrors: {
+          title: ["Include letters or numbers in the event title."],
+        },
+      };
+    const existingEvent = await payload.count({
+      collection: "events",
+      where: { slug: { equals: eventSlug } },
+    });
+    if (existingEvent.totalDocs)
+      return {
+        success: false,
+        status: 409,
+        fieldErrors: {
+          title: [
+            "This title is already in use. Add a date or other detail to distinguish your event.",
+          ],
+        },
+      };
+
+    for (const { name, field, collection } of [
+      {
+        name: data.organiserName,
+        field: "organiserName",
+        collection: "organisers",
+      },
+      { name: data.venueName, field: "venueName", collection: "venues" },
+    ] as const) {
+      if (!name) continue;
+      const slug = formatSlug(name);
+      if (!slug)
+        return {
+          success: false,
+          status: 400,
+          fieldErrors: { [field]: ["Include letters or numbers in the name."] },
+        };
+      const existing = await payload.count({
+        collection,
+        where: { slug: { equals: slug } },
+      });
+      if (existing.totalDocs)
+        return {
+          success: false,
+          status: 409,
+          fieldErrors: {
+            [field]: [
+              "This name is already in use. Add a distinguishing detail.",
+            ],
+          },
+        };
+    }
+
     const transactionID = await payload.db.beginTransaction();
     if (!transactionID)
       throw new Error("A submission transaction could not be started.");
     const req = { transactionID };
-    const slug = (name: string) =>
-      `${formatSlug(name).slice(0, 100) || "submission"}-${randomUUID()}`;
     try {
       // Never overwrite trusted organiser or venue records with public submissions.
       const organiser = await payload.create({
@@ -126,7 +178,7 @@ export async function createEventSubmission(
         overrideAccess: true,
         data: {
           name: data.organiserName,
-          slug: slug(data.organiserName),
+          slug: formatSlug(data.organiserName),
           type: data.organiserType,
           website: data.organiserWebsite || undefined,
           contact: { email: data.organiserContact },
@@ -141,7 +193,7 @@ export async function createEventSubmission(
             overrideAccess: true,
             data: {
               name: data.venueName,
-              slug: slug(data.venueName),
+              slug: formatSlug(data.venueName),
               city: city.id,
               area: data.venueArea,
               address: data.venueAddress,
@@ -157,7 +209,7 @@ export async function createEventSubmission(
         overrideAccess: true,
         data: {
           title: data.title,
-          slug: slug(data.title),
+          slug: eventSlug,
           city: city.id,
           startAt,
           endAt,

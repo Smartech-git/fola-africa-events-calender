@@ -17,15 +17,15 @@ import { getEventsHeader } from "@/requests/events/get-events-header";
 import { getCities } from "@/requests/get-cities";
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ city: string }>;
   searchParams: Promise<EventSearchParams>;
 }
 export default async function Page({ params, searchParams }: Props) {
-  const { slug } = await params;
+  const { city } = await params;
   const filters = await searchParams;
 
   const [eventsHeader, cities] = await Promise.all([
-    getEventsHeader({ city: slug }),
+    getEventsHeader({ city: city }),
     getCities({}),
   ]);
 
@@ -36,22 +36,22 @@ export default async function Page({ params, searchParams }: Props) {
   const isMonth =
     (Array.isArray(viewParam) ? viewParam[0] : viewParam) === "month";
 
-  let query = getListQuery({}, slug);
-  let weekQuery = getWeekQuery({}, slug, today);
-  let monthQuery = getMonthQuery({}, slug, today);
+  let query = getListQuery({}, city);
+  let weekQuery = getWeekQuery({}, city, today);
+  let monthQuery = getMonthQuery({}, city, today);
 
   let initialError: string | undefined;
   let invalidFilters = false;
   let events: PublicEvent[] = [];
   try {
     if (isMonth) {
-      monthQuery = getMonthQuery(filters, slug, today);
+      monthQuery = getMonthQuery(filters, city, today);
       query = monthQuery;
     } else if (isWeek) {
-      weekQuery = getWeekQuery(filters, slug, today);
+      weekQuery = getWeekQuery(filters, city, today);
       query = weekQuery;
     } else {
-      query = getListQuery(filters, slug);
+      query = getListQuery(filters, city);
     }
   } catch (error) {
     invalidFilters = true;
@@ -71,10 +71,10 @@ export default async function Page({ params, searchParams }: Props) {
   return (
     <>
       <EventsHeader data={eventsHeader} />
-      <FilterMenu cities={cities.data} currentCity={slug} />
+      <FilterMenu cities={cities.data} currentCity={city} />
       {isMonth ? (
         <EventMonth
-          key={JSON.stringify([slug, filters])}
+          key={JSON.stringify([city, filters])}
           cityName={eventsHeader.city.name}
           timezone={eventsHeader.city.timezone}
           today={today}
@@ -86,7 +86,7 @@ export default async function Page({ params, searchParams }: Props) {
         />
       ) : isWeek ? (
         <EventWeek
-          key={JSON.stringify([slug, filters])}
+          key={JSON.stringify([city, filters])}
           cityName={eventsHeader.city.name}
           timezone={eventsHeader.city.timezone}
           today={today}
@@ -97,8 +97,8 @@ export default async function Page({ params, searchParams }: Props) {
         />
       ) : (
         <EventList
-          key={JSON.stringify([slug, filters])}
-          city={slug}
+          key={JSON.stringify([city, filters])}
+          city={city}
           cityName={eventsHeader.city.name}
           timezone={eventsHeader.city.timezone}
           today={today}

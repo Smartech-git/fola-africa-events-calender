@@ -100,7 +100,12 @@ export const eventReviews: CollectionConfig = {
       name: "promptSnapshot",
       type: "textarea",
       access: { update: () => false },
-      admin: { readOnly: true },
+      admin: {
+        readOnly: true,
+        components: {
+          Field: "@/payload/components/review-fields#ReviewPrompt",
+        },
+      },
     },
     {
       name: "model",
@@ -112,22 +117,38 @@ export const eventReviews: CollectionConfig = {
       name: "findings",
       type: "json",
       access: { update: () => false },
-      admin: { readOnly: true },
+      admin: {
+        readOnly: true,
+        components: {
+          Field: "@/payload/components/review-fields#ReviewFindings",
+        },
+      },
     },
     {
       name: "summary",
       type: "textarea",
       access: { update: () => false },
-      admin: { readOnly: true },
+      admin: {
+        readOnly: true,
+        components: {
+          Field: "@/payload/components/review-fields#ReviewSummary",
+        },
+      },
     },
     {
       name: "suggestedListing",
       type: "json",
       access: { update: () => false },
-      admin: { readOnly: true },
+      admin: {
+        readOnly: true,
+        components: {
+          Field: "@/payload/components/review-fields#ReviewSuggestedListing",
+        },
+      },
     },
     {
       name: "recommendation",
+      label: "AI recommendation",
       type: "select",
       options: [
         "approve-as-submitted",
@@ -136,7 +157,12 @@ export const eventReviews: CollectionConfig = {
         "reject",
       ],
       access: { update: () => false },
-      admin: { readOnly: true },
+      admin: {
+        readOnly: true,
+        components: {
+          Field: "@/payload/components/review-fields#ReviewRecommendation",
+        },
+      },
     },
     { name: "draftMessage", type: "textarea" },
     {

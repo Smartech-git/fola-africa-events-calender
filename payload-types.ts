@@ -443,6 +443,9 @@ export interface EventReview {
   draftMessage?: string | null;
   failureReason?: string | null;
   humanDecision: 'pending' | 'accepted' | 'amended' | 'request-information' | 'rejected';
+  /**
+   * Optional notes explaining the human decision.
+   */
   decisionNotes?: string | null;
   decidedBy?: (number | null) | User;
   decidedAt?: string | null;
