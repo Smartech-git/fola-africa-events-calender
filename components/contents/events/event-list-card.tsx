@@ -80,10 +80,10 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
         as="h3"
         id={`${anchor}-title`}
         delay={0.3}
-        className="relative z-10 font-apris text-xl font-medium wrap-break-word text-primary uppercase sm:text-3xl"
+        className="relative z-10 font-apris text-2xl font-medium wrap-break-word text-primary uppercase sm:text-3xl"
         text={event.title}
       />
-      <div className="relative z-10 mt-1 space-y-1 text-sm leading-relaxed uppercase sm:text-base">
+      <div className="relative z-10 mt-1 space-y-1 text-xs leading-relaxed uppercase sm:text-sm">
         <p>
           <time dateTime={event.startAt}>{eventTime(event, timezone)}</time>
         </p>

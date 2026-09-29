@@ -27,8 +27,6 @@ try {
   for (const collection of ["events", "organisers", "venues", "event-reviews"] as const) {
     await assert.rejects(() => payload.find({ collection, overrideAccess: false, user: null, limit: 1 }), (error: any) => error.status === 403);
   }
-  const settings = await payload.findGlobal({ slug: "review-settings" });
-  assert.equal(settings.turnaroundWorkingDays, 2);
   for (const collection of ["cities", "organisers", "venues", "seasons", "events", "event-reviews"] as const) {
     const result = await payload.count({ collection });
     console.log(`${collection}: ${result.totalDocs}`);

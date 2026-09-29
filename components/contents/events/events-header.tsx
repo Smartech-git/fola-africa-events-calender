@@ -76,6 +76,7 @@ export default function EventsHeader({ data: { city, seasons } }: Props) {
                   key={season.id}
                   translateX={12}
                   translateY={0}
+                  amount={0.1}
                 >
                   <div
                     data-hover-text

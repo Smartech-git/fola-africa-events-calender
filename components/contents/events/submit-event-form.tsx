@@ -244,7 +244,7 @@ export default function SubmitEventForm({
       </div>
 
       <SectionWrapper className="pb-16 sm:pb-20">
-        <p className="mb-4 w-fit bg-secondary px-2 py-0.5 text-xs uppercase">
+        <p className="mb-4 w-fit bg-secondary px-2 py-0.5 sm:text-xs text-xxs uppercase">
           Fields marked * are required. Your contact details are never displayed
         </p>
         <form noValidate onSubmit={onSubmit}>

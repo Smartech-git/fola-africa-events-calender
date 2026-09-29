@@ -34,19 +34,5 @@ export const ReviewSettings: GlobalConfig = {
           "Set a supported Anthropic model when enabling the review worker.",
       },
     },
-    {
-      name: "turnaroundWorkingDays",
-      type: "number",
-      required: true,
-      defaultValue: 2,
-      min: 1,
-    },
-    {
-      name: "minimumVerifiedEventsPerCity",
-      type: "number",
-      required: true,
-      defaultValue: 25,
-      min: 1,
-    },
   ],
 };

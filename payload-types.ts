@@ -774,8 +774,6 @@ export interface ReviewSetting {
    * Set a supported Anthropic model when enabling the review worker.
    */
   model?: string | null;
-  turnaroundWorkingDays: number;
-  minimumVerifiedEventsPerCity: number;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -787,8 +785,6 @@ export interface ReviewSettingsSelect<T extends boolean = true> {
   promptVersion?: T;
   systemPrompt?: T;
   model?: T;
-  turnaroundWorkingDays?: T;
-  minimumVerifiedEventsPerCity?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -185,8 +185,6 @@ try {
       data: {
         promptVersion: "fola-beta-v1",
         systemPrompt: DEFAULT_REVIEW_PROMPT,
-        turnaroundWorkingDays: 2,
-        minimumVerifiedEventsPerCity: 25,
       },
     });
     created++;
