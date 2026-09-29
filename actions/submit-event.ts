@@ -1,5 +1,6 @@
 "use server";
 
+import { reviewAfterSubmission } from "@/payload/reviews/after-submission";
 import {
   createEventSubmission,
   type SubmitEventResult,
@@ -17,7 +18,10 @@ export async function submitEvent(
   try {
     const result = await createEventSubmission(data);
 
-    if (result.success) return result;
+    if (result.success) {
+      reviewAfterSubmission();
+      return result;
+    }
 
     const error = Object.values(result.fieldErrors ?? {})
       .flatMap((messages) => messages ?? [])

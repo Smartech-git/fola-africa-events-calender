@@ -38,7 +38,7 @@ const hook = (
   data: Record<string, unknown>,
   originalDoc: any = valid,
   role = "approver",
-  review: any = { aiStatus: "completed", humanDecision: "accepted" },
+  review: any = { aiStatus: "completed", humanDecision: "accepted", originalListing: originalDoc },
 ) =>
   validateEvent({
     data,

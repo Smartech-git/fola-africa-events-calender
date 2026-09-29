@@ -1,4 +1,7 @@
+import { reviewAfterSubmission } from "@/payload/reviews/after-submission";
 import { createEventSubmission } from "@/payload/submissions/submit-event";
+
+export const maxDuration = 120;
 
 export async function POST(request: Request) {
   if (!request.headers.get("content-type")?.includes("application/json")) {
@@ -33,6 +36,7 @@ export async function POST(request: Request) {
     }
     body += decoder.decode();
     const { status, ...result } = await createEventSubmission(JSON.parse(body));
+    if (result.success) reviewAfterSubmission();
     return Response.json(result, { status });
   } catch {
     return Response.json(

@@ -3,6 +3,7 @@ import SectionWrapper from "@/components/layout/section-wrapper";
 import { getSubmissionOptions } from "@/payload/submissions/options";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 120;
 
 export default async function SubmitEventPage() {
   let options;

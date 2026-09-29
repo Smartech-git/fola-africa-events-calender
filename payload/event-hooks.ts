@@ -7,25 +7,12 @@ import {
 
 import { roleOf } from "@/payload/access";
 import { PRIVATE_ACCESS, PUBLIC_STATUSES } from "@/payload/constants";
+import {
+  editorialFields,
+  eventSnapshot,
+  matchesSnapshot,
+} from "@/payload/reviews/event-snapshot";
 import { eventProblems, relationID } from "@/payload/validation";
-
-const editorialFields = [
-  "title",
-  "city",
-  "startAt",
-  "endAt",
-  "allDay",
-  "industry",
-  "secondaryIndustry",
-  "eventType",
-  "access",
-  "visibility",
-  "actionUrl",
-  "organiser",
-  "venue",
-  "seasons",
-  "description",
-];
 
 export const deleteEventReviews: CollectionBeforeDeleteHook = async ({
   id,
@@ -157,6 +144,7 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
         if (
           !review ||
           review.aiStatus !== "completed" ||
+          !matchesSnapshot(event, review.originalListing) ||
           !["accepted", "amended"].includes(review.humanDecision || "")
         )
           throw new APIError(
@@ -227,9 +215,7 @@ export const queueEventReview: CollectionAfterChangeHook = async ({
       (key) => JSON.stringify(doc[key]) !== JSON.stringify(previousDoc?.[key]),
     );
   if (doc.status !== "submitted" || !changed) return doc;
-  const originalListing = Object.fromEntries(
-    editorialFields.map((key) => [key, doc[key] ?? null]),
-  );
+  const originalListing = eventSnapshot(doc);
   await req.payload.create({
     collection: "event-reviews",
     req,

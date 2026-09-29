@@ -2,6 +2,7 @@ import type { GlobalConfig } from "payload";
 
 import { isAdmin, isStaff } from "@/payload/access";
 import { DEFAULT_REVIEW_PROMPT } from "@/payload/constants";
+import { REVIEW_MODEL } from "@/payload/reviews/review-schema";
 
 export const ReviewSettings: GlobalConfig = {
   slug: "review-settings",
@@ -9,7 +10,7 @@ export const ReviewSettings: GlobalConfig = {
   admin: {
     group: "Review",
     description:
-      "Prompt configuration for the future Anthropic review worker. No credentials are stored in this document.",
+      "Groq reviews submitted events and suggests edits. Staff make publication decisions. API credentials stay in server environment variables.",
   },
   access: { read: isStaff, update: isAdmin, readVersions: isStaff },
   versions: { max: 30 },
@@ -29,9 +30,15 @@ export const ReviewSettings: GlobalConfig = {
     {
       name: "model",
       type: "text",
+      defaultValue: REVIEW_MODEL,
+      hooks: {
+        beforeValidate: [() => REVIEW_MODEL],
+        afterRead: [() => REVIEW_MODEL],
+      },
       admin: {
+        readOnly: true,
         description:
-          "Set a supported Anthropic model when enabling the review worker.",
+          "GPT-OSS 120B on Groq. The worker uses this model with strict structured output.",
       },
     },
   ],

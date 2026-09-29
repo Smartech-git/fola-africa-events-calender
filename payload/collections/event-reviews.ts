@@ -7,6 +7,7 @@ import {
   noAccess,
   roleOf,
 } from "@/payload/access";
+import { enqueueReview } from "@/payload/reviews/review-task";
 
 export const eventReviews: CollectionConfig = {
   slug: "event-reviews",
@@ -32,6 +33,7 @@ export const eventReviews: CollectionConfig = {
   },
   versions: { maxPerDoc: 30 },
   hooks: {
+    afterChange: [enqueueReview],
     beforeChange: [
       ({ data, originalDoc, req, operation }) => {
         if (
@@ -90,7 +92,7 @@ export const eventReviews: CollectionConfig = {
       access: { update: adminField },
       admin: {
         description:
-          "Administrators can update this status manually. Manual event approval does not require marking AI review as completed.",
+          "Groq processes queued reviews. To retry a failed review, set this to Pending. Administrator approval can still proceed manually.",
       },
     },
     {
