@@ -11,6 +11,7 @@ import {
 } from "@/lib/events/event-list";
 import { getMonthQuery } from "@/lib/events/event-month";
 import { getWeekQuery } from "@/lib/events/event-week";
+import { pageMetadata } from "@/lib/metadata";
 import { getEventList } from "@/requests/events/get-event-list";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
 import { getEventsHeader } from "@/requests/events/get-events-header";
@@ -19,6 +20,16 @@ import { getCities } from "@/requests/get-cities";
 interface Props {
   params: Promise<{ city: string }>;
   searchParams: Promise<EventSearchParams>;
+}
+
+export async function generateMetadata({ params }: Props) {
+  const { city } = await params;
+  const header = await getEventsHeader({ city });
+  return pageMetadata(
+    `${header.city.name} events`,
+    `Explore concerts, exhibitions, business gatherings and more in ${header.city.name}. Browse the FOLA calendar by date, industry and access.`,
+    `/events/${encodeURIComponent(city)}`,
+  );
 }
 export default async function Page({ params, searchParams }: Props) {
   const { city } = await params;

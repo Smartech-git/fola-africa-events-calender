@@ -76,7 +76,7 @@ const Select = forwardRef<HTMLSelectElement, Props>(
           ...popoverProps?.classNames,
           base: cn("z-[110]", popoverProps?.classNames?.base),
           content: cn(
-            "rounded-none bg-primary-light",
+            "rounded-none border border-light-gray bg-primary-light",
             popoverProps?.classNames?.content,
           ),
         },

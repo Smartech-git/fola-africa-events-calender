@@ -1,6 +1,13 @@
 import SubmitEventForm from "@/components/contents/events/submit-event-form";
 import SectionWrapper from "@/components/layout/section-wrapper";
+import { pageMetadata } from "@/lib/metadata";
 import { getSubmissionOptions } from "@/payload/submissions/options";
+
+export const metadata = pageMetadata(
+  "Submit an event",
+  "Share your event with FOLA’s Africa events calendar. Submit the details for review and help people discover what is happening in your city.",
+  "/submit-event",
+);
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;

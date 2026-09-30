@@ -1,7 +1,172 @@
-import React from 'react'
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
-export default function Event() {
+import { ArrowLeft } from "lucide-react";
+import type { Metadata } from "next";
+
+import FadeUpText from "@/components/animations/fade-up-text";
+import HoverText from "@/components/animations/hover-text";
+import LabelTitle from "@/components/common/label-title";
+import {
+  EventAttendanceAction,
+  EventCalendarActions,
+  EventExternalAction,
+} from "@/components/contents/events/event-actions";
+import EventFacts from "@/components/contents/events/event-facts";
+import EventLocation from "@/components/contents/events/event-location";
+import SectionWrapper from "@/components/layout/section-wrapper";
+import Button from "@/components/ui/button";
+import {
+  cityDate,
+  eventPath,
+  externalUrl,
+  formatDay,
+} from "@/lib/events/event-list";
+import { pageMetadata, siteUrl } from "@/lib/metadata";
+import { getEvent } from "@/requests/events/get-event";
+
+interface Props {
+  params: Promise<{ city: string; event: string }>;
+}
+
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { city, event: slug } = await params;
+  const event = await getEvent(slug, city);
+  if (!event) notFound();
+  return pageMetadata(
+    `${event.title} in ${event.city!.name}`,
+    event.description ||
+      `${event.title} in ${event.city!.name} on ${formatDay(cityDate(event.startAt, event.city!.timezone), "d MMMM yyyy")}. View event details on FOLA.`,
+    eventPath(event, city),
+  );
+}
+
+export default async function EventPage({ params }: Props) {
+  const { city, event: slug } = await params;
+  const event = await getEvent(slug, city);
+  if (!event) notFound();
+  const { timezone, name: cityName } = event.city!;
+  const date = cityDate(event.startAt, timezone);
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: event.title,
+    description: event.description || undefined,
+    startDate: event.allDay ? date : event.startAt,
+    endDate: event.endAt
+      ? event.allDay
+        ? cityDate(event.endAt, timezone)
+        : event.endAt
+      : undefined,
+    url: new URL(eventPath(event, city), siteUrl).href,
+    eventStatus: `https://schema.org/${event.status === "cancelled" ? "EventCancelled" : event.status === "postponed" ? "EventPostponed" : "EventScheduled"}`,
+    isAccessibleForFree: event.access === "free" ? true : undefined,
+    location: event.venue
+      ? {
+          "@type": "Place",
+          name: event.venue.name,
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: event.venue.address || undefined,
+            addressLocality: cityName,
+          },
+        }
+      : undefined,
+    organizer: event.organiser
+      ? {
+          "@type": "Organization",
+          name: event.organiser.name,
+          url: externalUrl(event.organiser.website),
+        }
+      : undefined,
+  };
+
   return (
-    <div>page</div>
-  )
+    <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+        }}
+      />
+      <SectionWrapper>
+        <div className="">
+          <Link href={`/events/${encodeURIComponent(city)}`}>
+            <Button
+              startContent={<ArrowLeft size={12} />}
+              variant="flat"
+              size="fit"
+            >
+              <HoverText text="Back to events" />
+            </Button>
+          </Link>
+          <div className="mt-8 space-y-4">
+            <p className="text-xl uppercase font-light sm:text-3xl lg:text-5xl">
+              <time dateTime={date}>{formatDay(date, "dd MMMM")}</time>
+            </p>
+            <FadeUpText
+              as="h1"
+              className="font-apris text-4xl text-primary uppercase sm:text-6xl lg:text-7xl"
+              text={event.title}
+            />
+            <div className="space-y-2 text-xs uppercase sm:text-sm">
+              <EventFacts event={event} timezone={timezone} showTimezone />
+              {event.venue && <p>{event.venue.name}</p>}
+              {event.verified && (
+                <p className="w-fit bg-secondary px-2 py-0.5 text-xxs sm:text-xs">
+                  Verified by organiser
+                </p>
+              )}
+            </div>
+            <div className="flex sm:flex-row flex-col sm:items-center gap-x-8 gap-y-4 pt-4">
+              <EventAttendanceAction event={event} prominent />
+              <EventCalendarActions
+                event={event}
+                timezone={timezone}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="mt-8 space-y-8 border-t border-light-gray py-8">
+          {event.description && (
+            <FadeUpText
+              as="p"
+              className="text-xs w-full uppercase sm:text-sm"
+              text={event.description}
+            />
+          )}
+          {event.organiser && (
+            <section aria-labelledby="event-organiser" className="space-y-4">
+              <LabelTitle title="Organiser" />
+              <p className="text-xs uppercase sm:text-xs">
+                {event.organiser.name}
+              </p>
+              <EventExternalAction
+                url={event.organiser.website}
+                label="Organiser website"
+              />
+            </section>
+          )}
+          <EventLocation event={event} />
+          {event.seasons.length > 0 && (
+            <section
+              aria-labelledby="event-seasons"
+              className="space-y-4 border-t border-light-gray pt-8"
+            >
+             
+              <LabelTitle title=" Part of" />
+
+              <ul className="flex flex-wrap gap-6 text-sm uppercase">
+                {event.seasons.map((season) => (
+                  <li key={season.slug}>{season.name}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
+      </SectionWrapper>
+    </main>
+  );
 }

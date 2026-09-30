@@ -7,6 +7,7 @@ import "@/app/styles/globals.css";
 import Header from "@/components/header/header";
 import LenisProvider from "@/components/providers/lenis-provider";
 import Toast from "@/components/ui/toast";
+import { siteUrl, siteDescription } from "@/lib/metadata";
 
 const apris = localFont({
   src: [
@@ -31,10 +32,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Africa’s Events Calendar",
-  description:
-    "A single, authoritative schedule of what is happening across Africa’s creative and business capitals",
-  // metadataBase: new URL("https://wewantfola.com"),
+  title: { default: "FOLA | Africa’s Events Calendar", template: "%s | FOLA" },
+  description: siteDescription,
+  metadataBase: siteUrl,
 };
 
 export const viewport: Viewport = {

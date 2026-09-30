@@ -53,7 +53,7 @@ function readDate(value?: string) {
   }
 }
 
-export function  getListQuery(params: EventSearchParams, city: string) {
+export function getListQuery(params: EventSearchParams, city: string) {
   const first = (key: string) => {
     const value = params[key];
     return Array.isArray(value) ? value[0] : value;
@@ -168,9 +168,12 @@ export function eventAnchor(event: PublicEvent, date: string) {
   return `event-${event.id}-${date}`;
 }
 
-export function eventPath(event: PublicEvent, city: string, timezone: string) {
-  const date = cityDate(event.startAt, timezone);
-  return `${dayPath(city, date)}#${eventAnchor(event, date)}`;
+export function eventPath(event: PublicEvent, city: string) {
+  return `/events/${encodeURIComponent(city)}/${encodeURIComponent(event.slug)}`;
+}
+
+export function eventSharePath(event: PublicEvent) {
+  return eventPath(event, event.city!.slug);
 }
 
 export function externalUrl(value?: string | null) {

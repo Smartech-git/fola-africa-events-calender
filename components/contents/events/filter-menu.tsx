@@ -121,13 +121,7 @@ export default function FilterMenu({ cities, currentCity }: Props) {
           <>
             <Drawer.Header className="relative shrink-0 border-t border-light-gray py-4 2xl:px-pg-2xl 4k:px-pg-4k">
               <Button
-                startContent={
-                  <ArrowLeft
-                    size={12}
-                    className="translate-x-1 transition-all group-hover:translate-x-0"
-                  />
-                }
-                className="ml-1"
+                startContent={<ArrowLeft size={12} />}
                 onPress={onClose}
                 variant="flat"
                 size="fit"

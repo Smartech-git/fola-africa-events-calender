@@ -2,32 +2,20 @@
 
 import { useRef, useState } from "react";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, Dot } from "lucide-react";
 
 import FadeUpText from "@/components/animations/fade-up-text";
-import HoverText from "@/components/animations/hover-text";
 import PixelBlast from "@/components/animations/pixel-blast";
-import Button from "@/components/ui/button";
 import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem_,
-} from "@/components/ui/drop-down";
-import {
-  downloadEventCalendar,
-  openExternal,
-  shareLink,
-} from "@/lib/events/event-actions";
-import { googleCalendarUrl } from "@/lib/events/event-calendar";
-import {
-  eventAnchor,
-  eventPath,
-  eventTime,
-  externalUrl,
-} from "@/lib/events/event-list";
-import { ACCESS_OPTIONS, EVENT_TYPES, INDUSTRIES } from "@/payload/constants";
+  EventAttendanceAction,
+  EventCalendarActions,
+  EventExternalAction,
+} from "@/components/contents/events/event-actions";
+import EventFacts from "@/components/contents/events/event-facts";
+import { eventAnchor, eventPath, externalUrl } from "@/lib/events/event-list";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
 
 interface Props {
@@ -37,30 +25,11 @@ interface Props {
   date: string;
 }
 
-const attendanceLabels: Record<string, string> = {
-  tickets: "Buy tickets",
-  rsvp: "RSVP",
-  free: "More information",
-};
-
 export default function EventListCard({ event, city, timezone, date }: Props) {
+  const router = useRouter();
   const cardRef = useRef<HTMLElement>(null);
   const [isHovered, setIsHovered] = useState(false);
-  const path = eventPath(event, city, timezone);
-  const industry = INDUSTRIES.find(
-    (item) => item.value === event.industry,
-  )?.label;
-  const type = EVENT_TYPES.find(
-    (item) => item.value === event.eventType,
-  )?.label;
-  const access =
-    ACCESS_OPTIONS.find((item) => item.value === event.access)?.label ??
-    event.access;
-  const actionLabel = attendanceLabels[event.access];
-  const actionUrl =
-    actionLabel && event.status === "published"
-      ? externalUrl(event.actionUrl)
-      : undefined;
+  const path = eventPath(event, city);
   const mapUrl = externalUrl(event.venue?.mapUrl);
   const anchor = eventAnchor(event, date);
 
@@ -68,144 +37,71 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
     <article
       ref={cardRef}
       id={anchor}
-      aria-labelledby={`${anchor}-title`}
+      aria-labelledby={anchor + "-title"}
       className="group relative isolate cursor-pointer scroll-mt-56 border-b border-light-gray py-6"
+      onClick={(e) => {
+        if (
+          e.defaultPrevented ||
+          e.button !== 0 ||
+          e.metaKey ||
+          e.ctrlKey ||
+          e.shiftKey ||
+          e.altKey
+        )
+          return;
+        const target = e.target as HTMLElement;
+        if (
+          !e.currentTarget.contains(target) ||
+          target.closest(
+            "a, button, [role='menuitem'], [data-event-actions]",
+          ) ||
+          window.getSelection()?.toString()
+        )
+          return;
+        router.push(path);
+      }}
       onPointerEnter={(event) => {
         if (event.pointerType !== "touch") setIsHovered(true);
       }}
       onPointerLeave={() => setIsHovered(false)}
       onPointerCancel={() => setIsHovered(false)}
     >
-      <FadeUpText
-        as="h3"
-        id={`${anchor}-title`}
-        delay={0.3}
-        className="relative z-10 font-apris text-2xl font-medium wrap-break-word text-primary uppercase sm:text-3xl"
-        text={event.title}
-      />
+      <Link
+        href={path}
+        className="relative z-10 block w-fit focus-visible:outline-2 focus-visible:outline-primary"
+      >
+        <FadeUpText
+          as="h3"
+          id={anchor + "-title"}
+          delay={0.3}
+          className="font-apris text-2xl font-medium wrap-break-word text-primary uppercase sm:text-3xl"
+          text={event.title}
+        />
+      </Link>
       <div className="relative z-10 mt-1 space-y-1 text-xs leading-relaxed uppercase sm:text-sm">
-        <p>
-          <time dateTime={event.startAt}>{eventTime(event, timezone)}</time>
-        </p>
-        {event.eventType && (
-          <p className="flex flex-wrap items-center">
-            <span>{type ?? event.eventType}</span>
-            {industry && (
-              <>
-                <Dot
-                  size={24}
-                  className="shrink-0 text-primary"
-                  aria-hidden="true"
-                />
-                <span>{industry}</span>
-              </>
-            )}
-          </p>
-        )}
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
-          <p>{access}</p>
-          {actionUrl && (
-            <Button
-              variant="flat"
-              size="fit"
-              aria-label={`${actionLabel} for ${event.title} (opens in a new tab)`}
-              onPress={() => openExternal(actionUrl)}
-              endContent={
-                <ArrowUpRight
-                  size={14}
-                  className="transition-all group-hover:translate-x-1"
-                  aria-hidden="true"
-                />
-              }
-            >
-              <HoverText text={actionLabel} />
-            </Button>
-          )}
-        </div>
-        {event.venue &&
-          (mapUrl ? (
-            <Button
-              variant="flat"
-              size="fit"
-              className="max-w-full justify-start text-left text-xs whitespace-normal sm:text-xs"
-              onPress={() => openExternal(mapUrl)}
-              aria-label={`View ${event.venue.name} on a map (opens in a new tab)`}
-              endContent={
-                <ArrowUpRight
-                  size={14}
-                  className="shrink-0 transition-all group-hover:translate-x-1"
-                  aria-hidden="true"
-                />
-              }
-            >
-              <HoverText text={event.venue.name} />
-            </Button>
-          ) : (
-            <p>{event.venue.name}</p>
-          ))}
-        {event.status === "cancelled" && (
-          <p className="font-medium">Cancelled</p>
-        )}
-        {event.status === "postponed" && (
-          <p className="flex flex-wrap items-center font-medium">
-            <span>Postponed</span>
-            <Dot
-              size={24}
-              className="shrink-0 text-primary"
-              aria-hidden="true"
-            />
-            <span>New date to be confirmed</span>
-          </p>
-        )}
-      </div>
-      <div className="relative z-10 mt-4 flex flex-wrap gap-x-6 gap-y-1">
-        <Dropdown>
-          <DropdownTrigger asChild>
-            <Button
-              variant="link"
-              size="fit"
-              className="border-b border-dark-gray"
-              aria-label={`Add ${event.title} to calendar`}
-            >
-              <HoverText text="Add to calendar" />
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu
-            aria-label={`Calendar options for ${event.title}`}
-            onAction={(key) => {
-              if (key === "ics") downloadEventCalendar(event, timezone, path);
-              if (key === "google")
-                openExternal(
-                  googleCalendarUrl(
-                    event,
-                    timezone,
-                    new URL(path, window.location.origin).href,
-                  ),
-                );
-            }}
-          >
-            <DropdownItem_ key="ics">
-              Download .ics (Apple / Outlook)
-            </DropdownItem_>
-            <DropdownItem_
-              key="google"
-              endContent={<ArrowUpRight size={14} aria-hidden="true" />}
-            >
-              Google Calendar
-            </DropdownItem_>
-          </DropdownMenu>
-        </Dropdown>
-        <Button
-          variant="link"
-          size="fit"
-          className="border-b border-dark-gray"
-          aria-label={`Share ${event.title}`}
-          onPress={() => {
-            void shareLink(event.title, path);
-          }}
+        <EventFacts event={event} timezone={timezone} />
+        <div
+          data-event-actions
+          className="flex w-full flex-wrap items-center justify-between gap-x-6 gap-y-1"
         >
-          <HoverText text="Share" />
-        </Button>
+          {event.venue &&
+            (mapUrl ? (
+              <EventExternalAction
+                url={mapUrl}
+                label={event.venue.name}
+                className="max-w-full justify-start text-left text-xs whitespace-normal sm:text-xs"
+              />
+            ) : (
+              <p>{event.venue.name}</p>
+            ))}
+          <EventAttendanceAction event={event} />
+        </div>
+      </div>
+      <div
+        data-event-actions
+        className="relative z-10 mt-4 flex flex-wrap gap-x-6 gap-y-1"
+      >
+        <EventCalendarActions event={event} timezone={timezone} />
       </div>
 
       <AnimatePresence>

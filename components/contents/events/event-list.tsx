@@ -65,13 +65,19 @@ export default function EventList({
   }, []);
 
   useEffect(() => {
-    if (!lenis || scrolledHash.current || !globalThis.location.hash) return;
-    const element = document.getElementById(globalThis.location.hash.slice(1));
+    if (!lenis || scrolledHash.current || !days.length) return;
+    const hash = globalThis.location.hash.slice(1);
+    // Explicit links and date filters take precedence over the default today jump.
+    const targetDate =
+      query.range.from || query.range.to
+        ? undefined
+        : days.find((day) => day.date >= today)?.date;
+    const element = document.getElementById(hash || `day-${targetDate}`);
     if (element && container.current?.contains(element)) {
       lenis.scrollTo(element, { offset: -210, immediate: true });
       scrolledHash.current = true;
     }
-  }, [lenis, days]);
+  }, [lenis, days, today, query.range.from, query.range.to]);
 
   const retry = async () => {
     if (busy.current || invalidFilters) return;

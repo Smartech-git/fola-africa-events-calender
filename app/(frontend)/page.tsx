@@ -5,7 +5,14 @@ import Hero from "@/components/contents/home/hero-two";
 import OnTheRadar from "@/components/contents/home/on-the-radar";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
+import { pageMetadata, siteDescription } from "@/lib/metadata";
 import { getCities } from "@/requests/get-cities";
+
+export const metadata = pageMetadata(
+  "Africa’s Events Calendar",
+  siteDescription,
+  "/",
+);
 
 export default async function Home() {
   const cities = await getCities({});
