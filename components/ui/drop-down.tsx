@@ -64,7 +64,7 @@ const DropdownTrigger = ({
         disableAnimation={true}
         {...props}
         className={cn(
-          "h-11.5 w-full justify-between rounded-none border-light-gray px-3 text-left text-sm font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+          "w-full justify-between rounded-none border-light-gray px-3 text-left font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
           className,
           buttonClassName,
         )}

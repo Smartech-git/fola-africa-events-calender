@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 import type { Metadata } from "next";
 
 import FadeUpText from "@/components/animations/fade-up-text";
@@ -103,7 +103,7 @@ export default async function EventPage({ params }: Props) {
             </Button>
           </Link>
           <div className="mt-8 space-y-4">
-            <p className="text-xl uppercase font-light sm:text-3xl lg:text-5xl">
+            <p className="text-xl font-light uppercase sm:text-3xl lg:text-5xl">
               <time dateTime={date}>{formatDay(date, "dd MMMM")}</time>
             </p>
             <FadeUpText
@@ -113,19 +113,20 @@ export default async function EventPage({ params }: Props) {
             />
             <div className="space-y-2 text-xs uppercase sm:text-sm">
               <EventFacts event={event} timezone={timezone} showTimezone />
-              {event.venue && <p>{event.venue.name}</p>}
-              {event.verified && (
-                <p className="w-fit bg-secondary px-2 py-0.5 text-xxs sm:text-xs">
-                  Verified by organiser
-                </p>
-              )}
+
+              <div className="flex flex-wrap items-center gap-2">
+                {event.venue && <p>{event.venue.name}</p>}
+                {event.verified && (
+                  <p className="flex w-fit items-center gap-1 bg-secondary px-2 py-0.5 text-xxs sm:text-xs">
+                    <Check size={12} className="text-inherit" /> Verified by
+                    organiser
+                  </p>
+                )}
+              </div>
             </div>
-            <div className="flex sm:flex-row flex-col sm:items-center gap-x-8 gap-y-4 pt-4">
+            <div className="flex flex-col gap-x-8 gap-y-4 pt-4 sm:flex-row sm:items-center">
               <EventAttendanceAction event={event} prominent />
-              <EventCalendarActions
-                event={event}
-                timezone={timezone}
-              />
+              <EventCalendarActions event={event} timezone={timezone} />
             </div>
           </div>
         </div>
@@ -133,7 +134,7 @@ export default async function EventPage({ params }: Props) {
           {event.description && (
             <FadeUpText
               as="p"
-              className="text-xs w-full uppercase sm:text-sm"
+              className="w-full text-xs uppercase sm:text-sm"
               text={event.description}
             />
           )}
@@ -155,7 +156,6 @@ export default async function EventPage({ params }: Props) {
               aria-labelledby="event-seasons"
               className="space-y-4 border-t border-light-gray pt-8"
             >
-             
               <LabelTitle title=" Part of" />
 
               <ul className="flex flex-wrap gap-6 text-sm uppercase">

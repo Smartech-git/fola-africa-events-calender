@@ -65,19 +65,13 @@ export default function EventList({
   }, []);
 
   useEffect(() => {
-    if (!lenis || scrolledHash.current || !days.length) return;
-    const hash = globalThis.location.hash.slice(1);
-    // Explicit links and date filters take precedence over the default today jump.
-    const targetDate =
-      query.range.from || query.range.to
-        ? undefined
-        : days.find((day) => day.date >= today)?.date;
-    const element = document.getElementById(hash || `day-${targetDate}`);
+    if (!lenis || scrolledHash.current || !globalThis.location.hash) return;
+    const element = document.getElementById(globalThis.location.hash.slice(1));
     if (element && container.current?.contains(element)) {
       lenis.scrollTo(element, { offset: -210, immediate: true });
       scrolledHash.current = true;
     }
-  }, [lenis, days, today, query.range.from, query.range.to]);
+  }, [lenis, days]);
 
   const retry = async () => {
     if (busy.current || invalidFilters) return;
@@ -161,7 +155,7 @@ export default function EventList({
         {!days.length && !error && (
           <div className="space-y-3 py-12" role="status">
             <h2 className="font-apris text-3xl uppercase">No events found</h2>
-            <p className="text-sm">
+            <p className="text-xs uppercase">
               There are no published events matching these filters. Try another
               date or clear your filters.
             </p>
@@ -172,7 +166,7 @@ export default function EventList({
         )}
         {error && (
           <div role="alert" className="space-y-3 py-8">
-            <p className="text-xs">{error}</p>
+            <p className="text-xs uppercase">{error}</p>
             <Button
               size="sm"
               onPress={
@@ -182,6 +176,7 @@ export default function EventList({
                       void retry();
                     }
               }
+              className="min-w-18"
               isLoading={loading}
               disabled={loading}
             >

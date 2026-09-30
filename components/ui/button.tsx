@@ -11,7 +11,7 @@ import { LoaderCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const button = cva(
-  "group relative flex w-fit flex-none cursor-pointer items-center justify-center gap-1 overflow-hidden font-inter text-xs font-medium text-nowrap whitespace-nowrap uppercase transition-all outline-none hover:opacity-100 data-[pressed=true]:scale-[0.97]",
+  "group relative flex w-fit flex-none cursor-pointer items-center justify-center gap-1 overflow-hidden font-inter text-xs font-semibold text-nowrap whitespace-nowrap uppercase transition-all outline-none hover:opacity-100 data-[pressed=true]:scale-[0.97]",
   {
     variants: {
       variant: {

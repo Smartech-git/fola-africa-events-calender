@@ -49,7 +49,7 @@ const Select = forwardRef<HTMLSelectElement, Props>(
           classNames?.trigger,
         ),
         value: cn(
-          "truncate text-left text-xs font-normal text-dark-gray/45! uppercase group-data-[has-value=true]:text-dark-gray!",
+          "truncate text-left text-xs font-normal text-dark-gray uppercase group-data-[has-value=true]:text-dark-gray!",
           classNames?.value,
         ),
         selectorIcon: cn("shrink-0 text-dark-gray", classNames?.selectorIcon),

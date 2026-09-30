@@ -29,6 +29,7 @@ import type { CitySummary } from "@/requests/get-cities";
 interface Props {
   cities: CitySummary[];
   currentCity: string;
+  defaultDateFrom?: string;
 }
 
 interface Filters {
@@ -57,12 +58,18 @@ function selectedValues(values: string[], options: { value: string }[]) {
     .map((option) => option.value);
 }
 
-export default function FilterMenu({ cities, currentCity }: Props) {
+export default function FilterMenu({
+  cities,
+  currentCity,
+  defaultDateFrom,
+}: Props) {
   const { getFilterValue, getFilterValues } = useRouteParam();
   const filters: Filters = {
     city: currentCity,
     dateFrom: readDate(
-      getFilterValue(FILTER_KEYS.dateFrom) ?? getFilterValue(FILTER_KEYS.date),
+      getFilterValue(FILTER_KEYS.dateFrom) ??
+        getFilterValue(FILTER_KEYS.date) ??
+        (getFilterValue(FILTER_KEYS.dateTo) ? undefined : defaultDateFrom),
     ),
     dateTo: readDate(
       getFilterValue(FILTER_KEYS.dateTo) ?? getFilterValue(FILTER_KEYS.date),
@@ -149,6 +156,7 @@ export default function FilterMenu({ cities, currentCity }: Props) {
                     key={JSON.stringify(filters)}
                     cities={cities}
                     initialFilters={filters}
+                    defaultDateFrom={defaultDateFrom}
                     onClose={onClose}
                   />
                 </SectionWrapper>
@@ -164,10 +172,12 @@ export default function FilterMenu({ cities, currentCity }: Props) {
 function FilterOptions({
   cities,
   initialFilters,
+  defaultDateFrom,
   onClose,
 }: {
   cities: CitySummary[];
   initialFilters: Filters;
+  defaultDateFrom?: string;
   onClose: () => void;
 }) {
   const { handleParamSet, clearAllParams } = useRouteParam();
@@ -209,7 +219,7 @@ function FilterOptions({
     clearAllParams();
     setFilters({
       city: initialFilters.city,
-      dateFrom: null,
+      dateFrom: readDate(defaultDateFrom),
       dateTo: null,
       industry: [],
       access: [],

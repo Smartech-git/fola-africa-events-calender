@@ -7,6 +7,7 @@ import { EVENTS_LAYOUT_KEY } from "@/constants/filters";
 import {
   cityDate,
   getListQuery,
+  shiftDate,
   type EventSearchParams,
 } from "@/lib/events/event-list";
 import { getMonthQuery } from "@/lib/events/event-month";
@@ -47,7 +48,9 @@ export default async function Page({ params, searchParams }: Props) {
   const isMonth =
     (Array.isArray(viewParam) ? viewParam[0] : viewParam) === "month";
 
-  let query = getListQuery({}, city);
+  const defaultDateFrom =
+    !isWeek && !isMonth ? shiftDate(today, -2) : undefined;
+  let query = getListQuery({}, city, defaultDateFrom);
   let weekQuery = getWeekQuery({}, city, today);
   let monthQuery = getMonthQuery({}, city, today);
 
@@ -62,7 +65,7 @@ export default async function Page({ params, searchParams }: Props) {
       weekQuery = getWeekQuery(filters, city, today);
       query = weekQuery;
     } else {
-      query = getListQuery(filters, city);
+      query = getListQuery(filters, city, defaultDateFrom);
     }
   } catch (error) {
     invalidFilters = true;
@@ -82,7 +85,11 @@ export default async function Page({ params, searchParams }: Props) {
   return (
     <>
       <EventsHeader data={eventsHeader} />
-      <FilterMenu cities={cities.data} currentCity={city} />
+      <FilterMenu
+        cities={cities.data}
+        currentCity={city}
+        defaultDateFrom={defaultDateFrom}
+      />
       {isMonth ? (
         <EventMonth
           key={JSON.stringify([city, filters])}

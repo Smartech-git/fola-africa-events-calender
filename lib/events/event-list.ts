@@ -53,7 +53,11 @@ function readDate(value?: string) {
   }
 }
 
-export function getListQuery(params: EventSearchParams, city: string) {
+export function getListQuery(
+  params: EventSearchParams,
+  city: string,
+  defaultDateFrom?: string,
+) {
   const first = (key: string) => {
     const value = params[key];
     return Array.isArray(value) ? value[0] : value;
@@ -73,8 +77,10 @@ export function getListQuery(params: EventSearchParams, city: string) {
     return [...new Set(values)];
   };
   const date = readDate(first(FILTER_KEYS.date));
-  const from = readDate(first(FILTER_KEYS.dateFrom));
   const to = readDate(first(FILTER_KEYS.dateTo));
+  const from =
+    readDate(first(FILTER_KEYS.dateFrom)) ??
+    (!date && !to ? defaultDateFrom : undefined);
   if (date && (from || to))
     throw new Error("Choose a single date or a date range, not both.");
   if (from && to && from > to) throw new Error("From must be on or before To.");

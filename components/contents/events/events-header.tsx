@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import {
   format,
   isSameDay,
@@ -14,6 +16,7 @@ import HeaderTitle from "@/components/common/header-title";
 import LabelTitle from "@/components/common/label-title";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import LenisProvider from "@/components/providers/lenis-provider";
+import Button from "@/components/ui/button";
 import type {
   EventsHeader as EventsHeaderData,
   SeasonSummary,
@@ -55,32 +58,40 @@ function formatSeasonDates(season: SeasonSummary, timezone: string) {
 export default function EventsHeader({ data: { city, seasons } }: Props) {
   return (
     <SectionWrapper className="gap-6 pb-2 sm:pb-4">
-      <div className="flex w-full flex-col">
-        <HeaderTitle text={city.name} />
-        <span className="text-xs uppercase">
-          Time in {city.timezoneLabel || city.timezone}
-        </span>
+      <div className="flex w-full justify-between gap-8">
+        <div className="flex w-full flex-col">
+          <HeaderTitle text={city.name} />
+          <span className="text-xs uppercase">
+            Time in {city.timezoneLabel || city.timezone}
+          </span>
+        </div>
+        <Link className="mt-1 w-fit" href={`/submit-event`}>
+          <Button size="fit" variant="link">
+            <HoverText text="Submit event" />
+          </Button>
+        </Link>
       </div>
       {seasons.length > 0 && (
         <div className="flex flex-col gap-2">
           <LabelTitle title="Upcoming seasons" />
           <LenisProvider
             orientation="horizontal"
-            className="h-auto overflow-x-auto overflow-y-hidden *:flex *:min-h-0 *:w-max *:gap-2"
+            className="h-fit overflow-x-auto overflow-y-hidden *:flex *:min-h-0 *:w-max *:gap-2"
           >
             {seasons.map((season, idx) => {
               const dates = formatSeasonDates(season, city.timezone);
               return (
                 <Fade
-                  delay={idx * 0.2}
+                  delay={idx < 6 ? idx * 0.2 : 0}
                   key={season.id}
                   translateX={12}
                   translateY={0}
-                  amount={0.1}
+                  amount={0.0}
+                  once
                 >
                   <div
                     data-hover-text
-                    className="group relative flex min-h-28 w-75 cursor-pointer flex-col justify-between border border-light-gray/50 p-4"
+                    className="group relative flex h-full min-h-28 w-75 cursor-pointer flex-col justify-between border border-light-gray p-4"
                   >
                     <div>
                       <div className="flex flex-wrap items-center">
