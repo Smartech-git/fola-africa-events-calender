@@ -131,7 +131,6 @@ export default function SubmitEventForm({
             name={field.name}
             aria-labelledby={`${name}-label`}
             granularity="minute"
-            hourCycle={24}
             value={field.value ? parseDateTime(field.value) : null}
             minValue={
               name === "endAt" && startAt

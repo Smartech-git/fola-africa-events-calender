@@ -15,10 +15,12 @@ const DatePicker = forwardRef<HTMLElement, DatePickerProps>(
       labelPlacement = "outside",
       variant = "bordered",
       radius = "none",
+      hourCycle = 12,
       classNames,
       calendarProps,
       popoverProps,
       selectorButtonProps,
+      timeInputProps,
       ...props
     },
     ref,
@@ -26,8 +28,10 @@ const DatePicker = forwardRef<HTMLElement, DatePickerProps>(
     <HeroUIDatePicker
       ref={ref}
       labelPlacement={labelPlacement}
+      showMonthAndYearPickers
       variant={variant}
       radius={radius}
+      hourCycle={hourCycle}
       {...props}
       classNames={{
         ...classNames,
@@ -58,7 +62,19 @@ const DatePicker = forwardRef<HTMLElement, DatePickerProps>(
           classNames?.popoverContent,
         ),
         description: "uppercase text-xs text-dark-gray/75",
+        timeInput: cn(
+          "border-none bg-primary-light font-inter",
+          "[&_[data-slot=input-wrapper]]:h-[36px] [&_[data-slot=input-wrapper]]:min-h-[36px] [&_[data-slot=input-wrapper]]:rounded-none [&_[data-slot=input-wrapper]]:border [&_[data-slot=input-wrapper]]:border-light-gray [&_[data-slot=input-wrapper]]:bg-transparent [&_[data-slot=input-wrapper]]:px-3 [&_[data-slot=input-wrapper]]:shadow-none",
+          "[&_[data-slot=input-wrapper][data-hover=true]]:border-primary [&_[data-slot=input-wrapper][data-hover=true]]:bg-transparent [&_[data-slot=input-wrapper]:focus-within]:border-primary [&_[data-slot=input-wrapper]:focus-within]:bg-transparent",
+          "[&_[data-slot=segment]]:rounded-none [&_[data-slot=segment]]:text-xs [&_[data-slot=segment]]:uppercase [&_[data-slot=segment]]:text-dark-gray [&_[data-slot=segment][data-placeholder=true]]:text-primary [&_[data-slot=segment]:focus]:bg-secondary [&_[data-slot=segment]:focus]:text-dark-gray",
+          classNames?.timeInput,
+        ),
+        timeInputLabel: cn(
+          "text-xs font-normal uppercase text-dark-gray",
+          classNames?.timeInputLabel,
+        ),
       }}
+      timeInputProps={{ variant: "bordered", radius: "none", ...timeInputProps }}
       selectorButtonProps={{ radius: "none", ...selectorButtonProps }}
       popoverProps={{
         placement: "bottom-start",
@@ -81,13 +97,28 @@ const DatePicker = forwardRef<HTMLElement, DatePickerProps>(
             calendarProps?.classNames?.base,
           ),
           headerWrapper: cn(
-            "bg-primary-light",
+            "bg-primary-light after:bg-primary-light",
             calendarProps?.classNames?.headerWrapper,
           ),
-          header: cn("bg-primary-light", calendarProps?.classNames?.header),
+          header: cn(
+            "rounded-none bg-primary-light text-dark-gray data-[hover=true]:bg-secondary data-[focus-visible=true]:outline-primary",
+            calendarProps?.classNames?.header,
+          ),
           title: cn(
-            "text-xs font-medium text-dark-gray",
+            "text-xs uppercase font-medium text-dark-gray",
             calendarProps?.classNames?.title,
+          ),
+          pickerWrapper: cn(
+            "bg-primary-light",
+            calendarProps?.classNames?.pickerWrapper,
+          ),
+          pickerHighlight: cn(
+            "rounded-none bg-secondary",
+            calendarProps?.classNames?.pickerHighlight,
+          ),
+          pickerItem: cn(
+            "rounded-none font-inter text-xs font-normal uppercase text-dark-gray data-[hover=true]:text-primary data-[focus-visible=true]:outline-primary",
+            calendarProps?.classNames?.pickerItem,
           ),
           gridHeader: cn(
             "bg-primary-light shadow-none",
@@ -102,11 +133,11 @@ const DatePicker = forwardRef<HTMLElement, DatePickerProps>(
             calendarProps?.classNames?.cellButton,
           ),
           prevButton: cn(
-            "text-dark-gray data-[hover=true]:bg-secondary",
+            "rounded-none text-dark-gray data-[hover=true]:bg-secondary data-[focus-visible=true]:outline-primary",
             calendarProps?.classNames?.prevButton,
           ),
           nextButton: cn(
-            "text-dark-gray data-[hover=true]:bg-secondary",
+            "rounded-none text-dark-gray data-[hover=true]:bg-secondary data-[focus-visible=true]:outline-primary",
             calendarProps?.classNames?.nextButton,
           ),
         },

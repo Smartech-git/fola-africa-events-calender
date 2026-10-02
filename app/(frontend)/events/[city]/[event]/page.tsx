@@ -19,10 +19,9 @@ import Button from "@/components/ui/button";
 import {
   cityDate,
   eventPath,
-  externalUrl,
   formatDay,
 } from "@/lib/events/event-list";
-import { pageMetadata, siteUrl } from "@/lib/metadata";
+import { pageMetadata } from "@/lib/metadata";
 import { getEvent } from "@/requests/events/get-event";
 
 interface Props {
@@ -47,51 +46,11 @@ export default async function EventPage({ params }: Props) {
   const { city, event: slug } = await params;
   const event = await getEvent(slug, city);
   if (!event) notFound();
-  const { timezone, name: cityName } = event.city!;
+  const { timezone} = event.city!;
   const date = cityDate(event.startAt, timezone);
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    name: event.title,
-    description: event.description || undefined,
-    startDate: event.allDay ? date : event.startAt,
-    endDate: event.endAt
-      ? event.allDay
-        ? cityDate(event.endAt, timezone)
-        : event.endAt
-      : undefined,
-    url: new URL(eventPath(event, city), siteUrl).href,
-    eventStatus: `https://schema.org/${event.status === "cancelled" ? "EventCancelled" : event.status === "postponed" ? "EventPostponed" : "EventScheduled"}`,
-    isAccessibleForFree: event.access === "free" ? true : undefined,
-    location: event.venue
-      ? {
-          "@type": "Place",
-          name: event.venue.name,
-          address: {
-            "@type": "PostalAddress",
-            streetAddress: event.venue.address || undefined,
-            addressLocality: cityName,
-          },
-        }
-      : undefined,
-    organizer: event.organiser
-      ? {
-          "@type": "Organization",
-          name: event.organiser.name,
-          url: externalUrl(event.organiser.website),
-        }
-      : undefined,
-  };
 
   return (
-    <main>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
-        }}
-      />
-      <SectionWrapper>
+    <SectionWrapper>
         <div className="">
           <Link href={`/events/${encodeURIComponent(city)}`}>
             <Button
@@ -167,6 +126,5 @@ export default async function EventPage({ params }: Props) {
           )}
         </div>
       </SectionWrapper>
-    </main>
   );
 }
