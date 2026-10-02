@@ -1,33 +1,23 @@
 "use client";
 
-import { Fragment, useRef, useTransition } from "react";
+import { Fragment, useRef } from "react";
 
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-
-import { ChevronDown } from "lucide-react";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
 import EventDateNavigation from "@/components/contents/events/event-date-navigation";
 import EventLayout from "@/components/contents/events/event-layout";
+import SeasonBand from "@/components/contents/events/season-band";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
-import {
-  Dropdown,
-  DropdownItem_,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@/components/ui/drop-down";
+import { useEventCalendar } from "@/hooks/use-event-calendar";
 import { useRouteParam } from "@/hooks/use-route-param";
 import { formatDay, groupEventsByDay } from "@/lib/events/event-list";
-import {
-  getMonthQuery,
-  monthSeasonDays,
-  monthWeeks,
-  weekSeasonBands,
-} from "@/lib/events/event-month";
+import { getMonthQuery, monthWeeks } from "@/lib/events/event-month";
 import { calendarDateParams } from "@/lib/events/event-week";
+import { getSeasonDays, getSeasonBands } from "@/lib/events/season-calendar";
 import { cn } from "@/lib/utils";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
 import type { SeasonSummary } from "@/requests/events/get-events-header";
@@ -43,69 +33,31 @@ interface Props {
   invalidFilters?: boolean;
 }
 
-function SeasonBand({
-  seasons,
-  date,
-}: {
-  seasons: SeasonSummary[];
-  date: string;
-}) {
-  if (!seasons.length) return null;
-  const first = seasons[0];
-
-  if (seasons.length === 1) {
-    return (
-      <div className="mb-2 flex h-7 items-center bg-secondary">
-        <span className="block truncate px-2 py-1 text-xxs uppercase sm:text-xs">
-          {first.name}
-        </span>
-      </div>
-    );
-  }
-  return (
-    <Dropdown>
-      <DropdownTrigger asChild>
-        <Button
-          variant="flat"
-          size="fit"
-          className="mb-2 h-7 w-full justify-between gap-1 bg-secondary px-2 text-left text-xxs font-normal sm:text-xs"
-          aria-label={`${first.name}: show ${seasons.length - 1} more seasons for ${formatDay(date, "d MMMM yyyy")}`}
-        >
-          <span className="min-w-0 truncate">{first.name}</span>
-          <ChevronDown size={12} className="shrink-0" aria-hidden="true" />
-        </Button>
-      </DropdownTrigger>
-      <DropdownMenu
-        aria-label="Other seasons on these dates"
-        classNames={{ base: "max-w-72" }}
-        itemClasses={{ title: "whitespace-normal" }}
-      >
-        {seasons.map((season) => (
-          <DropdownItem_ key={season.id} textValue={season.name}>
-            {season.name}
-          </DropdownItem_>
-        ))}
-      </DropdownMenu>
-    </Dropdown>
-  );
-}
-
 export default function EventMonth({
   cityName,
   timezone,
   today,
   query,
-  events,
+  events: initialEvents,
   seasons,
-  error,
+  error: initialError,
   invalidFilters,
 }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const router = useRouter();
   const { clearAllParams } = useRouteParam();
-  const [pending, startTransition] = useTransition();
+  const {
+    events,
+    error,
+    loading: pending,
+    retry,
+  } = useEventCalendar({
+    filters: query.filters,
+    initialEvents,
+    initialError,
+    invalidFilters,
+  });
   const weeks = monthWeeks(query.range.from);
   const counts = new Map(
     groupEventsByDay(events, timezone, query.range).map((day) => [
@@ -113,7 +65,7 @@ export default function EventMonth({
       day.events.length,
     ]),
   );
-  const seasonDays = monthSeasonDays(seasons, timezone, query.range);
+  const seasonDays = getSeasonDays(seasons, timezone, query.range);
   const dayHref = (date: string) => {
     const params = new URLSearchParams(searchParams.toString());
     for (const [key, value] of Object.entries(
@@ -137,7 +89,7 @@ export default function EventMonth({
       </EventLayout>
       <SectionWrapper
         aria-label={`${cityName} monthly events`}
-        className="min-w-0 sm:pt-0"
+        className="min-w-0 pt-4 sm:pt-4"
       >
         <header className="mb-4 space-y-2 sm:mb-8">
           <h2>
@@ -152,13 +104,10 @@ export default function EventMonth({
             <p className="text-sm">{error}</p>
             <Button
               size="sm"
+              className="mt-8"
               disabled={pending}
               isLoading={pending}
-              onPress={() =>
-                invalidFilters
-                  ? clearAllParams()
-                  : startTransition(() => router.refresh())
-              }
+              onPress={() => (invalidFilters ? clearAllParams() : void retry())}
             >
               <HoverText
                 text={invalidFilters ? "Clear filters" : "Try again"}
@@ -200,7 +149,7 @@ export default function EventMonth({
                   {weeks.map((week) => (
                     <Fragment key={week[0]}>
                       <tr>
-                        {weekSeasonBands(week, seasonDays).map((band) => (
+                        {getSeasonBands(week, seasonDays).map((band) => (
                           <td
                             key={band.date}
                             colSpan={band.span}

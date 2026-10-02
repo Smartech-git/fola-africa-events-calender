@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
+import PixelBlast from "@/components/animations/pixel-blast";
 import LabelTitle from "@/components/common/label-title";
 import {
   EventAttendanceAction,
@@ -16,11 +17,7 @@ import EventFacts from "@/components/contents/events/event-facts";
 import EventLocation from "@/components/contents/events/event-location";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
-import {
-  cityDate,
-  eventPath,
-  formatDay,
-} from "@/lib/events/event-list";
+import { cityDate, eventPath, formatDay } from "@/lib/events/event-list";
 import { pageMetadata } from "@/lib/metadata";
 import { getEvent } from "@/requests/events/get-event";
 
@@ -46,13 +43,17 @@ export default async function EventPage({ params }: Props) {
   const { city, event: slug } = await params;
   const event = await getEvent(slug, city);
   if (!event) notFound();
-  const { timezone} = event.city!;
+  const { timezone } = event.city!;
   const date = cityDate(event.startAt, timezone);
 
   return (
-    <SectionWrapper>
-        <div className="">
-          <Link href={`/events/${encodeURIComponent(city)}`}>
+    <div>
+      <div className="relative">
+        <SectionWrapper className="pb-0 sm:pb-0">
+          <Link
+            className="relative z-10 w-fit"
+            href={`/events/${encodeURIComponent(city)}`}
+          >
             <Button
               startContent={<ArrowLeft size={12} />}
               variant="flat"
@@ -62,15 +63,15 @@ export default async function EventPage({ params }: Props) {
             </Button>
           </Link>
           <div className="mt-8 space-y-4">
-            <p className="text-xl font-light uppercase sm:text-3xl lg:text-5xl">
+            <p className="relative z-10 w-fit text-xl font-light uppercase sm:text-3xl lg:text-5xl">
               <time dateTime={date}>{formatDay(date, "dd MMMM")}</time>
             </p>
             <FadeUpText
               as="h1"
-              className="font-apris text-4xl text-primary uppercase sm:text-6xl lg:text-7xl"
+              className="relative z-10 w-fit font-apris text-4xl text-primary uppercase sm:text-6xl lg:text-7xl"
               text={event.title}
             />
-            <div className="space-y-2 text-xs uppercase sm:text-sm">
+            <div className="relative z-10 w-fit space-y-2 text-xs uppercase sm:text-sm">
               <EventFacts event={event} timezone={timezone} showTimezone />
 
               <div className="flex flex-wrap items-center gap-2">
@@ -83,12 +84,33 @@ export default async function EventPage({ params }: Props) {
                 )}
               </div>
             </div>
-            <div className="flex flex-col gap-x-8 gap-y-4 pt-4 sm:flex-row sm:items-center">
+            <div className="relative z-10 flex w-fit flex-col gap-x-8 gap-y-4 pt-4 sm:flex-row sm:items-center">
               <EventAttendanceAction event={event} prominent />
               <EventCalendarActions event={event} timezone={timezone} />
             </div>
           </div>
-        </div>
+        </SectionWrapper>
+        <PixelBlast
+          variant="square"
+          pixelSize={6}
+          color="#EDC09C"
+          patternScale={2}
+          patternDensity={0.8}
+          pixelSizeJitter={0}
+          enableRipples
+          rippleSpeed={0.4}
+          rippleThickness={0.12}
+          rippleIntensityScale={1.5}
+          liquid={true}
+          liquidStrength={0.12}
+          liquidRadius={1.2}
+          liquidWobbleSpeed={5}
+          speed={0.5}
+          edgeFade={0.1}
+          transparent
+        />
+      </div>
+      <SectionWrapper className="pt-0 sm:pt-0">
         <div className="mt-8 space-y-8 border-t border-light-gray py-8">
           {event.description && (
             <FadeUpText
@@ -126,5 +148,6 @@ export default async function EventPage({ params }: Props) {
           )}
         </div>
       </SectionWrapper>
+    </div>
   );
 }

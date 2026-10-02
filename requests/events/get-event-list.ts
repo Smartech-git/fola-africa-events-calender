@@ -5,6 +5,7 @@ import {
   getEventsByCity,
   type PublicEvent,
 } from "@/requests/events/get-events-by-city";
+import { getEventsBySeasons } from "@/requests/seasons/get-events-by-seaons";
 
 /** Collect every API page matching the filters before grouping the list. */
 export async function getEventList(
@@ -13,8 +14,7 @@ export async function getEventList(
   const events = new Map<number, PublicEvent>();
   let page = 1;
   while (true) {
-    const result = await getEventsByCity({
-      city: filters.city,
+    const options = {
       industry: filters.industry,
       access: filters.access,
       date: filters.date,
@@ -22,7 +22,10 @@ export async function getEventList(
       dateTo: filters.dateTo,
       page,
       limit: 100,
-    });
+    };
+    const result = filters.seasons
+      ? await getEventsBySeasons({ ...options, seasons: filters.seasons })
+      : await getEventsByCity({ ...options, city: filters.city });
     for (const event of result.data) events.set(event.id, event);
     if (!result.hasNextPage) break;
     if (!result.nextPage || result.nextPage <= page)

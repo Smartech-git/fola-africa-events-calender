@@ -1,16 +1,18 @@
 "use client";
 
-import { useRef, useTransition } from "react";
+import { useRef } from "react";
 
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
 import EventDateNavigation from "@/components/contents/events/event-date-navigation";
 import EventLayout from "@/components/contents/events/event-layout";
+import SeasonBand from "@/components/contents/events/season-band";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
+import { useEventCalendar } from "@/hooks/use-event-calendar";
 import { useRouteParam } from "@/hooks/use-route-param";
 import {
   formatDay,
@@ -23,7 +25,9 @@ import {
   getWeekQuery,
   weekHeading,
 } from "@/lib/events/event-week";
+import { getSeasonDays, getSeasonBands } from "@/lib/events/season-calendar";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
+import type { SeasonSummary } from "@/requests/helpers/types";
 
 interface Props {
   cityName: string;
@@ -31,6 +35,7 @@ interface Props {
   today: string;
   query: ReturnType<typeof getWeekQuery>;
   events: PublicEvent[];
+  seasons: SeasonSummary[];
   error?: string;
   invalidFilters?: boolean;
 }
@@ -40,16 +45,26 @@ export default function EventWeek({
   timezone,
   today,
   query,
-  events,
-  error,
+  events: initialEvents,
+  seasons,
+  error: initialError,
   invalidFilters,
 }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const router = useRouter();
   const { clearAllParams } = useRouteParam();
-  const [pending, startTransition] = useTransition();
+  const {
+    events,
+    error,
+    loading: pending,
+    retry,
+  } = useEventCalendar({
+    filters: query.filters,
+    initialEvents,
+    initialError,
+    invalidFilters,
+  });
   const grouped = new Map(
     groupEventsByDay(events, timezone, query.range).map((day) => [
       day.date,
@@ -60,6 +75,8 @@ export default function EventWeek({
     shiftDate(query.range.from, index),
   );
   const heading = weekHeading(query.range.from, query.range.to);
+  const seasonDays = getSeasonDays(seasons, timezone, query.range);
+  const seasonBands = getSeasonBands(days, seasonDays);
   const dayHref = (date: string) => {
     const params = new URLSearchParams(searchParams.toString());
     for (const [key, value] of Object.entries(
@@ -85,27 +102,24 @@ export default function EventWeek({
       </EventLayout>
       <SectionWrapper
         aria-label={`${cityName} weekly events`}
-        className="sm:pt-0"
+        className="pt-4 sm:pt-4"
       >
-        <header className="sm:mb-8 mb-4 space-y-2">
+        <header className="mb-4 space-y-2 sm:mb-8">
           <FadeUpText
             className="font-inter text-3xl uppercase sm:text-4xl"
             text={heading.title}
           />
-          <p className="text-xs font-medium tracking-widest">{heading.year}</p>
+          <p className="text-xs uppercase">{heading.year}</p>
         </header>
         {error ? (
           <div role="alert" className="space-y-3 py-8">
-            <p className="text-sm">{error}</p>
+            <p className="text-xs uppercase">{error}</p>
             <Button
               size="sm"
+              className="mt-8"
               disabled={pending}
               isLoading={pending}
-              onPress={() =>
-                invalidFilters
-                  ? clearAllParams()
-                  : startTransition(() => router.refresh())
-              }
+              onPress={() => (invalidFilters ? clearAllParams() : void retry())}
             >
               <HoverText
                 text={invalidFilters ? "Clear filters" : "Try again"}
@@ -124,6 +138,16 @@ export default function EventWeek({
               className="w-full overflow-x-auto overscroll-x-contain pb-4 focus-visible:outline-2 focus-visible:outline-primary"
             >
               <div className="grid max-w-full min-w-250 grid-cols-7 gap-3">
+                {seasonDays.size > 0 &&
+                  seasonBands.map((band) => (
+                    <div
+                      key={`season-${band.date}`}
+                      className="min-w-0"
+                      style={{ gridColumn: `span ${band.span}` }}
+                    >
+                      <SeasonBand seasons={band.seasons} date={band.date} />
+                    </div>
+                  ))}
                 {days.map((date) => (
                   <section
                     key={date}

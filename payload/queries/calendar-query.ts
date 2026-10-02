@@ -12,6 +12,8 @@ import {
 } from "@/payload/constants";
 import { toPublicEvent } from "@/payload/public-event";
 import config from "@/payload.config";
+import type { SeasonSummary } from "@/requests/helpers/types";
+import type { City } from "@/types/payload-types";
 
 export function getCalendarPayload() {
   return getPayload({ config });
@@ -152,9 +154,31 @@ export function publicPage<T, U>(result: PaginatedDocs<T>, data: U[]) {
   };
 }
 
-export async function  queryEventsByCity(
+export async function queryEventsByCity(
   payload: Payload,
   params: URLSearchParams,
+) {
+  const city = await findCity(payload, params);
+  return queryEvents(payload, params, city);
+}
+
+export async function queryEventsBySeasons(
+  payload: Payload,
+  params: URLSearchParams,
+) {
+  const season = await findSeason(payload, params.get("seasons"));
+  const city = await findCity(
+    payload,
+    new URLSearchParams({ city: String(season.city) }),
+  );
+  return queryEvents(payload, params, city, [{ seasons: { in: [season.id] } }]);
+}
+
+async function queryEvents(
+  payload: Payload,
+  params: URLSearchParams,
+  city: City,
+  scope: Where[] = [],
 ) {
   const paging = pagination(params);
   const industry = selectedValues(
@@ -167,10 +191,9 @@ export async function  queryEventsByCity(
     "access",
     ACCESS_OPTIONS.map((item) => item.value),
   );
-  const city = await findCity(payload, params);
-  
   const { start, end } = dateRange(params, city.timezone);
   const filters: Where[] = [
+    ...scope,
     { city: { equals: city.id } },
     { status: { in: PUBLIC_STATUSES } },
     { isDemo: { not_equals: true } },
@@ -267,17 +290,7 @@ export async function queryEventsHeader(
       status: true,
     },
   });
-  const seasons = result.docs.map(
-    ({ id, name, slug, startDate, endDate, description, status }) => ({
-      id,
-      name,
-      slug,
-      startDate,
-      endDate,
-      description,
-      status,
-    }),
-  );
+  const seasons = result.docs.map(publicSeason);
   return {
     city: {
       name: city.name,
@@ -285,5 +298,71 @@ export async function queryEventsHeader(
       timezoneLabel: city.timezoneLabel,
     },
     seasons,
+  };
+}
+
+function publicSeason({
+  id,
+  name,
+  slug,
+  startDate,
+  endDate,
+  description,
+  status,
+}: SeasonSummary) {
+  return { id, name, slug, startDate, endDate, description, status };
+}
+
+async function findSeason(payload: Payload, value: string | null) {
+  const slug = value?.trim();
+  if (!slug) throw new CalendarQueryError("A season slug is required.");
+  const result = await payload.find({
+    collection: "seasons",
+    where: {
+      and: [
+        { slug: { equals: slug } },
+        { isPublished: { equals: true } },
+        { isDemo: { not_equals: true } },
+        { startDate: { exists: true } },
+        { endDate: { exists: true } },
+      ],
+    },
+    limit: 1,
+    depth: 0,
+    joins: false,
+    overrideAccess: true,
+    select: {
+      name: true,
+      slug: true,
+      city: true,
+      startDate: true,
+      endDate: true,
+      description: true,
+      status: true,
+    },
+  });
+  const season = result.docs[0];
+  if (!season) throw new CalendarQueryError("Season not found.", 404);
+  return season;
+}
+
+export async function querySeasonsHeader(
+  payload: Payload,
+  params: URLSearchParams,
+) {
+  const season = await findSeason(payload, params.get("slug"));
+  const city = await findCity(
+    payload,
+    new URLSearchParams({ city: String(season.city) }),
+  );
+  return {
+    season: publicSeason(season),
+    city: {
+      id: city.id,
+      slug: city.slug,
+      name: city.name,
+      timezone: city.timezone,
+      timezoneLabel: city.timezoneLabel,
+    },
   };
 }

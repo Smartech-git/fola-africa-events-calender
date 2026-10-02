@@ -1,13 +1,5 @@
 import Link from "next/link";
 
-import {
-  format,
-  isSameDay,
-  isSameMonth,
-  isSameYear,
-  isValid,
-  parseISO,
-} from "date-fns";
 import { ArrowRight, Dot } from "lucide-react";
 
 import Fade from "@/components/animations/fade";
@@ -17,42 +9,11 @@ import LabelTitle from "@/components/common/label-title";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import LenisProvider from "@/components/providers/lenis-provider";
 import Button from "@/components/ui/button";
-import type {
-  EventsHeader as EventsHeaderData,
-  SeasonSummary,
-} from "@/requests/events/get-events-header";
+import { formatSeasonDates } from "@/lib/events/season-dates";
+import type { EventsHeader as EventsHeaderData } from "@/requests/events/get-events-header";
 
 interface Props {
   data: EventsHeaderData;
-}
-
-function formatSeasonDates(season: SeasonSummary, timezone: string) {
-  if (!season.startDate || !season.endDate) return null;
-  const startInstant = parseISO(season.startDate);
-  const endInstant = parseISO(season.endDate);
-  if (!isValid(startInstant) || !isValid(endInstant)) return null;
-
-  // Format the city's calendar dates regardless of the server's timezone.
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    timeZone: timezone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-  const localDate = (instant: Date) => {
-    const parts = formatter.formatToParts(instant);
-    const part = (type: string) =>
-      parts.find((entry) => entry.type === type)!.value;
-    return parseISO(part("year") + "-" + part("month") + "-" + part("day"));
-  };
-  const start = localDate(startInstant);
-  const end = localDate(endInstant);
-  if (isSameDay(start, end)) return format(start, "dd MMM");
-  if (isSameMonth(start, end))
-    return format(start, "dd") + "\u2013" + format(end, "dd MMM");
-  if (isSameYear(start, end))
-    return format(start, "dd MMM") + "\u2013" + format(end, "dd MMM");
-  return format(start, "dd MMM yyyy") + "\u2013" + format(end, "dd MMM yyyy");
 }
 
 export default function EventsHeader({ data: { city, seasons } }: Props) {
@@ -89,9 +50,10 @@ export default function EventsHeader({ data: { city, seasons } }: Props) {
                   amount={0.0}
                   once
                 >
-                  <div
+                  <Link
+                    href={`/seasons/${encodeURIComponent(season.slug)}`}
                     data-hover-text
-                    className="group relative flex h-full min-h-28 w-75 cursor-pointer flex-col justify-between border border-light-gray p-4"
+                    className="group relative flex h-full min-h-28 w-75 cursor-pointer flex-col justify-between border border-light-gray p-4 focus-visible:outline-2 focus-visible:outline-primary"
                   >
                     <div>
                       <div className="flex flex-wrap items-center">
@@ -124,7 +86,7 @@ export default function EventsHeader({ data: { city, seasons } }: Props) {
                         className="transition-all group-hover:translate-x-1"
                       />
                     </div>
-                  </div>
+                  </Link>
                 </Fade>
               );
             })}

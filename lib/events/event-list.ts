@@ -3,15 +3,12 @@ import { format, parseISO } from "date-fns";
 
 import { EVENTS_LAYOUT_KEY, FILTER_KEYS } from "@/constants/filters";
 import { ACCESS_OPTIONS, INDUSTRIES } from "@/payload/constants";
-import type {
-  GetEventsByCityOptions,
-  PublicEvent,
-} from "@/requests/events/get-events-by-city";
+import type { EventFilterOptions, PublicEvent } from "@/requests/helpers/types";
 
-export type EventListFilters = Pick<
-  GetEventsByCityOptions,
-  "city" | "industry" | "access" | "date" | "dateFrom" | "dateTo"
->;
+export type EventListFilters = EventFilterOptions & {
+  city: string;
+  seasons?: string;
+};
 export interface DateRange {
   from?: string;
   to?: string;
@@ -57,6 +54,7 @@ export function getListQuery(
   params: EventSearchParams,
   city: string,
   defaultDateFrom?: string,
+  defaultDateTo?: string,
 ) {
   const first = (key: string) => {
     const value = params[key];
@@ -77,10 +75,11 @@ export function getListQuery(
     return [...new Set(values)];
   };
   const date = readDate(first(FILTER_KEYS.date));
-  const to = readDate(first(FILTER_KEYS.dateTo));
-  const from =
-    readDate(first(FILTER_KEYS.dateFrom)) ??
-    (!date && !to ? defaultDateFrom : undefined);
+  const explicitTo = readDate(first(FILTER_KEYS.dateTo));
+  const explicitFrom = readDate(first(FILTER_KEYS.dateFrom));
+  const useDefaults = !date && !explicitFrom && !explicitTo;
+  const to = explicitTo ?? (useDefaults ? defaultDateTo : undefined);
+  const from = explicitFrom ?? (useDefaults ? defaultDateFrom : undefined);
   if (date && (from || to))
     throw new Error("Choose a single date or a date range, not both.");
   if (from && to && from > to) throw new Error("From must be on or before To.");
@@ -162,12 +161,12 @@ export function eventTime(event: PublicEvent, timezone: string) {
   return `${start}\u2013${end}`;
 }
 
-export function dayPath(city: string, date: string) {
+export function dayPath(city: string, date: string, pathname?: string) {
   const params = new URLSearchParams({
     [EVENTS_LAYOUT_KEY]: "list",
     [FILTER_KEYS.date]: date,
   });
-  return `/events/${encodeURIComponent(city)}?${params}`;
+  return `${pathname ?? `/events/${encodeURIComponent(city)}`}?${params}`;
 }
 
 export function eventAnchor(event: PublicEvent, date: string) {

@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
+
+import { usePathname } from "next/navigation";
 
 import { useLenis } from "lenis/react";
 
@@ -11,6 +13,7 @@ import EventLayout from "@/components/contents/events/event-layout";
 import EventListCard from "@/components/contents/events/event-list-card";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
+import { useEventCalendar } from "@/hooks/use-event-calendar";
 import { useRouteParam } from "@/hooks/use-route-param";
 import { shareLink } from "@/lib/events/event-actions";
 import {
@@ -19,7 +22,6 @@ import {
   getListQuery,
   groupEventsByDay,
 } from "@/lib/events/event-list";
-import { getEventList } from "@/requests/events/get-event-list";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
 
 interface Props {
@@ -43,11 +45,13 @@ export default function EventList({
   initialError,
   invalidFilters,
 }: Props) {
-  const [events, setEvents] = useState(initialEvents);
-  const [error, setError] = useState(initialError);
-  const [loading, setLoading] = useState(false);
-  const busy = useRef(false);
-  const mounted = useRef(true);
+  const { events, error, loading, retry } = useEventCalendar({
+    filters: query.filters,
+    initialEvents,
+    initialError,
+    invalidFilters,
+  });
+  const pathname = usePathname();
   const container = useRef<HTMLDivElement>(null);
   const scrolledHash = useRef(false);
   const lenis = useLenis();
@@ -58,13 +62,6 @@ export default function EventList({
   );
 
   useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
-
-  useEffect(() => {
     if (!lenis || scrolledHash.current || !globalThis.location.hash) return;
     const element = document.getElementById(globalThis.location.hash.slice(1));
     if (element && container.current?.contains(element)) {
@@ -72,24 +69,6 @@ export default function EventList({
       scrolledHash.current = true;
     }
   }, [lenis, days]);
-
-  const retry = async () => {
-    if (busy.current || invalidFilters) return;
-    busy.current = true;
-    setLoading(true);
-    try {
-      const data = await getEventList(query.filters);
-      if (!mounted.current) return;
-      setEvents(data);
-      setError(undefined);
-    } catch {
-      if (mounted.current)
-        setError("We couldn't load events. Please try again.");
-    } finally {
-      busy.current = false;
-      if (mounted.current) setLoading(false);
-    }
-  };
 
   return (
     <div ref={container}>
@@ -132,7 +111,7 @@ export default function EventList({
                   onPress={() => {
                     void shareLink(
                       `${cityName} events \u00b7 ${formatDay(day.date, "d MMMM yyyy")}`,
-                      dayPath(city, day.date),
+                      dayPath(city, day.date, pathname),
                     );
                   }}
                 >
@@ -159,7 +138,7 @@ export default function EventList({
               There are no published events matching these filters. Try another
               date or clear your filters.
             </p>
-            <Button size="sm" className="" onPress={clearAllParams}>
+            <Button size="sm" className="mt-8" onPress={clearAllParams}>
               Clear filters
             </Button>
           </div>

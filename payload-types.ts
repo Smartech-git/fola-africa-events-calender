@@ -207,7 +207,7 @@ export interface City {
   id: number;
   name: string;
   /**
-   * Automatically filled from name. You can edit it manually.
+   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
    */
   slug: string;
   country: string;
@@ -230,7 +230,7 @@ export interface Organiser {
   id: number;
   name: string;
   /**
-   * Automatically filled from name. You can edit it manually.
+   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
    */
   slug: string;
   type: 'brand' | 'label' | 'gallery' | 'promoter' | 'institution' | 'individual';
@@ -255,7 +255,7 @@ export interface Venue {
   id: number;
   name: string;
   /**
-   * Automatically filled from name. You can edit it manually.
+   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
    */
   slug: string;
   city: number | City;
@@ -274,7 +274,7 @@ export interface Season {
   id: number;
   name: string;
   /**
-   * Automatically filled from name. You can edit it manually.
+   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
    */
   slug: string;
   city: number | City;
@@ -311,7 +311,7 @@ export interface Event {
   id: number;
   title: string;
   /**
-   * Automatically filled from title. You can edit it manually.
+   * Automatically filled from title. You can edit it manually or use Generate slug to regenerate it.
    */
   slug: string;
   city: number | City;

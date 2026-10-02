@@ -9,7 +9,7 @@ export function slugField(sourceField: "title" | "name"): TextField {
     required: true,
     unique: true,
     admin: {
-      description: `Automatically filled from ${sourceField}. You can edit it manually.`,
+      description: `Automatically filled from ${sourceField}. You can edit it manually or use Generate slug to regenerate it.`,
       components: {
         Field: {
           path: "@/payload/components/slug-input#SlugInput",
@@ -18,12 +18,15 @@ export function slugField(sourceField: "title" | "name"): TextField {
       },
     },
     hooks: {
-      beforeValidate: [({ value, siblingData, originalDoc }) => {
-        if (typeof value === "string" && value.trim()) return value;
-        if (originalDoc?.slug) return originalDoc.slug;
-        const source = siblingData?.[sourceField] ?? originalDoc?.[sourceField];
-        return typeof source === "string" ? formatSlug(source) : value;
-      }],
+      beforeValidate: [
+        ({ value, siblingData, originalDoc }) => {
+          if (typeof value === "string" && value.trim()) return value;
+          if (originalDoc?.slug) return originalDoc.slug;
+          const source =
+            siblingData?.[sourceField] ?? originalDoc?.[sourceField];
+          return typeof source === "string" ? formatSlug(source) : value;
+        },
+      ],
     },
   };
 }

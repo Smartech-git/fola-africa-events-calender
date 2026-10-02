@@ -1,0 +1,16 @@
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.field {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.action {
+  flex-shrink: 0;
+  margin-top: 24px;
+}

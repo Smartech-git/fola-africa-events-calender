@@ -29,7 +29,9 @@ import type { CitySummary } from "@/requests/get-cities";
 interface Props {
   cities: CitySummary[];
   currentCity: string;
+  seasonSelected?: boolean;
   defaultDateFrom?: string;
+  defaultDateTo?: string;
 }
 
 interface Filters {
@@ -61,7 +63,9 @@ function selectedValues(values: string[], options: { value: string }[]) {
 export default function FilterMenu({
   cities,
   currentCity,
+  seasonSelected = false,
   defaultDateFrom,
+  defaultDateTo,
 }: Props) {
   const { getFilterValue, getFilterValues } = useRouteParam();
   const filters: Filters = {
@@ -72,7 +76,9 @@ export default function FilterMenu({
         (getFilterValue(FILTER_KEYS.dateTo) ? undefined : defaultDateFrom),
     ),
     dateTo: readDate(
-      getFilterValue(FILTER_KEYS.dateTo) ?? getFilterValue(FILTER_KEYS.date),
+      getFilterValue(FILTER_KEYS.dateTo) ??
+        getFilterValue(FILTER_KEYS.date) ??
+        (getFilterValue(FILTER_KEYS.dateFrom) ? undefined : defaultDateTo),
     ),
     industry: selectedValues(getFilterValues(FILTER_KEYS.industry), INDUSTRIES),
     access: selectedValues(getFilterValues(FILTER_KEYS.access), ACCESS_OPTIONS),
@@ -94,6 +100,7 @@ export default function FilterMenu({
             key={item.key}
             variant="flat"
             size="fit"
+            disabled={seasonSelected && item.key === FILTER_KEYS.date}
             aria-haspopup="dialog"
             aria-label={`Filter by ${item.label}${counts[item.key] ? `, ${counts[item.key]} active` : ""}`}
             className={cn(
@@ -133,7 +140,9 @@ export default function FilterMenu({
                 variant="flat"
                 size="fit"
               >
-                <HoverText text="Back to events" />
+                <HoverText
+                  text={seasonSelected ? "Back to seasons" : "Back to events"}
+                />
               </Button>
               <DrawHorizontalLine className="absolute bottom-0 left-0 animate-delay-500" />
             </Drawer.Header>
@@ -148,15 +157,20 @@ export default function FilterMenu({
                     <FadeUpText
                       delay={0.3}
                       className="max-w-xl text-xs uppercase"
-                      text="Choose one city and date range. Industry and Access allow
-                    multiple selections."
+                      text={
+                        seasonSelected
+                          ? "City and dates are set by the season. Industry and Access allow multiple selections."
+                          : "Choose one city and date range. Industry and Access allow multiple selections."
+                      }
                     />
                   </div>
                   <FilterOptions
                     key={JSON.stringify(filters)}
                     cities={cities}
                     initialFilters={filters}
+                    seasonSelected={seasonSelected}
                     defaultDateFrom={defaultDateFrom}
+                    defaultDateTo={defaultDateTo}
                     onClose={onClose}
                   />
                 </SectionWrapper>
@@ -172,12 +186,16 @@ export default function FilterMenu({
 function FilterOptions({
   cities,
   initialFilters,
+  seasonSelected,
   defaultDateFrom,
+  defaultDateTo,
   onClose,
 }: {
   cities: CitySummary[];
   initialFilters: Filters;
+  seasonSelected: boolean;
   defaultDateFrom?: string;
+  defaultDateTo?: string;
   onClose: () => void;
 }) {
   const { handleParamSet, clearAllParams } = useRouteParam();
@@ -204,10 +222,12 @@ function FilterOptions({
     if (!selectedCity || invalidRange) return;
 
     handleParamSet({
-      [FILTER_KEYS.city]: selectedCity.slug,
-      [FILTER_KEYS.date]: undefined,
-      [FILTER_KEYS.dateFrom]: filters.dateFrom?.toString(),
-      [FILTER_KEYS.dateTo]: filters.dateTo?.toString(),
+      ...(!seasonSelected && {
+        [FILTER_KEYS.city]: selectedCity.slug,
+        [FILTER_KEYS.date]: undefined,
+        [FILTER_KEYS.dateFrom]: filters.dateFrom?.toString(),
+        [FILTER_KEYS.dateTo]: filters.dateTo?.toString(),
+      }),
       [FILTER_KEYS.industry]: filters.industry,
       [FILTER_KEYS.access]: filters.access,
       [FILTER_KEYS.page]: undefined,
@@ -216,11 +236,21 @@ function FilterOptions({
   };
 
   const clearFilters = () => {
-    clearAllParams();
+    if (seasonSelected) {
+      handleParamSet({
+        [FILTER_KEYS.industry]: undefined,
+        [FILTER_KEYS.access]: undefined,
+        [FILTER_KEYS.page]: undefined,
+      });
+    } else {
+      clearAllParams();
+    }
     setFilters({
       city: initialFilters.city,
-      dateFrom: readDate(defaultDateFrom),
-      dateTo: null,
+      dateFrom: seasonSelected
+        ? initialFilters.dateFrom
+        : readDate(defaultDateFrom),
+      dateTo: seasonSelected ? initialFilters.dateTo : readDate(defaultDateTo),
       industry: [],
       access: [],
     });
@@ -244,7 +274,7 @@ function FilterOptions({
         <Dropdown>
           <DropdownTrigger
             aria-labelledby={`${cityLabelId} ${id}-selected-city`}
-            disabled={!cities.length}
+            disabled={seasonSelected || !cities.length}
           >
             <span id={`${id}-selected-city`} className="min-w-0 truncate">
               {selectedCity?.name ?? "Select a city"}
@@ -257,7 +287,7 @@ function FilterOptions({
             disallowEmptySelection
             selectedKeys={selectedCity ? [selectedCity.slug] : []}
             onSelectionChange={(keys) => {
-              if (keys === "all") return;
+              if (seasonSelected || keys === "all") return;
               const city = Array.from(keys)[0];
               if (
                 typeof city === "string" &&
@@ -290,6 +320,7 @@ function FilterOptions({
           <DatePicker
             aria-labelledby={`${id}-from`}
             name={FILTER_KEYS.dateFrom}
+            isDisabled={seasonSelected}
             granularity="day"
             value={filters.dateFrom}
             maxValue={filters.dateTo ?? undefined}
@@ -307,6 +338,7 @@ function FilterOptions({
           <DatePicker
             aria-labelledby={`${id}-to`}
             name={FILTER_KEYS.dateTo}
+            isDisabled={seasonSelected}
             granularity="day"
             value={filters.dateTo}
             minValue={filters.dateFrom ?? undefined}
