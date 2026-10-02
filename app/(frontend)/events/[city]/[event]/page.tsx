@@ -46,6 +46,8 @@ export default async function EventPage({ params }: Props) {
   const { timezone } = event.city!;
   const date = cityDate(event.startAt, timezone);
 
+  console.log(event)
+
   return (
     <div>
       <div className="relative">

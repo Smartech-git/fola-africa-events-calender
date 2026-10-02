@@ -12,7 +12,7 @@ export const request: FetchFunction = async ({ endpoint = "", options }) => {
     fetchOptions = {},
     useAuth = false,
     retry = 3,
-    delay = 10000,
+    delay = 15000,
   } = options;
 
   const isFormData = data instanceof FormData;
