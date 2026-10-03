@@ -48,11 +48,11 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           id="radar-heading"
           as="h2"
           text="On the radar"
-          className="font-apris text-5xl leading-none uppercase sm:text-6xl lg:text-7xl"
+          className="font-apris text-5xl leading-none uppercase sm:text-5xl lg:text-6xl"
         />
         <FadeUpText
           text={"The people. The places.\nThe moments that move us."}
-          className="text-right max-sm:ml-auto text-xs uppercase"
+          className="text-right text-xs uppercase max-sm:ml-auto"
         />
       </div>
 
@@ -69,12 +69,12 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           </div>
           <FadeUpText
             text={`01 / Technology · Lagos`}
-            className="text-xs font-medium tracking-wider uppercase"
+            className="text-xs font-medium uppercase"
           />
           <FadeUpText
             as="h3"
             text={"The next\nbig idea."}
-            className="font-apris text-5xl uppercase sm:text-6xl lg:text-[80px]"
+            className="font-apris text-5xl uppercase lg:text-6xl"
           />
           <ExploreIndustry industry="technology" citySlug={citySlug} />
         </article>
@@ -95,7 +95,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           </div>
           <FadeUpText
             text={`02 / Art · Across the cities`}
-            className="text-xs font-medium tracking-wider uppercase"
+            className="text-xs font-medium uppercase"
           />
           <FadeUpText
             as="h3"
@@ -110,16 +110,16 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
         <div className="order-2 flex min-w-0 flex-col items-start gap-4 md:order-1 lg:gap-6">
           <FadeUpText
             text={`03 / Music · After hours`}
-            className="text-xs font-medium tracking-wider uppercase"
+            className="text-xs font-medium uppercase"
           />
           <FadeUpText
             as="h3"
             text={"The city\ndoesn’t\nsleep."}
-            className="font-apris text-5xl uppercase sm:text-6xl lg:text-[76px]"
+            className="font-apris text-5xl uppercase lg:text-6xl"
           />
           <FadeUpText
             text={"From first set to last dance.\nFind your next night out."}
-            className="leading-relaxed max-sm:text-right max-sm:ml-auto uppercase text-xs"
+            className="text-xs leading-relaxed uppercase max-sm:ml-auto max-sm:text-right"
           />
           <ExploreIndustry industry="music" citySlug={citySlug} />
         </div>

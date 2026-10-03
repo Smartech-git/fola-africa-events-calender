@@ -29,8 +29,9 @@ export default function HeroVideo() {
         <FadeUpText
           delay={1.3}
           className="absolute top-4 left-4 z-10 w-40 text-xs text-white uppercase"
-          text="IN THE MOMENT / LAGOS FASHION WEEK"
+          text="IN THE MOMENT / BLACK COFFEE IN LAGOS"
         />
+
         <video
           loop
           autoPlay

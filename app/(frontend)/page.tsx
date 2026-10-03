@@ -38,17 +38,13 @@ export default async function Home() {
           <div className="flex w-full flex-col items-end gap-12 md:w-60 md:shrink-0">
             <FadeUpText
               text={"Put your next event\non Africa’s\ncalendar."}
-              className="text-right text-xs uppercase sm:text-sm"
+              className="text-right text-xs uppercase sm:text-xs"
             />
             <Button size="sm" className="w-full md:max-w-fit">
               <HoverText text="Submit an event" />
             </Button>
           </div>
         </div>
-        {/* <footer className="mt-4 flex flex-col justify-between gap-4 border-t border-light-gray pt-6 text-xs uppercase sm:flex-row sm:gap-8">
-          <FadeUpText text="Brought to you by Fola" className="font-medium tracking-wider" />
-          <FadeUpText text={`Africa’s events calendar / © Fola ${new Date().getFullYear()}`} className="sm:text-right" />
-        </footer> */}
       </SectionWrapper>
     </div>
   );
