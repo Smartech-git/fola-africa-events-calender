@@ -75,7 +75,9 @@ export interface Config {
     seasons: Season;
     events: Event;
     'event-reviews': EventReview;
+    'email-notifications': EmailNotification;
     'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -97,7 +99,9 @@ export interface Config {
     seasons: SeasonsSelect<false> | SeasonsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     'event-reviews': EventReviewsSelect<false> | EventReviewsSelect<true>;
+    'email-notifications': EmailNotificationsSelect<false> | EmailNotificationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -118,7 +122,14 @@ export interface Config {
   };
   user: User;
   jobs: {
-    tasks: unknown;
+    tasks: {
+      'review-event': TaskReviewEvent;
+      'send-event-email': TaskSendEventEmail;
+      inline: {
+        input: unknown;
+        output: unknown;
+      };
+    };
     workflows: unknown;
   };
 }
@@ -190,7 +201,7 @@ export interface Media {
   focalY?: number | null;
 }
 /**
- * Fixed beta lookup. Managed by the seed script.
+ * Add cities and update their names, countries and local time zones. The seeded cities are starter data.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "cities".
@@ -198,9 +209,18 @@ export interface Media {
 export interface City {
   id: number;
   name: string;
+  /**
+   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
+   */
   slug: string;
   country: string;
+  /**
+   * Suggested from matching city names. Enter or correct the IANA timezone when needed.
+   */
   timezone: string;
+  /**
+   * Automatically suggested from the timezone; you can edit it.
+   */
   timezoneLabel: string;
   updatedAt: string;
   createdAt: string;
@@ -212,6 +232,9 @@ export interface City {
 export interface Organiser {
   id: number;
   name: string;
+  /**
+   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
+   */
   slug: string;
   type: 'brand' | 'label' | 'gallery' | 'promoter' | 'institution' | 'individual';
   website?: string | null;
@@ -234,6 +257,9 @@ export interface Organiser {
 export interface Venue {
   id: number;
   name: string;
+  /**
+   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
+   */
   slug: string;
   city: number | City;
   area?: string | null;
@@ -250,6 +276,9 @@ export interface Venue {
 export interface Season {
   id: number;
   name: string;
+  /**
+   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
+   */
   slug: string;
   city: number | City;
   startDate?: string | null;
@@ -276,7 +305,7 @@ export interface Season {
   createdAt: string;
 }
 /**
- * All entries start Submitted. Complete review, approve, then publish in separate saves. Content changes require reapproval.
+ * Administrators can create, approve and publish events without AI review. Other staff must complete AI review and human approval before publication. Content changes require reapproval.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
@@ -284,11 +313,11 @@ export interface Season {
 export interface Event {
   id: number;
   title: string;
+  /**
+   * Automatically filled from title. You can edit it manually or use Generate slug to regenerate it.
+   */
   slug: string;
   city: number | City;
-  /**
-   * Enter with a timezone offset. Stored as UTC.
-   */
   startAt: string;
   endAt?: string | null;
   allDay?: boolean | null;
@@ -370,7 +399,7 @@ export interface Event {
   createdAt: string;
 }
 /**
- * AI findings and the original listing are retained alongside the human decision. Pending AI reviews need the review worker integration.
+ * AI findings and the original listing are retained alongside the human decision. Administrators can update AI status or record a manual decision without AI review.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "event-reviews".
@@ -387,6 +416,9 @@ export interface EventReview {
     | number
     | boolean
     | null;
+  /**
+   * Groq processes queued reviews. To retry a failed review, set this to Pending. Administrator approval can still proceed manually.
+   */
   aiStatus: 'pending' | 'processing' | 'completed' | 'failed';
   promptVersion?: string | null;
   promptSnapshot?: string | null;
@@ -414,9 +446,40 @@ export interface EventReview {
   draftMessage?: string | null;
   failureReason?: string | null;
   humanDecision: 'pending' | 'accepted' | 'amended' | 'request-information' | 'rejected';
+  /**
+   * Optional notes explaining the human decision.
+   */
   decisionNotes?: string | null;
   decidedBy?: (number | null) | User;
   decidedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Private delivery records for event receipts and publication emails. Failed jobs can be retried from Jobs.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-notifications".
+ */
+export interface EmailNotification {
+  id: number;
+  key: string;
+  eventId: number;
+  kind: 'submitted' | 'published';
+  status: 'queued' | 'sent' | 'skipped' | 'failed';
+  message?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  firstAttemptAt?: string | null;
+  sentAt?: string | null;
+  providerId?: string | null;
+  failureReason?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -436,6 +499,102 @@ export interface PayloadKv {
     | number
     | boolean
     | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs".
+ */
+export interface PayloadJob {
+  id: number;
+  /**
+   * Input data provided to the job
+   */
+  input?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Task execution log
+   */
+  log?:
+    | {
+        executedAt: string;
+        completedAt: string;
+        taskSlug: 'inline' | 'review-event' | 'send-event-email';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  taskSlug?: ('inline' | 'review-event' | 'send-event-email') | null;
+  queue?: string | null;
+  waitUntil?: string | null;
+  processing?: boolean | null;
+  /**
+   * Used for concurrency control. Jobs with the same key are subject to exclusive/supersedes rules.
+   */
+  concurrencyKey?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -475,6 +634,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'event-reviews';
         value: number | EventReview;
+      } | null)
+    | ({
+        relationTo: 'email-notifications';
+        value: number | EmailNotification;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -701,11 +864,60 @@ export interface EventReviewsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-notifications_select".
+ */
+export interface EmailNotificationsSelect<T extends boolean = true> {
+  key?: T;
+  eventId?: T;
+  kind?: T;
+  status?: T;
+  message?: T;
+  firstAttemptAt?: T;
+  sentAt?: T;
+  providerId?: T;
+  failureReason?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs_select".
+ */
+export interface PayloadJobsSelect<T extends boolean = true> {
+  input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
+  log?:
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
+  taskSlug?: T;
+  queue?: T;
+  waitUntil?: T;
+  processing?: T;
+  concurrencyKey?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -740,7 +952,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Prompt configuration for the future Anthropic review worker. No credentials are stored in this document.
+ * Groq reviews submitted events and suggests edits. Staff make publication decisions. API credentials stay in server environment variables.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "review-settings".
@@ -750,7 +962,7 @@ export interface ReviewSetting {
   promptVersion: string;
   systemPrompt: string;
   /**
-   * Set a supported Anthropic model when enabling the review worker.
+   * GPT-OSS 120B on Groq. The worker uses this model with strict structured output.
    */
   model?: string | null;
   updatedAt?: string | null;
@@ -777,6 +989,26 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskReview-event".
+ */
+export interface TaskReviewEvent {
+  input: {
+    reviewId: number;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSend-event-email".
+ */
+export interface TaskSendEventEmail {
+  input: {
+    notificationId: number;
+  };
+  output?: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

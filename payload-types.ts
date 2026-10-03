@@ -75,6 +75,7 @@ export interface Config {
     seasons: Season;
     events: Event;
     'event-reviews': EventReview;
+    'email-notifications': EmailNotification;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -98,6 +99,7 @@ export interface Config {
     seasons: SeasonsSelect<false> | SeasonsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     'event-reviews': EventReviewsSelect<false> | EventReviewsSelect<true>;
+    'email-notifications': EmailNotificationsSelect<false> | EmailNotificationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -122,6 +124,7 @@ export interface Config {
   jobs: {
     tasks: {
       'review-event': TaskReviewEvent;
+      'send-event-email': TaskSendEventEmail;
       inline: {
         input: unknown;
         output: unknown;
@@ -453,6 +456,34 @@ export interface EventReview {
   createdAt: string;
 }
 /**
+ * Private delivery records for event receipts and publication emails. Failed jobs can be retried from Jobs.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-notifications".
+ */
+export interface EmailNotification {
+  id: number;
+  key: string;
+  eventId: number;
+  kind: 'submitted' | 'published';
+  status: 'queued' | 'sent' | 'skipped' | 'failed';
+  message?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  firstAttemptAt?: string | null;
+  sentAt?: string | null;
+  providerId?: string | null;
+  failureReason?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -521,7 +552,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'review-event';
+        taskSlug: 'inline' | 'review-event' | 'send-event-email';
         taskID: string;
         input?:
           | {
@@ -554,7 +585,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'review-event') | null;
+  taskSlug?: ('inline' | 'review-event' | 'send-event-email') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -603,6 +634,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'event-reviews';
         value: number | EventReview;
+      } | null)
+    | ({
+        relationTo: 'email-notifications';
+        value: number | EmailNotification;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -829,6 +864,23 @@ export interface EventReviewsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-notifications_select".
+ */
+export interface EmailNotificationsSelect<T extends boolean = true> {
+  key?: T;
+  eventId?: T;
+  kind?: T;
+  status?: T;
+  message?: T;
+  firstAttemptAt?: T;
+  sentAt?: T;
+  providerId?: T;
+  failureReason?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -945,6 +997,16 @@ export interface CollectionsWidget {
 export interface TaskReviewEvent {
   input: {
     reviewId: number;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSend-event-email".
+ */
+export interface TaskSendEventEmail {
+  input: {
+    notificationId: number;
   };
   output?: unknown;
 }
