@@ -9,7 +9,7 @@ export const emailNotifications: CollectionConfig = {
     group: "Notifications",
     defaultColumns: ["eventId", "kind", "status", "sentAt", "createdAt"],
     description:
-      "Private delivery records for event receipts and publication emails. Failed jobs can be retried from Jobs.",
+      "Private delivery records for publication emails and historical submission receipts. Failed jobs can be retried from Jobs.",
   },
   access: {
     create: noAccess,

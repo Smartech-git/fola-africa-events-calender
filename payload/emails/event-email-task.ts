@@ -8,7 +8,6 @@ import {
   emailMessageSchema,
   emailSettings,
   emailSiteUrl,
-  type EventEmailKind,
 } from "@/payload/emails/email-settings";
 import { eventEmailTemplate } from "@/payload/emails/event-email-template";
 import {
@@ -20,44 +19,40 @@ import { toPublicEvent } from "@/payload/public-event";
 export const queueEventEmail: CollectionAfterChangeHook = async ({
   doc,
   previousDoc,
-  operation,
   req,
 }) => {
-  if (doc.isDemo || doc.source !== "submission" || !doc.submittedBy?.email)
-    return doc;
-  const kinds: EventEmailKind[] = [];
-  if (operation === "create") kinds.push("submitted");
   if (
-    doc.status === "published" &&
-    doc.publishedAt &&
-    !previousDoc?.publishedAt
+    doc.isDemo ||
+    doc.source !== "submission" ||
+    !doc.submittedBy?.email ||
+    doc.status !== "published" ||
+    !doc.publishedAt ||
+    previousDoc?.publishedAt
   )
-    kinds.push("published");
-  for (const kind of kinds) {
-    const key = `event-${doc.id}-${kind}`;
-    const existing = await req.payload.count({
-      collection: "email-notifications",
-      where: { key: { equals: key } },
-      req,
-      overrideAccess: true,
-    });
-    if (existing.totalDocs) continue;
-    const notification = await req.payload.create({
-      collection: "email-notifications",
-      req,
-      overrideAccess: true,
-      depth: 0,
-      data: { key, eventId: doc.id, kind, status: "queued" },
-    });
-    // The outbox and its job commit/roll back with the event; no email is sent here.
-    const job = await req.payload.jobs.queue({
-      task: "send-event-email",
-      queue: EMAIL_QUEUE,
-      input: { notificationId: notification.id },
-      req,
-    });
-    emailAfterChange(job.id);
-  }
+    return doc;
+  const key = `event-${doc.id}-published`;
+  const existing = await req.payload.count({
+    collection: "email-notifications",
+    where: { key: { equals: key } },
+    req,
+    overrideAccess: true,
+  });
+  if (existing.totalDocs) return doc;
+  const notification = await req.payload.create({
+    collection: "email-notifications",
+    req,
+    overrideAccess: true,
+    depth: 0,
+    data: { key, eventId: doc.id, kind: "published", status: "queued" },
+  });
+  // The outbox and its job commit/roll back with the event; no email is sent here.
+  const job = await req.payload.jobs.queue({
+    task: "send-event-email",
+    queue: EMAIL_QUEUE,
+    input: { notificationId: notification.id },
+    req,
+  });
+  emailAfterChange(job.id);
   return doc;
 };
 
@@ -96,6 +91,14 @@ export const sendEventEmailTask: TaskConfig<{
         overrideAccess: true,
       });
     try {
+      // Old queued receipts must not send after switching to publication-only mail.
+      if (notification.kind !== "published") {
+        await update({
+          status: "skipped",
+          failureReason: "Submission confirmation emails are disabled.",
+        });
+        return { output: {} };
+      }
       const settings = emailSettings();
       if (!settings)
         throw new Error("Resend email settings are not configured.");
@@ -114,7 +117,7 @@ export const sendEventEmailTask: TaskConfig<{
         event.isDemo ||
         event.source !== "submission" ||
         !event.submittedBy?.email ||
-        (notification.kind === "published" && !published?.city)
+        !published?.city
       ) {
         await update({
           status: "skipped",
@@ -137,15 +140,13 @@ export const sendEventEmailTask: TaskConfig<{
       if (!message.success) {
         if (notification.firstAttemptAt)
           throw new Error("The saved email message is invalid.");
-        const url =
-          notification.kind === "published" && published?.city
-            ? new URL(eventPath(published, published.city.slug), emailSiteUrl())
-                .href
-            : undefined;
+        const url = new URL(
+          eventPath(published, published.city.slug),
+          emailSiteUrl(),
+        ).href;
         const snapshot = eventEmailTemplate({
           kind: notification.kind,
-          title:
-            notification.kind === "published" ? published!.title : event.title,
+          title: published.title,
           name: event.submittedBy.name || "",
           recipient: event.submittedBy.email,
           sender: settings.sender,
