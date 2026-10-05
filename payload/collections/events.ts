@@ -129,7 +129,7 @@ export const events: CollectionConfig = {
       relationTo: "venues",
       filterOptions: ({ data }): Where => ({
         and: [
-          { city: { equals: data.city } },
+          { city: { equals : data.city } },
           { isDemo: { not_equals: true } },
         ],
       }),
