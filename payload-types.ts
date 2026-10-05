@@ -305,7 +305,7 @@ export interface Season {
   createdAt: string;
 }
 /**
- * Administrators can create, approve and publish events without AI review. Other staff must complete AI review and human approval before publication. Content changes require reapproval.
+ * Public submissions require AI review and administrator approval. Choose existing organiser/venue records or create them from the submitted details on approval. Publishing records approval too. Content changes require reapproval.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
@@ -364,8 +364,31 @@ export interface Event {
   access: 'tickets' | 'free' | 'rsvp' | 'invitation-only' | 'private';
   visibility: 'public' | 'industry' | 'held-date';
   actionUrl?: string | null;
-  organiser: number | Organiser;
+  /**
+   * Choose an existing organiser after reviewing possible AI matches. Required before approval for manually entered events.
+   */
+  organiser?: (number | null) | Organiser;
   venue?: (number | null) | Venue;
+  /**
+   * Private submitted details. No organiser record is created until administrator approval. Editing these details requires a new AI review.
+   */
+  submittedOrganiser?: {
+    name?: string | null;
+    type?: ('brand' | 'label' | 'gallery' | 'promoter' | 'institution' | 'individual') | null;
+    website?: string | null;
+    contactEmail?: string | null;
+  };
+  organiserResolution?: ('use-existing' | 'create-new') | null;
+  /**
+   * Private submitted details. Match a venue in this city or create it on approval. Editing these details requires a new AI review.
+   */
+  submittedVenue?: {
+    name?: string | null;
+    area?: string | null;
+    address?: string | null;
+    mapUrl?: string | null;
+  };
+  venueResolution?: ('use-existing' | 'create-new' | 'omit') | null;
   seasons?: (number | Season)[] | null;
   description?: string | null;
   status: 'submitted' | 'approved' | 'published' | 'cancelled' | 'postponed';
@@ -399,7 +422,7 @@ export interface Event {
   createdAt: string;
 }
 /**
- * AI findings and the original listing are retained alongside the human decision. Administrators can update AI status or record a manual decision without AI review.
+ * AI findings and submitted details are retained alongside the human decision. Public submissions require completed AI review; administrator approval or publication records the final decision.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "event-reviews".
@@ -417,7 +440,7 @@ export interface EventReview {
     | boolean
     | null;
   /**
-   * Groq processes queued reviews. To retry a failed review, set this to Pending. Administrator approval can still proceed manually.
+   * Groq processes queued reviews. To retry a failed review, set this to Pending. Public submissions cannot be approved until AI review completes.
    */
   aiStatus: 'pending' | 'processing' | 'completed' | 'failed';
   promptVersion?: string | null;
@@ -814,6 +837,24 @@ export interface EventsSelect<T extends boolean = true> {
   actionUrl?: T;
   organiser?: T;
   venue?: T;
+  submittedOrganiser?:
+    | T
+    | {
+        name?: T;
+        type?: T;
+        website?: T;
+        contactEmail?: T;
+      };
+  organiserResolution?: T;
+  submittedVenue?:
+    | T
+    | {
+        name?: T;
+        area?: T;
+        address?: T;
+        mapUrl?: T;
+      };
+  venueResolution?: T;
   seasons?: T;
   description?: T;
   status?: T;

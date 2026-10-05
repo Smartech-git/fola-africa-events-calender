@@ -133,13 +133,12 @@ export async function createEventSubmission(
         },
       };
 
-    for (const { name, field, collection } of [
+    for (const { name, field } of [
       {
         name: data.organiserName,
         field: "organiserName",
-        collection: "organisers",
       },
-      { name: data.venueName, field: "venueName", collection: "venues" },
+      { name: data.venueName, field: "venueName" },
     ] as const) {
       if (!name) continue;
       const slug = formatSlug(name);
@@ -149,20 +148,6 @@ export async function createEventSubmission(
           status: 400,
           fieldErrors: { [field]: ["Include letters or numbers in the name."] },
         };
-      const existing = await payload.count({
-        collection,
-        where: { slug: { equals: slug } },
-      });
-      if (existing.totalDocs)
-        return {
-          success: false,
-          status: 409,
-          fieldErrors: {
-            [field]: [
-              "This name is already in use. Add a distinguishing detail.",
-            ],
-          },
-        };
     }
 
     const transactionID = await payload.db.beginTransaction();
@@ -170,38 +155,6 @@ export async function createEventSubmission(
       throw new Error("A submission transaction could not be started.");
     const req = { transactionID };
     try {
-      // Never overwrite trusted organiser or venue records with public submissions.
-      const organiser = await payload.create({
-        collection: "organisers",
-        req,
-        depth: 0,
-        overrideAccess: true,
-        data: {
-          name: data.organiserName,
-          slug: formatSlug(data.organiserName),
-          type: data.organiserType,
-          website: data.organiserWebsite || undefined,
-          contact: { email: data.organiserContact },
-          isDemo: false,
-        },
-      });
-      const venue = data.venueName
-        ? await payload.create({
-            collection: "venues",
-            req,
-            depth: 0,
-            overrideAccess: true,
-            data: {
-              name: data.venueName,
-              slug: formatSlug(data.venueName),
-              city: city.id,
-              area: data.venueArea,
-              address: data.venueAddress,
-              mapUrl: data.venueMapUrl || undefined,
-              isDemo: false,
-            },
-          })
-        : undefined;
       await payload.create({
         collection: "events",
         req,
@@ -220,8 +173,20 @@ export async function createEventSubmission(
           access: data.access,
           visibility: data.visibility,
           actionUrl: data.actionUrl || undefined,
-          organiser: organiser.id,
-          venue: venue?.id,
+          submittedOrganiser: {
+            name: data.organiserName,
+            type: data.organiserType,
+            website: data.organiserWebsite || undefined,
+            contactEmail: data.organiserContact,
+          },
+          submittedVenue: data.venueName
+            ? {
+                name: data.venueName,
+                area: data.venueArea,
+                address: data.venueAddress,
+                mapUrl: data.venueMapUrl || undefined,
+              }
+            : undefined,
           seasons: data.seasons.map(Number),
           description: data.description,
           submittedBy: {

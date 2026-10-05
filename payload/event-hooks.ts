@@ -8,11 +8,13 @@ import {
 import { roleOf } from "@/payload/access";
 import { PRIVATE_ACCESS, PUBLIC_STATUSES } from "@/payload/constants";
 import {
-  editorialFields,
+  editorialChange,
   eventSnapshot,
   matchesSnapshot,
 } from "@/payload/reviews/event-snapshot";
+import { approveSubmissionRelations } from "@/payload/submissions/approve-submission-relations";
 import { eventProblems, relationID } from "@/payload/validation";
+import type { Event } from "@/payload-types";
 
 export const deleteEventReviews: CollectionBeforeDeleteHook = async ({
   id,
@@ -41,15 +43,33 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
   req,
 }) => {
   const event = { ...originalDoc, ...data };
+  for (const key of ["submittedOrganiser", "submittedVenue"]) {
+    if (data[key] && typeof data[key] === "object")
+      event[key] = { ...originalDoc?.[key], ...data[key] };
+  }
+  if (originalDoc?.source === "submission" && event.source !== "submission")
+    throw new APIError("A public submission's source cannot be changed.", 400);
+  if (
+    event.source === "submission" &&
+    (!originalDoc ||
+      originalDoc.submittedOrganiser?.name ||
+      event.submittedOrganiser?.name) &&
+    (!event.submittedOrganiser?.name ||
+      !event.submittedOrganiser?.type ||
+      !event.submittedOrganiser?.contactEmail)
+  )
+    throw new APIError(
+      "Public submissions require the submitted organiser's name, type and contact email.",
+      400,
+    );
+  if (
+    !event.organiser &&
+    !(event.source === "submission" && event.submittedOrganiser?.name)
+  )
+    throw new APIError("Select an organiser for this event.", 400);
   const errors = eventProblems(event);
   if (errors.length) throw new APIError(errors.join(" "), 400);
-  const changed =
-    originalDoc &&
-    editorialFields.some(
-      (key) =>
-        key in data &&
-        JSON.stringify(data[key]) !== JSON.stringify(originalDoc[key]),
-    );
+  const changed = originalDoc && editorialChange(originalDoc, event);
   for (const key of ["startAt", "endAt"]) {
     if (event[key]) data[key] = new Date(event[key]).toISOString();
   }
@@ -120,6 +140,15 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
       400,
     );
   if (nextStatus !== "submitted" && nextStatus !== originalDoc?.status) {
+    if (
+      event.source === "submission" &&
+      ["approved", "published"].includes(nextStatus) &&
+      !administrator
+    )
+      throw new APIError(
+        "An administrator must approve or publish public submissions.",
+        403,
+      );
     if (!approver)
       throw new APIError(
         "A FOLA approver must make publication decisions.",
@@ -127,11 +156,22 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
       );
     if (
       nextStatus === "approved" ||
+      (event.source === "submission" && nextStatus === "published") ||
       (administrator &&
         nextStatus === "published" &&
         originalDoc?.status !== "approved")
     ) {
-      if (!administrator) {
+      if (PRIVATE_ACCESS.includes(event.access) && !event.organiserConfirmed)
+        throw new APIError(
+          "Confirm private listings directly with the organiser before approval.",
+          400,
+        );
+      if (!administrator || event.source === "submission") {
+        if (!originalDoc)
+          throw new APIError(
+            "Submit this event for AI review before approval or publication.",
+            400,
+          );
         const reviews = await req.payload.find({
           collection: "event-reviews",
           where: { event: { equals: originalDoc.id } },
@@ -145,20 +185,36 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
           !review ||
           review.aiStatus !== "completed" ||
           !matchesSnapshot(event, review.originalListing) ||
-          !["accepted", "amended"].includes(review.humanDecision || "")
+          (!administrator &&
+            !["accepted", "amended"].includes(review.humanDecision || ""))
         )
           throw new APIError(
-            "Complete the AI review and human recommendation before approval.",
+            "Complete the AI review of the current event details before approval or publication.",
             400,
           );
+        if (event.source === "submission") {
+          Object.assign(
+            data,
+            await approveSubmissionRelations(event as Event, req),
+          );
+          if (!["accepted", "amended"].includes(review.humanDecision || ""))
+            await req.payload.update({
+              collection: "event-reviews",
+              id: review.id,
+              req,
+              depth: 0,
+              data: { humanDecision: "accepted" },
+            });
+        }
       }
-      if (PRIVATE_ACCESS.includes(event.access) && !event.organiserConfirmed)
-        throw new APIError(
-          "Confirm private listings directly with the organiser before approval.",
-          400,
-        );
-      data.approvedBy = req.user!.id;
-      data.approvedAt = new Date().toISOString();
+      data.approvedBy =
+        originalDoc?.status === "approved"
+          ? originalDoc.approvedBy
+          : req.user!.id;
+      data.approvedAt =
+        originalDoc?.status === "approved"
+          ? originalDoc.approvedAt
+          : new Date().toISOString();
     }
     if (
       nextStatus === "published" &&
@@ -193,6 +249,11 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
   }
   if (event.isDemo) data.verified = false;
   if (
+    ["approved", ...PUBLIC_STATUSES].includes(nextStatus) &&
+    !relationID(data.organiser ?? event.organiser)
+  )
+    throw new APIError("Approval requires an organiser record.", 400);
+  if (
     PUBLIC_STATUSES.includes(nextStatus) &&
     !originalDoc?.approvedBy &&
     !data.approvedBy
@@ -208,12 +269,8 @@ export const queueEventReview: CollectionAfterChangeHook = async ({
   req,
 }) => {
   // Administrator entries follow the manual approval path without an AI job.
-  if (roleOf(req.user) === "admin") return doc;
-  const changed =
-    operation === "create" ||
-    editorialFields.some(
-      (key) => JSON.stringify(doc[key]) !== JSON.stringify(previousDoc?.[key]),
-    );
+  if (roleOf(req.user) === "admin" && doc.source !== "submission") return doc;
+  const changed = operation === "create" || editorialChange(previousDoc, doc);
   if (doc.status !== "submitted" || !changed) return doc;
   const originalListing = eventSnapshot(doc);
   await req.payload.create({

@@ -1,6 +1,5 @@
 import { INDUSTRIES, PUBLIC_STATUSES } from "@/payload/constants";
-import type { Event } from "@/types/payload-types";
-
+import type { Event } from "@/payload-types";
 
 /** The only projection that should be used for public pages, exports or API responses. */
 export function toPublicEvent(event: Event) {
@@ -26,7 +25,7 @@ export function toPublicEvent(event: Event) {
         }
       : undefined;
   const organiser =
-    publicDetails && typeof event.organiser === "object"
+    publicDetails && event.organiser && typeof event.organiser === "object"
       ? {
           name: event.organiser.name,
           type: event.organiser.type,

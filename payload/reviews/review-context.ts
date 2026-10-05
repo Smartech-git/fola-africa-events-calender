@@ -16,12 +16,14 @@ export async function reviewContext(event: Event, req: PayloadRequest) {
   const cityId = relationID(event.city)!;
   const [city, organiser, venue, nearby, venues] = await Promise.all([
     payload.findByID({ collection: "cities", id: cityId, depth: 0, req }),
-    payload.findByID({
-      collection: "organisers",
-      id: relationID(event.organiser)!,
-      depth: 0,
-      req,
-    }),
+    event.organiser
+      ? payload.findByID({
+          collection: "organisers",
+          id: relationID(event.organiser)!,
+          depth: 0,
+          req,
+        })
+      : null,
     event.venue
       ? payload.findByID({
           collection: "venues",
@@ -75,40 +77,67 @@ export async function reviewContext(event: Event, req: PayloadRequest) {
     payload.find({
       collection: "venues",
       depth: 0,
-      limit: 8,
+      limit: 20,
       req,
       where: {
-        and: [{ city: { equals: cityId } }, { isDemo: { not_equals: true } }],
+        and: [
+          { city: { equals: cityId } },
+          { isDemo: { not_equals: true } },
+          ...(event.submittedVenue?.name
+            ? [{ name: { like: event.submittedVenue.name } }]
+            : []),
+        ],
       },
     }),
   ]);
+  const organiserDetails = event.submittedOrganiser?.name
+    ? event.submittedOrganiser
+    : organiser;
+  const venueDetails = event.submittedVenue?.name
+    ? event.submittedVenue
+    : venue;
+  if (!organiserDetails?.name)
+    throw new Error("No submitted organiser details are available for review.");
   const organisers = await payload.find({
     collection: "organisers",
     depth: 0,
-    limit: 8,
+    limit: 20,
     req,
     where: {
       and: [
-        { name: { contains: organiser.name.slice(0, 60) } },
+        { name: { like: organiserDetails.name.slice(0, 200) } },
         { isDemo: { not_equals: true } },
       ],
     },
   });
-  const organiserSummary = (item: typeof organiser) => ({
-    id: item.id,
+  const organiserSummary = (item: {
+    id?: number;
+    name?: string | null;
+    type?: string | null;
+  }) => ({
+    id: item.id ?? null,
     name: item.name,
     type: item.type,
   });
-  const venueSummary = (item: NonNullable<typeof venue>) => ({
-    id: item.id,
+  const venueSummary = (item: {
+    id?: number;
+    name?: string | null;
+    area?: string | null;
+    address?: string | null;
+  }) => ({
+    id: item.id ?? null,
     name: item.name,
     area: item.area,
+    address: item.address,
   });
+  const snapshot = eventSnapshot(event);
+  delete snapshot.submittedOrganiser;
+  delete snapshot.submittedVenue;
   return {
     event: {
-      ...eventSnapshot(event),
-      organiser: organiserSummary(organiser),
-      venue: venue ? venueSummary(venue) : null,
+      ...snapshot,
+      organiser: organiserSummary(organiserDetails),
+      venue: venueDetails?.name ? venueSummary(venueDetails) : null,
     },
     city: { name: city.name, country: city.country, timezone: city.timezone },
     authority: {

@@ -8,6 +8,7 @@ import {
   roleOf,
 } from "@/payload/access";
 import { enqueueReview } from "@/payload/reviews/review-task";
+import { relationID } from "@/payload/validation";
 
 export const eventReviews: CollectionConfig = {
   slug: "event-reviews",
@@ -22,7 +23,7 @@ export const eventReviews: CollectionConfig = {
       "createdAt",
     ],
     description:
-      "AI findings and the original listing are retained alongside the human decision. Administrators can update AI status or record a manual decision without AI review.",
+      "AI findings and submitted details are retained alongside the human decision. Public submissions require completed AI review; administrator approval or publication records the final decision.",
   },
   access: {
     create: noAccess,
@@ -35,7 +36,31 @@ export const eventReviews: CollectionConfig = {
   hooks: {
     afterChange: [enqueueReview],
     beforeChange: [
-      ({ data, originalDoc, req, operation }) => {
+      async ({ data, originalDoc, req, operation }) => {
+        let publicSubmission = false;
+        if (
+          !req.context.aiReviewWorker &&
+          operation === "update" &&
+          (data.aiStatus === "completed" ||
+            (data.humanDecision && data.humanDecision !== "pending"))
+        ) {
+          const event = await req.payload.findByID({
+            collection: "events",
+            id: relationID(originalDoc?.event)!,
+            depth: 0,
+            req,
+          });
+          publicSubmission = event.source === "submission";
+          if (
+            publicSubmission &&
+            data.aiStatus === "completed" &&
+            originalDoc?.aiStatus !== "completed"
+          )
+            throw new APIError(
+              "Only the AI worker can complete a public submission's review.",
+              400,
+            );
+        }
         if (
           operation === "update" &&
           data.humanDecision &&
@@ -48,7 +73,9 @@ export const eventReviews: CollectionConfig = {
               403,
             );
           if (
-            roleOf(req.user) !== "admin" &&
+            (roleOf(req.user) !== "admin" ||
+              (publicSubmission &&
+                ["accepted", "amended"].includes(data.humanDecision))) &&
             (data.aiStatus || originalDoc?.aiStatus) !== "completed"
           )
             throw new APIError(
@@ -87,7 +114,7 @@ export const eventReviews: CollectionConfig = {
       access: { update: adminField },
       admin: {
         description:
-          "Groq processes queued reviews. To retry a failed review, set this to Pending. Administrator approval can still proceed manually.",
+          "Groq processes queued reviews. To retry a failed review, set this to Pending. Public submissions cannot be approved until AI review completes.",
       },
     },
     {

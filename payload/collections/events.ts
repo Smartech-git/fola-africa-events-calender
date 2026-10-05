@@ -1,11 +1,12 @@
-import type { CollectionConfig } from "payload";
+import type { CollectionConfig, Where } from "payload";
 
-import { isAdmin, isStaff } from "@/payload/access";
+import { adminField, isAdmin, isStaff } from "@/payload/access";
 import {
   ACCESS_OPTIONS,
   EVENT_STATUSES,
   EVENT_TYPES,
   INDUSTRIES,
+  ORGANISER_TYPES,
   SUBMITTER_RELATIONSHIPS,
   VISIBILITY_OPTIONS,
 } from "@/payload/constants";
@@ -32,7 +33,7 @@ export const events: CollectionConfig = {
       "isDemo",
     ],
     description:
-      "Administrators can create, approve and publish events without AI review. Other staff must complete AI review and human approval before publication. Content changes require reapproval.",
+      "Public submissions require AI review and administrator approval. Choose existing organiser/venue records or create them from the submitted details on approval. Publishing records approval too. Content changes require reapproval.",
   },
   // Raw records and counts stay private. Public callers use the whitelisted calendar projection.
   access: {
@@ -115,13 +116,87 @@ export const events: CollectionConfig = {
       name: "organiser",
       type: "relationship",
       relationTo: "organisers",
-      required: true,
+      filterOptions: { isDemo: { not_equals: true } },
+      admin: {
+        description:
+          "Choose an existing organiser after reviewing possible AI matches. Required before approval for manually entered events.",
+        allowCreate: false,
+      },
     },
     {
       name: "venue",
       type: "relationship",
       relationTo: "venues",
-      filterOptions: ({ data }) => ({ city: { equals: data.city } }),
+      filterOptions: ({ data }): Where => ({
+        and: [
+          { city: { equals: data.city } },
+          { isDemo: { not_equals: true } },
+        ],
+      }),
+      admin: { allowCreate: false },
+    },
+    {
+      name: "submittedOrganiser",
+      label: "Submitted organiser details",
+      type: "group",
+      access: { update: adminField },
+      admin: {
+        condition: (data) => data.source === "submission",
+        description:
+          "Private submitted details. No organiser record is created until administrator approval. Editing these details requires a new AI review.",
+      },
+      fields: [
+        { name: "name", type: "text" },
+        { name: "type", type: "select", options: ORGANISER_TYPES },
+        { name: "website", type: "text", validate: httpURL },
+        { name: "contactEmail", type: "email" },
+      ],
+    },
+    {
+      name: "organiserResolution",
+      label: "Organiser decision",
+      type: "select",
+      access: { create: adminField, update: adminField },
+      options: [
+        { label: "Use the selected existing organiser", value: "use-existing" },
+        {
+          label: "Create from submitted details on approval",
+          value: "create-new",
+        },
+      ],
+      admin: { condition: (data) => Boolean(data.submittedOrganiser?.name) },
+    },
+    {
+      name: "submittedVenue",
+      label: "Submitted venue details",
+      type: "group",
+      access: { update: adminField },
+      admin: {
+        condition: (data) => data.source === "submission",
+        description:
+          "Private submitted details. Match a venue in this city or create it on approval. Editing these details requires a new AI review.",
+      },
+      fields: [
+        { name: "name", type: "text" },
+        { name: "area", type: "text" },
+        { name: "address", type: "textarea" },
+        { name: "mapUrl", type: "text", validate: httpURL },
+      ],
+    },
+    {
+      name: "venueResolution",
+      label: "Venue decision",
+      type: "select",
+      access: { create: adminField, update: adminField },
+      options: [
+        { label: "Use the selected existing venue", value: "use-existing" },
+        {
+          label: "Create from submitted details on approval",
+          value: "create-new",
+        },
+        { label: "Leave the venue off this event", value: "omit" },
+      ],
+      admin: { condition: (data) => Boolean(data.submittedVenue?.name) },
     },
     {
       name: "seasons",

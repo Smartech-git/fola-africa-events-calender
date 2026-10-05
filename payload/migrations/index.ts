@@ -3,6 +3,7 @@ import * as migration_20260917_101344_calendar_collections from "./20260917_1013
 import * as migration_20260928_remove_review_targets from "./20260928-remove-review-targets";
 import * as migration_20260929_091058_ai_review_jobs from "./20260929_091058_ai_review_jobs";
 import * as migration_20261003_event_email_notifications from "./20261003-event-email-notifications";
+import * as migration_20261005_200240_staged_submission_relations from "./20261005_200240_staged_submission_relations";
 
 export const migrations = [
   {
@@ -29,5 +30,10 @@ export const migrations = [
     up: migration_20261003_event_email_notifications.up,
     down: migration_20261003_event_email_notifications.down,
     name: "20261003-event-email-notifications",
+  },
+  {
+    up: migration_20261005_200240_staged_submission_relations.up,
+    down: migration_20261005_200240_staged_submission_relations.down,
+    name: "20261005_200240_staged_submission_relations",
   },
 ];
