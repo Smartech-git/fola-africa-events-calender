@@ -41,7 +41,7 @@ export default function Hero() {
   return (
     <div className="flex w-full flex-col">
       <SectionWrapper className="w-full py-4 sm:py-4">
-        <div className="just flex w-full justify-between gap-4">
+        <div className="just flex w-full justify-between gap-8">
           <FadeUpText
             className="w-fit text-xxs uppercase sm:text-xs"
             text={`THE INDUSTRY CALENDAR FOR AFRICA’S KEY CITIES.`}

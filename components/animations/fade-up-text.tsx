@@ -93,11 +93,15 @@ export default function FadeUpText({
         if (cancelled) return;
 
         split = SplitText.create(element, {
-          type: "words,lines",
+          // Animate lines only so words retain native spacing and wrapping.
+          type: "lines",
           mask: "lines",
           autoSplit: true,
           linesClass: "fade-up-text-line",
           onSplit(self) {
+            // SplitText snapshots text-align inline. Inherit it instead so
+            // responsive alignment classes also reach the lines and masks.
+            gsap.set([...self.lines, ...self.masks], { textAlign: "inherit" });
             element.style.visibility = visibility;
 
             // Returning the tween lets SplitText preserve progress on resize.
@@ -142,13 +146,15 @@ export default function FadeUpText({
     viewportRef,
   ]);
 
+  // Stable available width prevents split lines from changing intrinsic sizing.
+  // Callers can still opt into w-fit through className.
   return (
     <Tag
       id={id}
       ref={(element) => {
         textRef.current = element;
       }}
-      className={cn("w-fit", className)}
+      className={cn("w-full max-w-full min-w-0", className)}
     >
       {typeof text === "string"
         ? text.split(/\r\n|\r|\n/).map((line, index) => (

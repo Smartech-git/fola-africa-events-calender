@@ -456,7 +456,7 @@ export interface EventReview {
   createdAt: string;
 }
 /**
- * Private delivery records for event receipts and publication emails. Failed jobs can be retried from Jobs.
+ * Private delivery records for publication emails and historical submission receipts. Failed jobs can be retried from Jobs.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "email-notifications".

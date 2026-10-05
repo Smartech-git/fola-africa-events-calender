@@ -42,7 +42,7 @@ export const events: CollectionConfig = {
     delete: isAdmin,
     readVersions: isStaff,
   },
-  versions: { maxPerDoc: 30 },
+  versions: { maxPerDoc: 3 },
   indexes: [{ fields: ["city", "status", "startAt"] }],
   hooks: {
     beforeChange: [validateEvent],

@@ -102,13 +102,12 @@ export function eventEmailTemplate({
             <p style="${paragraphStyle}margin:0 0 12px">${escapeHtml(greeting)}</p>
             <p style="${paragraphStyle}margin:0 0 28px">${escapeHtml(copy)}</p>
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="${theme.surface}" style="width:100%;background:${theme.surface};border:1px solid ${theme.border};border-collapse:collapse;table-layout:fixed">
-              <tr><td style="padding:20px 24px;border-left:3px solid ${theme.primary}">
+              <tr><td style="padding:20px 24px">
                 <p style="${labelStyle}margin:0 0 10px">${status}</p>
                 <h2 class="email-title" style="font-family:${headingFont};font-size:26px;line-height:32px;font-weight:300;color:${theme.text};margin:0;word-wrap:break-word;overflow-wrap:anywhere">${escapeHtml(title)}</h2>
                </td></tr>
             </table>
             ${link}
-            <p style="${paragraphStyle}margin:28px 0 32px">The FOLA team</p>
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;border-collapse:collapse">
               <tr><td style="padding-top:20px;border-top:1px solid ${theme.border}">
                 <p style="${labelStyle}margin:0 0 8px;font-size:10px">The people. The places.<br>The moments that move us.</p>

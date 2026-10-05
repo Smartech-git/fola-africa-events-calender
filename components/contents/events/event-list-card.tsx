@@ -10,12 +10,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import FadeUpText from "@/components/animations/fade-up-text";
 import PixelBlast from "@/components/animations/pixel-blast";
 import {
-  EventAttendanceAction,
+  // EventAttendanceAction,
   EventCalendarActions,
-  EventExternalAction,
+  // EventExternalAction,
 } from "@/components/contents/events/event-actions";
 import EventFacts from "@/components/contents/events/event-facts";
-import { eventAnchor, eventPath, externalUrl } from "@/lib/events/event-list";
+import { eventAnchor, eventPath } from "@/lib/events/event-list";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
 
 interface Props {
@@ -30,7 +30,7 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
   const cardRef = useRef<HTMLElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const path = eventPath(event, city);
-  const mapUrl = externalUrl(event.venue?.mapUrl);
+  // const mapUrl = externalUrl(event.venue?.mapUrl);
   const anchor = eventAnchor(event, date);
 
   return (
@@ -80,7 +80,7 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
       </Link>
       <div className="relative z-10 mt-1 space-y-1 text-xs leading-relaxed uppercase sm:text-sm">
         <EventFacts event={event} timezone={timezone} />
-        <div
+        {/* <div
           data-event-actions
           className="flex w-full flex-wrap items-center justify-between gap-x-6 gap-y-1"
         >
@@ -95,7 +95,7 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
               <p>{event.venue.name}</p>
             ))}
           <EventAttendanceAction event={event} />
-        </div>
+        </div> */}
       </div>
       <div
         data-event-actions

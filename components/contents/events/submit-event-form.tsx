@@ -421,12 +421,12 @@ export default function SubmitEventForm({
               Submitting sends this listing for review. It does not publish it.
             </p>
             {submitError && (
-              <p role="alert" className="text-sm text-danger">
+              <p role="alert" className="text-xs uppercase text-danger">
                 {submitError}
               </p>
             )}
             {!cities.length && (
-              <p role="alert" className="text-sm">
+              <p role="alert" className="text-sm uppercase">
                 No cities are available for submission yet.
               </p>
             )}
