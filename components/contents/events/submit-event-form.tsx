@@ -54,27 +54,36 @@ const initialActionState: SubmitEventActionState = {
   status: 0,
 };
 
-export default function SubmitEventForm({
+export default function SubmitEventForm(options: SubmissionOptions) {
+  const [formVersion, setFormVersion] = useState(0);
+
+  // Reset the form library and controlled inputs together, including validation.
+  return (
+    <EventSubmissionForm
+      key={formVersion}
+      {...options}
+      onReset={() => setFormVersion((version) => version + 1)}
+    />
+  );
+}
+
+function EventSubmissionForm({
   cities,
   seasons,
-}: SubmissionOptions) {
+  onReset,
+}: SubmissionOptions & { onReset: () => void }) {
   const {
     register,
     control,
     handleSubmit,
-    reset,
     setValue,
-    formState: { errors, isSubmitting },
+    trigger,
+    formState: { errors, isSubmitting, isSubmitted },
   } = useReactHookForm(submitEventSchema, submitEventDefaults);
   const [state, action, isPending] = useActionState<
     SubmitEventActionState,
-    SubmitEventValues | null
-  >((previousState, data) => {
-    // Starting another event resets the result without a server request.
-    return data === null
-      ? initialActionState
-      : submitEvent(previousState, data);
-  }, initialActionState);
+    SubmitEventValues
+  >(submitEvent, initialActionState);
   const [receiptDismissed, setReceiptDismissed] = useState(false);
 
   const submitError =
@@ -190,7 +199,7 @@ export default function SubmitEventForm({
               if (keys === "all") return;
               const values = Array.from(keys).map(String);
               const value = name === "seasons" ? values : (values[0] ?? "");
-              field.onChange(value);
+              setValue(name, value, { shouldDirty: true });
               if (name === "city") setValue("seasons", []);
               if (
                 name === "access" &&
@@ -202,6 +211,8 @@ export default function SubmitEventForm({
                 setValue("access", "private");
                 setValue("actionUrl", "");
               }
+              // Validate related fields after applying all selection changes.
+              if (isSubmitted) void trigger();
             }}
           />
         )}
@@ -219,9 +230,7 @@ export default function SubmitEventForm({
   };
 
   const submitAnother = () => {
-    setReceiptDismissed(true);
-    reset();
-    startTransition(() => action(null));
+    onReset();
     document
       .getElementById("submit-event-heading")
       ?.scrollIntoView({ behavior: "smooth" });
@@ -243,7 +252,7 @@ export default function SubmitEventForm({
       </div>
 
       <SectionWrapper className="pb-16 sm:pb-20">
-        <p className="mb-4 w-fit bg-secondary px-2 py-0.5 sm:text-xs text-xxs uppercase">
+        <p className="mb-4 w-fit bg-secondary px-2 py-0.5 text-xxs uppercase sm:text-xs">
           Fields marked * are required. Your contact details are never displayed
         </p>
         <form noValidate onSubmit={onSubmit}>
@@ -421,7 +430,7 @@ export default function SubmitEventForm({
               Submitting sends this listing for review. It does not publish it.
             </p>
             {submitError && (
-              <p role="alert" className="text-xs uppercase text-danger">
+              <p role="alert" className="text-xs text-danger uppercase">
                 {submitError}
               </p>
             )}
