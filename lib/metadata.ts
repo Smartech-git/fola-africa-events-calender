@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const siteUrl = new URL(process.env.BASE_URL || "http://localhost:3000");
+export const siteUrl = new URL("https://fola-africa-events-calender.vercel.app");
 export const siteDescription =
   "Discover creative, cultural and business events across Africa. Explore city calendars and find your next event with FOLA.";
 
