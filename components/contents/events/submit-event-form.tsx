@@ -426,7 +426,7 @@ export default function SubmitEventForm({
               </p>
             )}
             {!cities.length && (
-              <p role="alert" className="text-sm uppercase">
+              <p role="alert" className="text-xs uppercase">
                 No cities are available for submission yet.
               </p>
             )}

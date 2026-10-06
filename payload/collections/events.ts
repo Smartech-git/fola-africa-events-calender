@@ -129,7 +129,7 @@ export const events: CollectionConfig = {
       relationTo: "venues",
       filterOptions: ({ data }): Where => ({
         and: [
-          { city: { equals : data.city } },
+          { city: { equals: data.city } },
           { isDemo: { not_equals: true } },
         ],
       }),
@@ -159,12 +159,31 @@ export const events: CollectionConfig = {
       access: { create: adminField, update: adminField },
       options: [
         { label: "Use the selected existing organiser", value: "use-existing" },
+        { label: "Update an existing organiser…", value: "update-existing" },
         {
           label: "Create from submitted details on approval",
           value: "create-new",
         },
       ],
-      admin: { condition: (data) => Boolean(data.submittedOrganiser?.name) },
+      admin: {
+        condition: (data) => Boolean(data.submittedOrganiser?.name),
+        components: {
+          Field: {
+            path: "@/payload/components/relation-resolution#RelationResolution",
+            clientProps: { relation: "organiser" },
+          },
+        },
+      },
+    },
+    {
+      name: "organiserUpdate",
+      type: "json",
+      access: { create: adminField, update: adminField },
+      admin: {
+        components: {
+          Field: "@/payload/components/relation-resolution#RelationUpdateData",
+        },
+      },
     },
     {
       name: "submittedVenue",
@@ -190,13 +209,32 @@ export const events: CollectionConfig = {
       access: { create: adminField, update: adminField },
       options: [
         { label: "Use the selected existing venue", value: "use-existing" },
+        { label: "Update an existing venue…", value: "update-existing" },
         {
           label: "Create from submitted details on approval",
           value: "create-new",
         },
         { label: "Leave the venue off this event", value: "omit" },
       ],
-      admin: { condition: (data) => Boolean(data.submittedVenue?.name) },
+      admin: {
+        condition: (data) => Boolean(data.submittedVenue?.name),
+        components: {
+          Field: {
+            path: "@/payload/components/relation-resolution#RelationResolution",
+            clientProps: { relation: "venue" },
+          },
+        },
+      },
+    },
+    {
+      name: "venueUpdate",
+      type: "json",
+      access: { create: adminField, update: adminField },
+      admin: {
+        components: {
+          Field: "@/payload/components/relation-resolution#RelationUpdateData",
+        },
+      },
     },
     {
       name: "seasons",

@@ -378,7 +378,16 @@ export interface Event {
     website?: string | null;
     contactEmail?: string | null;
   };
-  organiserResolution?: ('use-existing' | 'create-new') | null;
+  organiserResolution?: ('use-existing' | 'update-existing' | 'create-new') | null;
+  organiserUpdate?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   /**
    * Private submitted details. Match a venue in this city or create it on approval. Editing these details requires a new AI review.
    */
@@ -388,7 +397,16 @@ export interface Event {
     address?: string | null;
     mapUrl?: string | null;
   };
-  venueResolution?: ('use-existing' | 'create-new' | 'omit') | null;
+  venueResolution?: ('use-existing' | 'update-existing' | 'create-new' | 'omit') | null;
+  venueUpdate?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   seasons?: (number | Season)[] | null;
   description?: string | null;
   status: 'submitted' | 'approved' | 'published' | 'cancelled' | 'postponed';
@@ -846,6 +864,7 @@ export interface EventsSelect<T extends boolean = true> {
         contactEmail?: T;
       };
   organiserResolution?: T;
+  organiserUpdate?: T;
   submittedVenue?:
     | T
     | {
@@ -855,6 +874,7 @@ export interface EventsSelect<T extends boolean = true> {
         mapUrl?: T;
       };
   venueResolution?: T;
+  venueUpdate?: T;
   seasons?: T;
   description?: T;
   status?: T;

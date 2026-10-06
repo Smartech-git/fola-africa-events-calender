@@ -68,7 +68,12 @@ export function editorialChange(
   return (
     Boolean(before.approvedAt) &&
     ["organiser", "venue"].some(
-      (key) => relationID(before[key]) !== relationID(after[key]),
+      (key) =>
+        relationID(before[key]) !== relationID(after[key]) ||
+        (after[`${key}Resolution`] === "update-existing" &&
+          (before[`${key}Resolution`] !== "update-existing" ||
+            JSON.stringify(before[`${key}Update`]) !==
+              JSON.stringify(after[`${key}Update`]))),
     )
   );
 }

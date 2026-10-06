@@ -16,6 +16,16 @@ export interface SubmitEventResult {
   fieldErrors?: Partial<Record<keyof SubmitEventValues, string[]>>;
 }
 
+function duplicateSubmission(): SubmitEventResult {
+  const message = "This event has already been submitted.";
+  return {
+    success: false,
+    status: 409,
+    error: message,
+    fieldErrors: { title: [message] },
+  };
+}
+
 export async function createEventSubmission(
   input: unknown,
 ): Promise<SubmitEventResult> {
@@ -84,6 +94,40 @@ export async function createEventSubmission(
           fieldErrors: { seasons: ["Choose available seasons for this city."] },
         };
     }
+    const titleSlug = formatSlug(data.title);
+    if (!titleSlug)
+      return {
+        success: false,
+        status: 400,
+        fieldErrors: {
+          title: ["Include letters or numbers in the event title."],
+        },
+      };
+
+    // Include pending and manually added events, even if their slug was edited.
+    // Compare only the title in memory; never return private matching records.
+    const alreadySubmitted = async (transactionID?: string | number) => {
+      const matches = await payload.find({
+        collection: "events",
+        req: transactionID ? { transactionID } : undefined,
+        where: {
+          and: [
+            { city: { equals: city.id } },
+            { startAt: { equals: startAt } },
+            { isDemo: { not_equals: true } },
+          ],
+        },
+        select: { title: true },
+        pagination: false,
+        depth: 0,
+        overrideAccess: true,
+      });
+      return matches.docs.some(
+        (event) => formatSlug(event.title) === titleSlug,
+      );
+    };
+    if (await alreadySubmitted()) return duplicateSubmission();
+
     // A persisted, shared limit for both the endpoint and server action.
     const recent = await payload.count({
       collection: "events",
@@ -109,29 +153,22 @@ export async function createEventSubmission(
           "You've submitted several events recently. Please try again in an hour.",
       };
 
-    const eventSlug = formatSlug(data.title);
-    if (!eventSlug)
-      return {
-        success: false,
-        status: 400,
-        fieldErrors: {
-          title: ["Include letters or numbers in the event title."],
-        },
-      };
-    const existingEvent = await payload.count({
-      collection: "events",
-      where: { slug: { equals: eventSlug } },
-    });
-    if (existingEvent.totalDocs)
-      return {
-        success: false,
-        status: 409,
-        fieldErrors: {
-          title: [
-            "This title is already in use. Add a date or other detail to distinguish your event.",
-          ],
-        },
-      };
+    // Repeating titles still need distinct URLs for different occurrences.
+    const slugExists = async (slug: string) =>
+      (
+        await payload.count({
+          collection: "events",
+          where: { slug: { equals: slug } },
+        })
+      ).totalDocs > 0;
+    let eventSlug = titleSlug;
+    if (await slugExists(eventSlug)) {
+      const scopedSlug = `${titleSlug}-${city.slug}-${formatSlug(data.startAt)}`;
+      eventSlug = scopedSlug;
+      let suffix = 2;
+      while (await slugExists(eventSlug))
+        eventSlug = `${scopedSlug}-${suffix++}`;
+    }
 
     for (const { name, field } of [
       {
@@ -155,6 +192,12 @@ export async function createEventSubmission(
       throw new Error("A submission transaction could not be started.");
     const req = { transactionID };
     try {
+      // Recheck after slug selection so overlapping retries cannot bypass the
+      // duplicate check by choosing a different URL after another save finishes.
+      if (await alreadySubmitted(transactionID)) {
+        await payload.db.rollbackTransaction(transactionID);
+        return duplicateSubmission();
+      }
       await payload.create({
         collection: "events",
         req,
@@ -204,6 +247,9 @@ export async function createEventSubmission(
       await payload.db.commitTransaction(transactionID);
     } catch (error) {
       await payload.db.rollbackTransaction(transactionID);
+      // The unique slug also catches concurrent identical submissions. After
+      // rollback, report the duplicate without exposing database errors.
+      if (await alreadySubmitted()) return duplicateSubmission();
       throw error;
     }
     return { success: true, status: 201 };

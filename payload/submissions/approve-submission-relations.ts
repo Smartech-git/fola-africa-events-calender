@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { APIError, type PayloadRequest } from "payload";
 
 import { formatSlug } from "@/payload/fields/format-slug";
+import { parseRelationUpdate } from "@/payload/submissions/relation-update";
 import { relationID } from "@/payload/validation";
 import type { Event } from "@/payload-types";
 
@@ -73,7 +74,11 @@ export async function approveSubmissionRelations(
   const submitted = event.submittedOrganiser;
   if (!submitted?.name) return {};
   const result: Partial<Event> = {};
-  if (event.organiserResolution === "use-existing") {
+  if (
+    ["use-existing", "update-existing"].includes(
+      event.organiserResolution || "",
+    )
+  ) {
     const id = relationID(event.organiser);
     if (!id)
       throw new APIError("Select an existing organiser before approval.", 400);
@@ -89,6 +94,34 @@ export async function approveSubmissionRelations(
         400,
       );
     result.organiser = organiser.id;
+    if (event.organiserResolution === "update-existing") {
+      const plan = parseRelationUpdate(event.organiserUpdate, "organiser");
+      if (!plan || String(plan.recordId) !== String(id))
+        throw new APIError(
+          "Select the organiser and fields to update in the update modal before approval.",
+          400,
+        );
+      const changes: Record<string, unknown> = {};
+      for (const field of plan.fields) {
+        if (field === "contactEmail") {
+          changes.contact = {
+            ...organiser.contact,
+            email: submitted.contactEmail,
+          };
+        } else {
+          changes[field] = submitted[field as keyof typeof submitted] ?? null;
+        }
+      }
+      await req.payload.update({
+        collection: "organisers",
+        id: organiser.id,
+        req,
+        depth: 0,
+        data: changes,
+      });
+      result.organiserResolution = "use-existing";
+      result.organiserUpdate = null;
+    }
   } else if (event.organiserResolution === "create-new") {
     if (!submitted.type || !submitted.contactEmail)
       throw new APIError(
@@ -114,14 +147,16 @@ export async function approveSubmissionRelations(
     result.organiserResolution = "use-existing";
   } else {
     throw new APIError(
-      "Choose whether to use an existing organiser or create one on approval.",
+      "Choose whether to use or update an existing organiser, or create one on approval.",
       400,
     );
   }
 
   if (event.submittedVenue?.name) {
     const city = relationID(event.city)!;
-    if (event.venueResolution === "use-existing") {
+    if (
+      ["use-existing", "update-existing"].includes(event.venueResolution || "")
+    ) {
       const id = relationID(event.venue);
       if (!id)
         throw new APIError("Select an existing venue before approval.", 400);
@@ -137,6 +172,28 @@ export async function approveSubmissionRelations(
           400,
         );
       result.venue = venue.id;
+      if (event.venueResolution === "update-existing") {
+        const plan = parseRelationUpdate(event.venueUpdate, "venue");
+        if (!plan || String(plan.recordId) !== String(id))
+          throw new APIError(
+            "Select the venue and fields to update in the update modal before approval.",
+            400,
+          );
+        const changes: Record<string, unknown> = {};
+        for (const field of plan.fields)
+          changes[field] =
+            event.submittedVenue[field as keyof typeof event.submittedVenue] ??
+            null;
+        await req.payload.update({
+          collection: "venues",
+          id: venue.id,
+          req,
+          depth: 0,
+          data: changes,
+        });
+        result.venueResolution = "use-existing";
+        result.venueUpdate = null;
+      }
     } else if (event.venueResolution === "create-new") {
       const details = event.submittedVenue;
       await preventDuplicate("venues", details.name!, req, city);
@@ -167,7 +224,7 @@ export async function approveSubmissionRelations(
       result.venue = null;
     } else {
       throw new APIError(
-        "Choose an existing venue, create one on approval, or leave it off this event.",
+        "Choose or update an existing venue, create one on approval, or leave it off this event.",
         400,
       );
     }

@@ -4,6 +4,7 @@ import * as migration_20260928_remove_review_targets from "./20260928-remove-rev
 import * as migration_20260929_091058_ai_review_jobs from "./20260929_091058_ai_review_jobs";
 import * as migration_20261003_event_email_notifications from "./20261003-event-email-notifications";
 import * as migration_20261005_200240_staged_submission_relations from "./20261005_200240_staged_submission_relations";
+import * as migration_20261005_221554_selective_relation_updates from "./20261005_221554_selective_relation_updates";
 
 export const migrations = [
   {
@@ -35,5 +36,10 @@ export const migrations = [
     up: migration_20261005_200240_staged_submission_relations.up,
     down: migration_20261005_200240_staged_submission_relations.down,
     name: "20261005_200240_staged_submission_relations",
+  },
+  {
+    up: migration_20261005_221554_selective_relation_updates.up,
+    down: migration_20261005_221554_selective_relation_updates.down,
+    name: "20261005_221554_selective_relation_updates",
   },
 ];
