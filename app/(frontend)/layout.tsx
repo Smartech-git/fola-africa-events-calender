@@ -7,7 +7,12 @@ import "@/app/styles/globals.css";
 import Header from "@/components/header/header";
 import LenisProvider from "@/components/providers/lenis-provider";
 import Toast from "@/components/ui/toast";
-import { siteUrl, siteDescription } from "@/lib/metadata";
+import {
+  siteUrl,
+  siteDescription,
+  openGraphImage,
+  twitterImage,
+} from "@/lib/metadata";
 
 const apris = localFont({
   src: [
@@ -35,6 +40,8 @@ export const metadata: Metadata = {
   title: { default: "FOLA | Africa’s Events Calendar", template: "%s | FOLA" },
   description: siteDescription,
   metadataBase: siteUrl,
+  openGraph: { images: [openGraphImage] },
+  twitter: { card: "summary_large_image", images: [twitterImage] },
 };
 
 export const viewport: Viewport = {
