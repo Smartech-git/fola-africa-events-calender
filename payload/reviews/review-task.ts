@@ -1,21 +1,18 @@
 import type { CollectionAfterChangeHook, TaskConfig } from "payload";
 
 import { DEFAULT_REVIEW_PROMPT } from "@/payload/constants";
-import { matchesSnapshot } from "@/payload/reviews/event-snapshot";
 import {
   buildReviewPrompt,
-  GroqReviewError,
-  groqReview,
-} from "@/payload/reviews/groq-review";
+  AnthropicReviewError,
+  anthropicReview,
+} from "@/payload/reviews/anthropic-review";
+import { reviewModel } from "@/payload/reviews/anthropic-settings";
+import { matchesSnapshot } from "@/payload/reviews/event-snapshot";
 import {
   reviewContext,
   validateReviewMatches,
 } from "@/payload/reviews/review-context";
-import {
-  REVIEW_MODEL,
-  REVIEW_QUEUE,
-  REVIEW_RETRIES,
-} from "@/payload/reviews/review-schema";
+import { REVIEW_QUEUE, REVIEW_RETRIES } from "@/payload/reviews/review-schema";
 import { relationID } from "@/payload/validation";
 
 export const enqueueReview: CollectionAfterChangeHook = async ({
@@ -52,7 +49,7 @@ export const reviewEventTask: TaskConfig<{
   output: Record<string, never>;
 }> = {
   slug: "review-event",
-  label: "Review event with Groq",
+  label: "Review event with Anthropic",
   inputSchema: [{ name: "reviewId", type: "number", required: true }],
   concurrency: ({ input }) => `review-${input.reviewId}`,
   retries: {
@@ -122,16 +119,17 @@ export const reviewEventTask: TaskConfig<{
       const prompt = buildReviewPrompt(
         settings.systemPrompt || DEFAULT_REVIEW_PROMPT,
       );
+      const model = reviewModel();
       const started = await update({
         aiStatus: "processing",
         failureReason: null,
-        model: REVIEW_MODEL,
+        model,
         promptVersion: settings.promptVersion || "fola-beta-v1",
         promptSnapshot: prompt,
       });
       if (!started.docs.length) return { output: {} };
       const context = await reviewContext(event, req);
-      const result = await groqReview(prompt, context);
+      const result = await anthropicReview(prompt, context, model);
       validateReviewMatches(result, context);
       const current = await payload.find({
         collection: "events",
@@ -156,10 +154,10 @@ export const reviewEventTask: TaskConfig<{
       return { output: {} };
     } catch (error) {
       const message =
-        error instanceof GroqReviewError
+        error instanceof AnthropicReviewError
           ? error.message
           : "AI review could not be completed. Check configuration or retry the review.";
-      if (error instanceof GroqReviewError && error.retryAt)
+      if (error instanceof AnthropicReviewError && error.retryAt)
         job.waitUntil = error.retryAt;
       await update({
         aiStatus:

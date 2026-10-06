@@ -32,7 +32,7 @@ export const eventReviews: CollectionConfig = {
     delete: isAdmin,
     readVersions: isStaff,
   },
-  versions: { maxPerDoc: 30 },
+  versions: { maxPerDoc: 3 },
   hooks: {
     afterChange: [enqueueReview],
     beforeChange: [
@@ -114,7 +114,7 @@ export const eventReviews: CollectionConfig = {
       access: { update: adminField },
       admin: {
         description:
-          "Groq processes queued reviews. To retry a failed review, set this to Pending. Public submissions cannot be approved until AI review completes.",
+          "Anthropic processes queued reviews. To retry a failed review, set this to Pending. Public submissions cannot be approved until AI review completes.",
       },
     },
     {

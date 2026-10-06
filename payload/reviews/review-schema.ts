@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-export const REVIEW_MODEL = "openai/gpt-oss-120b";
 export const REVIEW_QUEUE = "event-reviews";
 export const REVIEW_RETRIES = 5;
 

@@ -458,7 +458,7 @@ export interface EventReview {
     | boolean
     | null;
   /**
-   * Groq processes queued reviews. To retry a failed review, set this to Pending. Public submissions cannot be approved until AI review completes.
+   * Anthropic processes queued reviews. To retry a failed review, set this to Pending. Public submissions cannot be approved until AI review completes.
    */
   aiStatus: 'pending' | 'processing' | 'completed' | 'failed';
   promptVersion?: string | null;
@@ -1013,7 +1013,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Groq reviews submitted events and suggests edits. Staff make publication decisions. API credentials stay in server environment variables.
+ * Anthropic reviews submitted events and suggests edits. Staff make publication decisions. API credentials stay in server environment variables.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "review-settings".
@@ -1023,7 +1023,7 @@ export interface ReviewSetting {
   promptVersion: string;
   systemPrompt: string;
   /**
-   * GPT-OSS 120B on Groq. The worker uses this model with strict structured output.
+   * Claude on Anthropic with strict structured output. Set ANTHROPIC_MODEL in the server environment to override the default model.
    */
   model?: string | null;
   updatedAt?: string | null;
