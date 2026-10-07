@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 
-// import { ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
-// import DrawHorizontalLine from "@/components/animations/draw-horizontal-line";
+import DrawHorizontalLine from "@/components/animations/draw-horizontal-line";
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
 import HeaderTitle from "@/components/common/header-title";
@@ -31,10 +31,10 @@ export default function SubmissionSuccess({
         aria-label="Submission received"
         className="h-[60dvh] max-h-175 w-full max-w-none bg-primary-light text-dark-gray shadow-none sm:h-[80dvh] sm:max-h-[80dvh]"
       >
-        {(_onClose) => (
+        {(onClose) => (
           <>
-            <Drawer.Header className="shrink-0 border-t border-light-gray py-4 2xl:px-pg-2xl 4k:px-pg-4k">
-              {/* <Button
+            <Drawer.Header className="shrink-0 border-y border-light-gray py-4 2xl:px-pg-2xl 4k:px-pg-4k">
+              <Button
                 variant="flat"
                 size="fit"
                 onPress={onClose}
@@ -42,7 +42,7 @@ export default function SubmissionSuccess({
               >
                 <HoverText text="Back to submission" />
               </Button>
-              <DrawHorizontalLine className="absolute bottom-0 left-0 animate-delay-500" /> */}
+              <DrawHorizontalLine className="absolute bottom-0 left-0 animate-delay-500" />
             </Drawer.Header>
             <Drawer.Body className="scrollbar-none px-0! py-0">
               <SectionWrapper className="items-start py-8">

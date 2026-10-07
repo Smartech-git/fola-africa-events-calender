@@ -39,7 +39,11 @@ const Drawer = {
     isOpen?: boolean;
     onOpenChange?: (isOpen: boolean) => void;
   }) {
-    const disclosure = useDisclosure(props);
+    const disclosure = useDisclosure({
+      isOpen: props.isOpen,
+      onOpen: () => props.onOpenChange?.(true),
+      onClose: () => props.onOpenChange?.(false),
+    });
     return (
       <DrawerContext.Provider value={disclosure}>
         {children}
