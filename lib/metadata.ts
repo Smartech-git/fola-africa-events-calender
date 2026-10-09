@@ -3,13 +3,13 @@ import type { Metadata } from "next";
 import { SITE_NAME } from "@/constants/brand";
 
 export const siteUrl = new URL(
-  process.env.BASE_URL || "https://fola-africa-events-calender.vercel.app",
+  process.env.BASE_URL || "https://happeningsofafrica.com",
 );
 
 export const siteDescription = `Discover creative, cultural and business events across Africa. Explore city calendars and find your next event with ${SITE_NAME}.`;
 
 export const openGraphImage = {
-  url: new URL("/opengraph-image", siteUrl).toString(),
+  url: new URL("/opengraph-image.jpg", siteUrl).toString(),
   width: 1200,
   height: 630,
   type: "image/jpeg",
@@ -17,7 +17,7 @@ export const openGraphImage = {
 };
 
 export const twitterImage = {
-  url: new URL("/twitter-image", siteUrl).toString(),
+  url: new URL("/twitter-image.jpg", siteUrl).toString(),
   alt: openGraphImage.alt,
 };
 
