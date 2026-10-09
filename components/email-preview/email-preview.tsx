@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { SITE_NAME } from "@/constants/brand";
 import type {
   EmailMessage,
   EventEmailKind,
@@ -19,7 +20,9 @@ export default function EmailPreview({
 
   return (
     <main style={{ maxWidth: 1040, margin: "0 auto", padding: 24 }}>
-      <h1 style={{ fontSize: 28, fontWeight: 500 }}>FOLA email preview</h1>
+      <h1 style={{ fontSize: 28, fontWeight: 500 }}>
+        {SITE_NAME} email preview
+      </h1>
       <p style={{ lineHeight: 1.6 }}>
         Save changes to payload/emails/event-email-template.ts to update this
         preview. Sample data only; no email is sent.

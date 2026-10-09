@@ -7,6 +7,7 @@ import "@/app/styles/globals.css";
 import Header from "@/components/header/header";
 import LenisProvider from "@/components/providers/lenis-provider";
 import Toast from "@/components/ui/toast";
+import { SITE_NAME } from "@/constants/brand";
 import {
   siteUrl,
   siteDescription,
@@ -37,7 +38,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: { default: "FOLA | Africa’s Events Calendar", template: "%s | FOLA" },
+  title: {
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
+  },
   description: siteDescription,
   metadataBase: siteUrl,
   openGraph: { images: [openGraphImage] },

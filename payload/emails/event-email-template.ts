@@ -1,3 +1,4 @@
+import { SITE_NAME } from "@/constants/brand";
 import type {
   EmailMessage,
   EventEmailKind,
@@ -47,23 +48,23 @@ export function eventEmailTemplate({
 }): EmailMessage {
   const published = kind === "published";
   const heading = published ? "Your event<br>is live." : "Event<br>received.";
-  const status = published ? "Published on FOLA" : "Awaiting review";
+  const status = published ? `Published on ${SITE_NAME}` : "Awaiting review";
   const website = new URL(process.env.BASE_URL || "https://wewantfola.com");
   const fontUrl = new URL("/font/Apris-Light.woff2", website).href;
   const websiteUrl = escapeHtml(website.origin);
   const greeting = name ? `Hello ${name},` : "Hello,";
   const copy = published
-    ? `Your event, ${title}, has been published on FOLA. You can now view and share your listing.`
-    : `Thank you for submitting ${title} to FOLA. We've received your event and it is awaiting review. We'll email you again when it is published.`;
+    ? `Your event, ${title}, has been published on ${SITE_NAME}. You can now view and share your listing.`
+    : `Thank you for submitting ${title} to ${SITE_NAME}. We've received your event and it is awaiting review. We'll email you again when it is published.`;
   const link =
     published && url
       ? `<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:28px 0 20px"><tr><td bgcolor="${theme.text}" style="background:${theme.text};text-align:center;mso-padding-alt:14px 24px"><a href="${escapeHtml(url)}" style="display:inline-block;background:${theme.text};border:1px solid ${theme.text};padding:13px 24px;font-family:${bodyFont};font-size:12px;line-height:20px;font-weight:600;letter-spacing:1px;text-transform:uppercase;text-decoration:none;color:${theme.background};mso-padding-alt:0">View event</a></td></tr></table><p style="${paragraphStyle}margin:0;font-size:12px;line-height:20px">Or open this link:<br><a href="${escapeHtml(url)}" style="color:${theme.text};text-decoration:underline;word-break:break-all;overflow-wrap:anywhere">${escapeHtml(url)}</a></p>`
       : "";
   return {
-    from: `FOLA <${sender}>`,
+    from: `${SITE_NAME} <${sender}>`,
     to: recipient,
     subject: `${published ? "Your event is published" : "Event submission received"}: ${title.replace(/[\r\n]/g, " ")}`,
-    text: `${greeting}\n\n${copy}${published && url ? `\n\nView event: ${url}` : ""}\n\nThe FOLA team`,
+    text: `${greeting}\n\n${copy}${published && url ? `\n\nView event: ${url}` : ""}\n\nThe ${SITE_NAME} team`,
     html: `<!doctype html>
 <html lang="en">
   <head>
@@ -71,7 +72,7 @@ export function eventEmailTemplate({
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light">
     <meta name="supported-color-schemes" content="light">
-    <title>${published ? "Your event is published" : "Event submission received"} | FOLA</title>
+    <title>${published ? "Your event is published" : "Event submission received"} | ${SITE_NAME}</title>
     <!--[if !mso]><!-->
     <style>
       @font-face { font-family:Apris; font-style:normal; font-weight:300; font-display:swap; src:url('${escapeHtml(fontUrl)}') format('woff2'); }
@@ -93,8 +94,8 @@ export function eventEmailTemplate({
           <tr><td class="email-content" style="padding:28px 24px;background:${theme.background}">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;border-collapse:collapse">
               <tr>
-                <td valign="middle" style="padding:0 12px 22px 0;border-bottom:1px solid ${theme.border}"><a href="${websiteUrl}" style="font-family:${headingFont};font-size:32px;line-height:38px;font-weight:300;letter-spacing:4px;color:${theme.text};text-decoration:none">FOLA</a></td>
-                <td valign="middle" align="right" style="padding:0 0 22px;border-bottom:1px solid ${theme.border}"><p style="${labelStyle}margin:0;font-size:10px;line-height:16px;letter-spacing:1px">Africa’s<br>events calendar</p></td>
+                <td valign="middle" style="padding:0 0 22px;border-bottom:1px solid ${theme.border}"><a href="${websiteUrl}" style="display:block;font-family:${headingFont};font-size:26px;line-height:32px;font-weight:300;letter-spacing:1px;color:${theme.text};text-decoration:none">${SITE_NAME}</a><p style="${labelStyle}margin:8px 0 0;font-size:10px;line-height:16px;letter-spacing:1px">Africa’s events calendar</p></td>
+
               </tr>
             </table>
             <p style="${labelStyle}margin:32px 0 16px">${published ? "On the calendar" : "Your submission"}</p>

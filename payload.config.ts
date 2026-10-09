@@ -7,6 +7,7 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 
+import { SITE_NAME } from "@/constants/brand";
 import { roleOf } from "@/payload/access";
 import { cities } from "@/payload/collections/cities";
 import { emailNotifications } from "@/payload/collections/email-notifications";
@@ -28,6 +29,7 @@ const email = emailSettings();
 
 export default buildConfig({
   admin: {
+    meta: { titleSuffix: `| ${SITE_NAME}` },
     user: users.slug,
     importMap: {
       baseDir: path.resolve(dirname),

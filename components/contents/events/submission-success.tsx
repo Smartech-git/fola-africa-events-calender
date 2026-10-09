@@ -12,6 +12,7 @@ import LabelTitle from "@/components/common/label-title";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
 import Drawer from "@/components/ui/drawer";
+import { SITE_NAME } from "@/constants/brand";
 
 export default function SubmissionSuccess({
   isOpen,
@@ -52,7 +53,7 @@ export default function SubmissionSuccess({
                 <FadeUpText
                   className="text-xs uppercase"
                   delay={0.3}
-                  text="Your event is with FOLA for review"
+                  text={`Your event is with the ${SITE_NAME} team for review`}
                 />
                 <FadeUpText
                   delay={0.6}

@@ -17,6 +17,7 @@ import EventFacts from "@/components/contents/events/event-facts";
 import EventLocation from "@/components/contents/events/event-location";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
+import { SITE_NAME } from "@/constants/brand";
 import { cityDate, eventPath, formatDay } from "@/lib/events/event-list";
 import { pageMetadata } from "@/lib/metadata";
 import { getEvent } from "@/requests/events/get-event";
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return pageMetadata(
     `${event.title} in ${event.city!.name}`,
     event.description ||
-      `${event.title} in ${event.city!.name} on ${formatDay(cityDate(event.startAt, event.city!.timezone), "d MMMM yyyy")}. View event details on FOLA.`,
+      `${event.title} in ${event.city!.name} on ${formatDay(cityDate(event.startAt, event.city!.timezone), "d MMMM yyyy")}. View event details on ${SITE_NAME}.`,
     eventPath(event, city),
   );
 }

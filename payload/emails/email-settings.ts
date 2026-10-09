@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { SITE_NAME } from "@/constants/brand";
+
 export const EMAIL_QUEUE = "event-emails";
 export const EMAIL_RETRIES = 5;
 
@@ -18,7 +20,7 @@ export function emailSettings() {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const sender = process.env.RESEND_EMAIL_URL?.trim();
   if (!apiKey || !sender || !z.email().safeParse(sender).success) return null;
-  return { apiKey, sender, senderName: "FOLA" };
+  return { apiKey, sender, senderName: SITE_NAME };
 }
 
 export function emailSiteUrl() {

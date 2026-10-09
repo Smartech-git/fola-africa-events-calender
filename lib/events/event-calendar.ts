@@ -1,3 +1,4 @@
+import { SITE_NAME } from "@/constants/brand";
 import { cityDate, shiftDate } from "@/lib/events/event-list";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
 
@@ -83,7 +84,7 @@ export function createEventCalendar(
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//FOLA//Events Calendar//EN",
+    `PRODID:-//${SITE_NAME}//Events Calendar//EN`,
     "CALSCALE:GREGORIAN",
     "BEGIN:VEVENT",
     `UID:${event.id}@${new URL(url).hostname}`,

@@ -1,4 +1,4 @@
-# FOLA calendar backend
+# Happenings of Africa calendar backend
 
 Source: `FOLA_Events_Calendar_Product_Brief_v2.docx`, version 2.1. This document separates the brief's requirements from the collection foundation implemented here. The user subsequently expanded city management to allow editing and adding cities beyond the initial six.
 

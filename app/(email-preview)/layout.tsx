@@ -2,8 +2,10 @@ import type { ReactNode } from "react";
 
 import type { Metadata } from "next";
 
+import { SITE_NAME } from "@/constants/brand";
+
 export const metadata: Metadata = {
-  title: "Email preview | FOLA",
+  title: `Email preview | ${SITE_NAME}`,
   robots: { index: false, follow: false },
 };
 

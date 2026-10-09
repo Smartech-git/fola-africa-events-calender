@@ -1,5 +1,6 @@
 import EventCalendar from "@/components/contents/events/event-calendar";
 import SeasonsHeader from "@/components/contents/seasons/seasons-header";
+import { SITE_NAME } from "@/constants/brand";
 import type { EventSearchParams } from "@/lib/events/event-list";
 import { pageMetadata } from "@/lib/metadata";
 import { getSeasonsHeader } from "@/requests/seasons/get-seasons-header";
@@ -15,7 +16,7 @@ export async function generateMetadata({ params }: Props) {
   return pageMetadata(
     season.name,
     season.description ||
-      `Explore ${season.name} on FOLA. Browse creative, cultural and business events in ${city.name} by date, industry and access.`,
+      `Explore ${season.name} on ${SITE_NAME}. Browse creative, cultural and business events in ${city.name} by date, industry and access.`,
     `/seasons/${encodeURIComponent(season.slug)}`,
   );
 }

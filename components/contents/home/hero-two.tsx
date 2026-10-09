@@ -13,6 +13,7 @@ import HeroVideo from "@/components/contents/home/hero-video";
 import HoverMedia from "@/components/contents/home/hover-media";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
+import { SITE_NAME } from "@/constants/brand";
 
 const heroMedia = [
   { id: "explore", src: "/assets/home/explore-event.mp4" },
@@ -53,7 +54,7 @@ export default function Hero() {
           />
         </div>
       </SectionWrapper>
-      <MarqueeText text="AFRICA’S EVENTS CALENDAR" />
+      <MarqueeText text={SITE_NAME} />
       <SectionWrapper className="py-0 sm:py-0">
         <div className="flex w-full flex-col items-start justify-between sm:flex-row">
           <div className="relative flex w-full flex-col items-center gap-6 gap-x-4 sm:w-fit sm:flex-row">
