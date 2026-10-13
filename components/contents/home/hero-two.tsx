@@ -50,7 +50,7 @@ export default function Hero() {
           <FadeUpText
             delay={0.3}
             className="w-fit text-xxs uppercase max-sm:text-right sm:text-xs"
-            text={`BROUGHT TO YOU BY FOLA LABS`}
+            text={`BROUGHT TO YOU BY FOLA Projects`}
           />
         </div>
       </SectionWrapper>
