@@ -14,7 +14,6 @@ export type { Events, PublicEvent } from "@/requests/helpers/types";
 
 export interface GetEventsByCityOptions
   extends RequestOptions, EventFilterOptions {
-  /** City slug or numeric Payload ID. */
   city: City["id"] | string;
 }
 

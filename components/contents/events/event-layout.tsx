@@ -7,7 +7,6 @@ import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
 import {
   EVENTS_LAYOUT,
-  EVENTS_LAYOUT_KEY,
   FILTER_KEYS,
 } from "@/constants/filters";
 import { useRouteParam } from "@/hooks/use-route-param";
@@ -38,7 +37,7 @@ export default function EventLayout({ view, date, children }: Props) {
                 item.value === "week" || item.value === "month"
                   ? calendarDateParams(item.value, date)
                   : {
-                      [EVENTS_LAYOUT_KEY]: "list",
+                      [FILTER_KEYS.eventLayoutKey]: "list",
                       [FILTER_KEYS.page]: undefined,
                     },
               )

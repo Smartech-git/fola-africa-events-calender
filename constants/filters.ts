@@ -1,8 +1,7 @@
-export const CITIES_ID_KEY = "city";
-export const EVENTS_LAYOUT_KEY  = "view"
-
 export const FILTER_KEYS = {
-  city: CITIES_ID_KEY,
+  city: "city",
+  eventLayoutKey: "view",
+  search: "search",
   date: "date",
   dateFrom: "dateFrom",
   dateTo: "dateTo",

@@ -25,6 +25,7 @@ export type PublicEvent = NonNullable<ReturnType<typeof toPublicEvent>>;
 export type Events = CalendarPage<PublicEvent>;
 
 export interface EventFilterOptions {
+  search?: string;
   industry?: Event["industry"] | Event["industry"][];
   access?: Event["access"] | Event["access"][];
   /** A single YYYY-MM-DD date in the city's timezone. */

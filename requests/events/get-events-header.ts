@@ -3,6 +3,7 @@ import type { CalendarCity, SeasonSummary } from "@/requests/helpers/types";
 import type { City } from "@/types/payload-types";
 
 export type { SeasonSummary } from "@/requests/helpers/types";
+
 export interface EventsHeader {
   city: CalendarCity;
   seasons: SeasonSummary[];
@@ -10,7 +11,6 @@ export interface EventsHeader {
 
 export interface GetEventsHeaderOptions {
   endpoint?: string;
-  /** City slug or numeric Payload ID. */
   city: City["id"] | string;
 }
 

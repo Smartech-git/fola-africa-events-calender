@@ -1,4 +1,4 @@
-import { EVENTS_LAYOUT_KEY, FILTER_KEYS } from "@/constants/filters";
+import { FILTER_KEYS } from "@/constants/filters";
 import {
   formatDay,
   getListQuery,
@@ -35,7 +35,7 @@ export function getWeekQuery(
 export function calendarDateParams(view: CalendarView, date: string) {
   const range = view === "month" ? monthRange(date) : weekRange(date);
   return {
-    [EVENTS_LAYOUT_KEY]: view,
+    [FILTER_KEYS.eventLayoutKey]: view,
     [FILTER_KEYS.date]: view === "list" ? date : undefined,
     [FILTER_KEYS.dateFrom]: view !== "list" ? range.from : undefined,
     [FILTER_KEYS.dateTo]: view !== "list" ? range.to : undefined,

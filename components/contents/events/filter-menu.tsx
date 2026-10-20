@@ -94,7 +94,7 @@ export default function FilterMenu({
 
   return (
     <Drawer.Root>
-      <SectionWrapper className="flex-row justify-between gap-3 py-4 sm:py-4">
+      <div className="flex-row flex gap-4">
         {EVENTS_FILTER.map((item) => (
           <Drawer.Trigger
             key={item.key}
@@ -121,9 +121,7 @@ export default function FilterMenu({
             <ChevronDown size={14} aria-hidden="true" />
           </Drawer.Trigger>
         ))}
-        <DrawHorizontalLine className="pointer-events-none absolute top-0 left-0 animate-delay-300" />
-        <DrawHorizontalLine className="pointer-events-none absolute bottom-0 left-0 animate-delay-500" />
-      </SectionWrapper>
+      </div>
 
       <Drawer.Content
         size="5xl"

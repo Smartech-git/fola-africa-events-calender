@@ -154,6 +154,66 @@ export function publicPage<T, U>(result: PaginatedDocs<T>, data: U[]) {
   };
 }
 
+const SEARCH_MAX_LENGTH = 100;
+// Caps the related records a single query can expand into.
+const SEARCH_RELATION_LIMIT = 200;
+
+export function searchTerm(params: URLSearchParams) {
+  const value = params.get("search")?.trim().replace(/\s+/g, " ");
+  if (!value) return undefined;
+  if (value.length > SEARCH_MAX_LENGTH)
+    throw new CalendarQueryError(
+      `search must be ${SEARCH_MAX_LENGTH} characters or fewer.`,
+    );
+  return value;
+}
+
+/**
+ * Match only text the public projection shows: titles and seasons on Public and
+ * Industry listings, organiser and venue names on Public listings only. Held
+ * dates never match, because their real title and relations are concealed.
+ */
+async function searchFilter(
+  payload: Payload,
+  term: string,
+  city: City,
+): Promise<Where> {
+  const relationIds = async (
+    collection: "organisers" | "venues" | "seasons",
+    where: Where[],
+  ) => {
+    const result = await payload.find({
+      collection,
+      where: { and: [{ name: { like: term } }, ...where] },
+      limit: SEARCH_RELATION_LIMIT,
+      depth: 0,
+      overrideAccess: true,
+      // Selecting one field also skips the seasons' inverse events join.
+      select: { name: true },
+    });
+    return result.docs.map((doc) => doc.id);
+  };
+  const [organisers, venues, seasons] = await Promise.all([
+    relationIds("organisers", []),
+    relationIds("venues", [{ city: { equals: city.id } }]),
+    relationIds("seasons", [
+      { city: { equals: city.id } },
+      { isPublished: { equals: true } },
+      { isDemo: { not_equals: true } },
+    ]),
+  ]);
+  const listed: Where = { visibility: { in: ["public", "industry"] } };
+  const isPublic: Where = { visibility: { equals: "public" } };
+  const matches: Where[] = [{ and: [listed, { title: { like: term } }] }];
+  if (organisers.length)
+    matches.push({ and: [isPublic, { organiser: { in: organisers } }] });
+  if (venues.length)
+    matches.push({ and: [isPublic, { venue: { in: venues } }] });
+  if (seasons.length)
+    matches.push({ and: [listed, { seasons: { in: seasons } }] });
+  return { or: matches };
+}
+
 export async function queryEventsByCity(
   payload: Payload,
   params: URLSearchParams,
@@ -192,6 +252,7 @@ async function queryEvents(
     ACCESS_OPTIONS.map((item) => item.value),
   );
   const { start, end } = dateRange(params, city.timezone);
+  const search = searchTerm(params);
   const filters: Where[] = [
     ...scope,
     { city: { equals: city.id } },
@@ -221,6 +282,7 @@ async function queryEvents(
           : []),
       ],
     });
+  if (search) filters.push(await searchFilter(payload, search, city));
   // Include events ending at the start of a requested day as well.
   if (end) filters.push({ startAt: { less_than: end } });
   if (start)

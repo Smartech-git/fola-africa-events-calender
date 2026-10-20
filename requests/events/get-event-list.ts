@@ -15,6 +15,7 @@ export async function getEventList(
   let page = 1;
   while (true) {
     const options = {
+      search: filters.search,
       industry: filters.industry,
       access: filters.access,
       date: filters.date,

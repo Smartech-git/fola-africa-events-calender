@@ -1,11 +1,6 @@
 import "server-only";
 
-import { notFound } from "next/navigation";
-
-import {
-  CalendarRequestError,
-  requestCalendarData,
-} from "@/requests/helpers/calendar-request";
+import { requestCalendarData } from "@/requests/helpers/calendar-request";
 import type { CalendarCity, SeasonSummary } from "@/requests/helpers/types";
 import type { City } from "@/types/payload-types";
 
@@ -14,33 +9,22 @@ export interface SeasonsHeader {
   season: SeasonSummary;
 }
 
-export interface GetSeasonsHeaderOptions {
+export interface GetSeasonsHeaderProps {
   slug: string;
   endpoint?: string;
 }
 
-const requestSeasonsHeader = async (slug: string, endpoint: string) => {
-  let response: SeasonsHeader;
-  try {
-    response = await requestCalendarData<SeasonsHeader>(
-      endpoint,
-      new URLSearchParams({ slug }),
-    );
-  } catch (error) {
-    if (error instanceof CalendarRequestError && error.status === 404)
-      notFound();
-    throw error;
-  }
+export async function getSeasonsHeader({
+  slug,
+  endpoint = "/api/public/seasons/header",
+}: GetSeasonsHeaderProps): Promise<SeasonsHeader> {
+  const response = await requestCalendarData<SeasonsHeader>(
+    endpoint,
+    new URLSearchParams({ slug }),
+  );
   if (!response.city?.slug || !response.season?.slug)
     throw new Error(
       "Seasons header response did not contain city and season data.",
     );
   return response;
-};
-
-export async function getSeasonsHeader({
-  slug,
-  endpoint = "/api/public/seasons/header",
-}: GetSeasonsHeaderOptions): Promise<SeasonsHeader> {
-  return requestSeasonsHeader(slug, endpoint);
 }

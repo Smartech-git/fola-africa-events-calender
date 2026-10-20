@@ -1,7 +1,10 @@
+import DrawHorizontalLine from "@/components/animations/draw-horizontal-line";
 import EventList from "@/components/contents/events/event-list";
 import EventMonth from "@/components/contents/events/event-month";
+import EventSearch from "@/components/contents/events/event-search";
 import EventWeek from "@/components/contents/events/event-week";
 import FilterMenu from "@/components/contents/events/filter-menu";
+import SectionWrapper from "@/components/layout/section-wrapper";
 import type { EventSearchParams } from "@/lib/events/event-list";
 import { getCities } from "@/requests/get-cities";
 import { getEventCalendar } from "@/requests/helpers/get-event-calendar";
@@ -33,13 +36,18 @@ export default async function EventCalendar({
   const key = JSON.stringify([city, season?.slug, filters]);
   return (
     <>
-      <FilterMenu
-        cities={cities.data}
-        currentCity={city}
-        seasonSelected={Boolean(season)}
-        defaultDateFrom={calendar.defaultDateFrom}
-        defaultDateTo={calendar.defaultDateTo}
-      />
+      <SectionWrapper className="grid items-center md:grid-cols-[minmax(250px,1fr)_auto] gap-4 gap-y-4 py-4 sm:py-4">
+        <EventSearch />
+        <FilterMenu
+          cities={cities.data}
+          currentCity={city}
+          seasonSelected={Boolean(season)}
+          defaultDateFrom={calendar.defaultDateFrom}
+          defaultDateTo={calendar.defaultDateTo}
+        />
+        <DrawHorizontalLine className="pointer-events-none absolute top-0 left-0 animate-delay-300" />
+        <DrawHorizontalLine className="pointer-events-none absolute bottom-0 left-0 animate-delay-500" />
+      </SectionWrapper>
       {calendar.isMonth ? (
         <EventMonth
           key={key}

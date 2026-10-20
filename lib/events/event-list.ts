@@ -1,7 +1,7 @@
 import { parseDate } from "@internationalized/date";
 import { format, parseISO } from "date-fns";
 
-import { EVENTS_LAYOUT_KEY, FILTER_KEYS } from "@/constants/filters";
+import { FILTER_KEYS } from "@/constants/filters";
 import { ACCESS_OPTIONS, INDUSTRIES } from "@/payload/constants";
 import type { EventFilterOptions, PublicEvent } from "@/requests/helpers/types";
 
@@ -17,6 +17,7 @@ export interface EventDay {
   date: string;
   events: PublicEvent[];
 }
+
 export type EventSearchParams = Record<string, string | string[] | undefined>;
 
 export function cityDate(instant: string | Date, timezone: string) {
@@ -86,6 +87,7 @@ export function getListQuery(
   return {
     filters: {
       city,
+      search: first(FILTER_KEYS.search)?.trim() || undefined,
       date,
       dateFrom: from,
       dateTo: to,
@@ -163,7 +165,7 @@ export function eventTime(event: PublicEvent, timezone: string) {
 
 export function dayPath(city: string, date: string, pathname?: string) {
   const params = new URLSearchParams({
-    [EVENTS_LAYOUT_KEY]: "list",
+    [FILTER_KEYS.eventLayoutKey]: "list",
     [FILTER_KEYS.date]: date,
   });
   return `${pathname ?? `/events/${encodeURIComponent(city)}`}?${params}`;

@@ -1,6 +1,6 @@
 import "server-only";
 
-import { EVENTS_LAYOUT_KEY } from "@/constants/filters";
+import { FILTER_KEYS } from "@/constants/filters";
 import {
   cityDate,
   getListQuery,
@@ -24,7 +24,7 @@ export async function getEventCalendar({
   season?: SeasonSummary;
 }) {
   const today = cityDate(new Date(), timezone);
-  const viewParam = filters[EVENTS_LAYOUT_KEY];
+  const viewParam = filters[FILTER_KEYS.eventLayoutKey];
   const view = Array.isArray(viewParam) ? viewParam[0] : viewParam;
   const isWeek = view === "week";
   const isMonth = view === "month";
@@ -59,7 +59,7 @@ export async function getEventCalendar({
       query = monthQuery;
     } else if (isWeek) {
       weekQuery = scope(getWeekQuery(filters, city, anchor));
-      query = weekQuery;
+      query = weekQuery;                                              
     } else {
       query = scope(
         getListQuery(filters, city, defaultDateFrom, defaultDateTo),

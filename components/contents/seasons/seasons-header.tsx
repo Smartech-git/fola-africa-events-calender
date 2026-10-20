@@ -82,7 +82,7 @@ export default function SeasonsHeader({
       </div>
 
       {season.description && (
-        <p className="mt-4 text-xs uppercase sm:mt-8 sm:text-xs">
+        <p className="mt-4 text-xs max-w-150 uppercase sm:mt-8 sm:text-xs">
           {season.description}
         </p>
       )}

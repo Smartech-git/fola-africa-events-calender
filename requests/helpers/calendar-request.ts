@@ -55,6 +55,7 @@ export async function requestCalendarPage<T>(
 export function eventQueryParams(
   scope: { city: string | number } | { seasons: string },
   {
+    search,
     industry,
     access,
     date,
@@ -77,5 +78,6 @@ export function eventQueryParams(
   }
   for (const [key, value] of Object.entries({ date, dateFrom, dateTo }))
     if (value !== undefined) params.set(key, value);
+  if (search?.trim()) params.set("search", search.trim());
   return params;
 }
