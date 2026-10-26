@@ -11,8 +11,10 @@ export const request: FetchFunction = async ({ endpoint = "", options }) => {
     customHeaders = {},
     fetchOptions = {},
     useAuth = false,
-    retry = 3,
-    delay = 30000,
+    // Requests often run while a page renders, so fail fast rather than
+    // holding the render (and the build) for minutes.
+    retry = 1,
+    delay = 500,
   } = options;
 
   const isFormData = data instanceof FormData;
@@ -28,11 +30,9 @@ export const request: FetchFunction = async ({ endpoint = "", options }) => {
     }
   }
 
-  const controller = new AbortController();
   const requestOptions: RequestInit = {
     method,
     headers,
-    signal: controller.signal,
     ...fetchOptions,
   };
 
@@ -44,14 +44,18 @@ export const request: FetchFunction = async ({ endpoint = "", options }) => {
   const fullUrl = endpoint
     ? new URL(endpoint, requestBaseUrl).toString()
     : requestBaseUrl;
-  const timeoutId = setTimeout(() => controller.abort(), 10000);
-
   let attempts = 0;
   let lastError: Error;
 
   while (attempts <= retry) {
+    // Each attempt gets its own timeout; a shared signal stays aborted.
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
     try {
-      const response = await fetch(fullUrl, requestOptions);
+      const response = await fetch(fullUrl, {
+        signal: controller.signal,
+        ...requestOptions,
+      });
       clearTimeout(timeoutId);
 
       if (!response.ok) {
@@ -64,6 +68,7 @@ export const request: FetchFunction = async ({ endpoint = "", options }) => {
       }
       return await response.json();
     } catch (error: any) {
+      clearTimeout(timeoutId);
       lastError = error as Error;
       attempts++;
 

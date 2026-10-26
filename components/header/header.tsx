@@ -5,7 +5,11 @@ import SearchEvent from "@/components/header/search-event";
 // import SignIn from "@/components/header/sign-in";
 import SubmitEvent from "@/components/header/submit-event";
 import { cn } from "@/lib/utils";
-import { getCities, type CitySummary } from "@/requests/get-cities";
+import {
+  getCalendarPayload,
+  queryCitySummaries,
+} from "@/payload/queries/calendar-query";
+import type { CitySummary } from "@/requests/get-cities";
 
 interface Props {
   className?: string;
@@ -14,7 +18,7 @@ interface Props {
 
 async function headerCities(): Promise<CitySummary[]> {
   try {
-    return (await getCities({})).data;
+    return await queryCitySummaries(await getCalendarPayload());
   } catch (error) {
     console.error("Header cities request failed", error);
     return [];
