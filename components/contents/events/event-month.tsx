@@ -94,7 +94,7 @@ export default function EventMonth({
         <header className="mb-4 space-y-2 sm:mb-8">
           <h2>
             <FadeUpText
-              className="font-inter text-3xl uppercase sm:text-4xl"
+              className="font-courier text-3xl uppercase sm:text-4xl"
               text={formatDay(query.range.from, "MMMM yyyy")}
             />
           </h2>
@@ -169,15 +169,25 @@ export default function EventMonth({
                           const count = counts.get(date) ?? 0;
                           const content = (
                             <>
-                              <time
-                                dateTime={date}
-                                className={cn(
-                                  "block text-2xl leading-8 font-medium",
-                                  !inMonth && "text-light-gray",
+                              <div className="flex items-center gap-1.5">
+                                {/* The circle marks today, as it marks the O in the wordmark. */}
+                                <time
+                                  dateTime={date}
+                                  className={cn(
+                                    "flex size-10 items-center justify-center rounded-full border border-transparent text-2xl leading-8 font-medium",
+                                    !inMonth && "text-light-gray",
+                                    date === today && "border-current",
+                                  )}
+                                >
+                                  {formatDay(date, "d")}
+                                </time>
+                                {inMonth && count > 0 && (
+                                  <span
+                                    aria-hidden="true"
+                                    className="size-2 rounded-full bg-primary"
+                                  />
                                 )}
-                              >
-                                {formatDay(date, "d")}
-                              </time>
+                              </div>
                               <div className="mt-3 flex min-h-7 items-center gap-1 text-xs uppercase sm:text-sm">
                                 {inMonth && (
                                   <>
@@ -189,7 +199,7 @@ export default function EventMonth({
                                     <HoverText
                                       text={`${count === 1 ? "event" : "events"}`}
                                       className={cn(
-                                        "mt-0.5 font-apris text-primary",
+                                        "mt-0.5 font-montreal text-primary",
                                         count === 0 && "text-light-gray",
                                       )}
                                     />
@@ -213,8 +223,7 @@ export default function EventMonth({
                                   }
                                   aria-label={`${formatDay(date, "EEEE d MMMM yyyy")}, ${count} ${count === 1 ? "event" : "events"}: view day`}
                                   className={cn(
-                                    "block border border-transparent px-2 pt-3 pb-2 transition-colors hover:text-primary focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary",
-                                    date === today && "border-primary",
+                                    "block px-2 pt-3 pb-2 transition-colors hover:text-primary focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary",
                                   )}
                                 >
                                   {content}

@@ -44,16 +44,28 @@
 
   --spacing-pg-4k: 12dvw;
   --spacing-pg-2xl: 8dvw;
-  --spacing-pg: 6dvw;
+  --spacing-pg: 4dvw;
   --spacing-pg-sm: 1rem;
-  --spacing-header: 50px;
-  --spacing-sm-header: 50px;
+  --spacing-header: 80px;
+  --spacing-sm-header: 70px;
 
   --color-primary: #838061;
   --color-dark-gray: #201D1D;
   --color-light-gray: #ADB0A6;
   --color-primary-light: #F4F1EE;
   --color-secondary: #EFE4DB;
+
+  /* New theme */
+  --color-red: #B51C17;
+  --color-cream: #F4E3D7;
+  --color-blush: #EAC5AE;
+  --color-ink: #1A1A1A;
+  --color-white: #FFFFFF;
+
+  /* Courier Prime labels and buttons (Figma HOA/Mono/Label and HOA/Mono/Button). */
+  --tracking-mono: -0.04em;
+  --tracking-cou: 0.08em;
+
   --text-xxs: 10px;
   --text-1.5xl: 22px;
 
@@ -148,6 +160,6 @@
 }
 
 @theme inline {
-  --font-apris: var(--apris);
-  --font-inter: var(--font-inter);
+  --font-montreal: var(--montreal);
+  --font-courier: var(--courier-prime);
 }

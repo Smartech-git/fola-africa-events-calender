@@ -12,24 +12,35 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       ref={ref}
       variant={variant}
       radius="none"
-      labelPlacement="outside"
+      labelPlacement="outside-top"
       validationBehavior="aria"
       {...props}
       classNames={{
         ...classNames,
         base: cn("w-full", classNames?.base),
         input: cn(
-          "text-xs! uppercase! font-normal text-dark-gray! placeholder:text-dark-gray/45",
+          "font-montreal text-base! leading-normal font-normal normal-case text-ink! placeholder:text-ink/40 sm:text-lg!",
           classNames?.input,
         ),
-        label: cn("text-xs! uppercase text-dark-gray!", classNames?.label),
+        label: cn(
+          "font-courier text-sm! leading-[1.3] font-normal tracking-mono text-red! uppercase",
+          "pb-2",
+          classNames?.label,
+        ),
         inputWrapper: cn(
-          "h-[46px] min-h-[46px] rounded-none border border-light-gray bg-transparent! px-3 shadow-none",
-          "data-[hover=true]:border-primary group-data-[focus=true]:border-primary group-data-[invalid=true]:border-danger",
+          "h-14 min-h-14",
+          "rounded-none border border-ink bg-white! px-4 shadow-none data-[hover=true]:border-red group-data-[focus=true]:border-red group-data-[invalid=true]:border-red",
           classNames?.inputWrapper,
         ),
-        description: cn("text-xs uppercase text-dark-gray/75", classNames?.description),
-        errorMessage: cn("text-xs uppercase text-danger", classNames?.errorMessage),
+        helperWrapper: cn("px-0 pt-2", classNames?.helperWrapper),
+        description: cn(
+          "font-courier text-xs leading-5 tracking-mono text-ink/70 uppercase",
+          classNames?.description,
+        ),
+        errorMessage: cn(
+          "font-courier text-xs leading-5 tracking-mono text-red uppercase",
+          classNames?.errorMessage,
+        ),
       }}
     />
   ),

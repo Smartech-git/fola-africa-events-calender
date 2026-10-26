@@ -234,6 +234,55 @@ export async function queryEventsBySeasons(
   return queryEvents(payload, params, city, [{ seasons: { in: [season.id] } }]);
 }
 
+/** Events the public calendar may show for a city (matches toPublicEvent). */
+function publicEventFilters(city: City): Where[] {
+  return [
+    { city: { equals: city.id } },
+    { status: { in: PUBLIC_STATUSES } },
+    { isDemo: { not_equals: true } },
+    { publishedAt: { exists: true } },
+    { approvedBy: { exists: true } },
+  ];
+}
+
+/** Events that overlap [start, end), including ones ending exactly at start. */
+function overlapFilters(start?: string, end?: string): Where[] {
+  const filters: Where[] = [];
+  if (end) filters.push({ startAt: { less_than: end } });
+  if (start)
+    filters.push({
+      or: [
+        { endAt: { greater_than_equal: start } },
+        { startAt: { greater_than_equal: start } },
+      ],
+    });
+  return filters;
+}
+
+/** Shift a YYYY-MM-DD calendar date by whole days. */
+function addDays(date: string, days: number) {
+  return new Date(Date.parse(`${date}T00:00:00.000Z`) + days * 86400000)
+    .toISOString()
+    .slice(0, 10);
+}
+
+async function countPublicEvents(
+  payload: Payload,
+  city: City,
+  start: string,
+  end: string,
+) {
+  const { totalDocs } = await payload.count({
+    collection: "events",
+    where: {
+      and: [...publicEventFilters(city), ...overlapFilters(start, end)],
+    },
+    // Counts only; no raw records leave this function.
+    overrideAccess: true,
+  });
+  return totalDocs;
+}
+
 async function queryEvents(
   payload: Payload,
   params: URLSearchParams,
@@ -253,14 +302,7 @@ async function queryEvents(
   );
   const { start, end } = dateRange(params, city.timezone);
   const search = searchTerm(params);
-  const filters: Where[] = [
-    ...scope,
-    { city: { equals: city.id } },
-    { status: { in: PUBLIC_STATUSES } },
-    { isDemo: { not_equals: true } },
-    { publishedAt: { exists: true } },
-    { approvedBy: { exists: true } },
-  ];
+  const filters: Where[] = [...scope, ...publicEventFilters(city)];
   if (industry.length)
     filters.push({
       or: [
@@ -283,15 +325,7 @@ async function queryEvents(
       ],
     });
   if (search) filters.push(await searchFilter(payload, search, city));
-  // Include events ending at the start of a requested day as well.
-  if (end) filters.push({ startAt: { less_than: end } });
-  if (start)
-    filters.push({
-      or: [
-        { endAt: { greater_than_equal: start } },
-        { startAt: { greater_than_equal: start } },
-      ],
-    });
+  filters.push(...overlapFilters(start, end));
 
   const result = await payload.find({
     collection: "events",
@@ -315,16 +349,7 @@ export async function queryEventsHeader(
   params: URLSearchParams,
 ) {
   const city = await findCity(payload, params);
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: city.timezone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(new Date());
-  const part = (type: string) =>
-    parts.find((entry) => entry.type === type)!.value;
-  const today = `${part("year")}-${part("month")}-${part("day")}`;
-  const startOfToday = dayBoundary(today, city.timezone);
+  const startOfToday = dayBoundary(cityToday(city), city.timezone);
   const result = await payload.find({
     collection: "seasons",
     pagination: false,
@@ -361,6 +386,134 @@ export async function queryEventsHeader(
     },
     seasons,
   };
+}
+
+/** Today's date (YYYY-MM-DD) in the city's own time zone. */
+function cityToday(city: City) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: city.timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const part = (type: string) =>
+    parts.find((entry) => entry.type === type)!.value;
+  return `${part("year")}-${part("month")}-${part("day")}`;
+}
+
+const SEASON_SELECT = {
+  name: true,
+  slug: true,
+  startDate: true,
+  endDate: true,
+  description: true,
+  status: true,
+} as const;
+
+
+export async function queryCities(payload: Payload, params: URLSearchParams) {
+  const result = await payload.find({
+    collection: "cities",
+    ...pagination(params),
+    sort: "id",
+    depth: 0,
+    overrideAccess: false,
+  });
+
+  const data = await Promise.all(
+    result.docs.map(async (city) => {
+      const today = cityToday(city);
+      const startOfToday = dayBoundary(today, city.timezone);
+      const [todayCount, weekCount, seasons] = await Promise.all([
+        countPublicEvents(
+          payload,
+          city,
+          startOfToday,
+          dayBoundary(today, city.timezone, true),
+        ),
+        countPublicEvents(
+          payload,
+          city,
+          startOfToday,
+          dayBoundary(addDays(today, 6), city.timezone, true),
+        ),
+        payload.find({
+          collection: "seasons",
+          limit: 1,
+          depth: 0,
+          sort: ["startDate", "id"],
+          where: {
+            and: [
+              { city: { equals: city.id } },
+              { isPublished: { equals: true } },
+              { isDemo: { not_equals: true } },
+              { startDate: { exists: true } },
+              // Current or upcoming: a season under way still counts.
+              { endDate: { greater_than_equal: startOfToday } },
+            ],
+          },
+          // Whitelist public fields; never expose aliases or the events join.
+          overrideAccess: true,
+          joins: false,
+          select: SEASON_SELECT,
+        }),
+      ]);
+      return {
+        id: city.id,
+        name: city.name,
+        slug: city.slug,
+        country: city.country,
+        timezone: city.timezone,
+        timezoneLabel: city.timezoneLabel,
+        counts: { today: todayCount, thisWeek: weekCount },
+        nextSeason: seasons.docs[0] ? publicSeason(seasons.docs[0]) : null,
+      };
+    }),
+  );
+
+  return publicPage(result, data);
+}
+
+/**
+ * Published seasons across all cities that have not ended yet, soonest first.
+ * A season already under way still counts; it is still in the diary.
+ */
+export async function queryUpcomingSeasons(
+  payload: Payload,
+  params: URLSearchParams,
+) {
+  const result = await payload.find({
+    collection: "seasons",
+    ...pagination(params),
+    depth: 1,
+    sort: ["startDate", "id"],
+    where: {
+      and: [
+        { isPublished: { equals: true } },
+        { isDemo: { not_equals: true } },
+        { startDate: { exists: true } },
+        { endDate: { greater_than_equal: new Date().toISOString() } },
+      ],
+    },
+    // Whitelist public fields; never expose aliases or the events join.
+    overrideAccess: true,
+    joins: false,
+    select: { ...SEASON_SELECT, city: true },
+  });
+
+  const data = result.docs.map((season) => ({
+    ...publicSeason(season),
+    city:
+      season.city && typeof season.city === "object"
+        ? {
+            name: season.city.name,
+            slug: season.city.slug,
+            timezone: season.city.timezone,
+          }
+        : null,
+  }));
+
+  return publicPage(result, data);
 }
 
 function publicSeason({

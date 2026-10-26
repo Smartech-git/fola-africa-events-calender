@@ -1,9 +1,10 @@
-import { Inter } from "next/font/google";
+import { Courier_Prime } from "next/font/google";
 import localFont from "next/font/local";
 
 import type { Metadata, Viewport } from "next";
 
 import "@/app/styles/globals.css";
+import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import LenisProvider from "@/components/providers/lenis-provider";
 import Toast from "@/components/ui/toast";
@@ -15,26 +16,45 @@ import {
   twitterImage,
 } from "@/lib/metadata";
 
-const apris = localFont({
+// PP Neue Montreal. Book (400) is the default weight.
+const montreal = localFont({
   src: [
     {
-      path: "../../public/font/Apris-Light.woff2",
-      weight: "300",
+      path: "../../public/font/ppneuemontreal-book.otf",
+      weight: "400",
       style: "normal",
     },
     {
-      path: "../../public/font/Apris-LightItalic.woff2",
-      weight: "300",
+      path: "../../public/font/ppneuemontreal-italic.otf",
+      weight: "400",
       style: "italic",
     },
+    {
+      path: "../../public/font/ppneuemontreal-medium.otf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../../public/font/ppneuemontreal-semibolditalic.otf",
+      weight: "600",
+      style: "italic",
+    },
+    {
+      path: "../../public/font/ppneuemontreal-bold.otf",
+      weight: "700",
+      style: "normal",
+    },
   ],
-  variable: "--apris",
+  display: "swap",
+  variable: "--montreal",
 });
 
-const inter = Inter({
+const courierPrime = Courier_Prime({
   subsets: ["latin"],
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
   display: "swap",
-  variable: "--font-inter",
+  variable: "--courier-prime",
 });
 
 export const metadata: Metadata = {
@@ -63,12 +83,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${apris.variable} ${inter.variable} scrollbar-thin h-full bg-primary-light font-inter antialiased scrollbar-thumb-primary scrollbar-track-primary-light max-sm:scrollbar-none`}
+      className={`${montreal.variable} ${courierPrime.variable} scrollbar-thin h-full bg-primary-light font-courier scrollbar-thumb-primary scrollbar-track-primary-light max-sm:scrollbar-none`}
     >
-      <body className="w-full bg-primary-light text-dark-gray">
+      <body className="w-full bg-primary-light text-ink">
         <LenisProvider>
-          <Header hideLogo className="flex-none bg-primary-light" />
+          <Header />
           {children}
+          <Footer />
           <Toast />
         </LenisProvider>
       </body>

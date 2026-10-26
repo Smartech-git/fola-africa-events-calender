@@ -17,7 +17,7 @@ import {
   validateEvent,
 } from "@/payload/event-hooks";
 import { slugField } from "@/payload/fields/slug-field";
-import { httpURL, shortDescription } from "@/payload/validation";
+import { httpURL, instagramURL, shortDescription } from "@/payload/validation";
 
 export const events: CollectionConfig = {
   slug: "events",
@@ -111,7 +111,35 @@ export const events: CollectionConfig = {
       defaultValue: "public",
       options: VISIBILITY_OPTIONS,
     },
-    { name: "actionUrl", type: "text", validate: httpURL },
+    {
+      name: "actionUrl",
+      type: "text",
+      validate: httpURL,
+      admin: {
+        description:
+          "Ticket, registration or RSVP link. Required for Tickets and RSVP required.",
+      },
+    },
+    {
+      name: "website",
+      type: "text",
+      validate: httpURL,
+      admin: { description: "Shown on Full listings only." },
+    },
+    {
+      name: "instagram",
+      type: "text",
+      validate: instagramURL,
+      admin: { description: "Shown on Full listings only." },
+    },
+    {
+      name: "publicContactEmail",
+      type: "email",
+      admin: {
+        description:
+          "Public event contact. Shown on Full listings only; never use a private address here.",
+      },
+    },
     {
       name: "organiser",
       type: "relationship",
@@ -319,6 +347,9 @@ export const events: CollectionConfig = {
       fields: [
         { name: "name", type: "text" },
         { name: "email", type: "email" },
+        { name: "phone", label: "Phone or WhatsApp", type: "text" },
+        { name: "organisation", type: "text" },
+        { name: "role", label: "Job title or role", type: "text" },
         {
           name: "relationship",
           type: "select",

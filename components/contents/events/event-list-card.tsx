@@ -9,13 +9,10 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import FadeUpText from "@/components/animations/fade-up-text";
 import PixelBlast from "@/components/animations/pixel-blast";
-import {
-  // EventAttendanceAction,
-  EventCalendarActions,
-  // EventExternalAction,
-} from "@/components/contents/events/event-actions";
-import EventFacts from "@/components/contents/events/event-facts";
-import { eventAnchor, eventPath } from "@/lib/events/event-list";
+import { EventAttendanceAction } from "@/components/contents/events/event-actions";
+import { eventAnchor, eventPath, formatTime } from "@/lib/events/event-list";
+import { cn } from "@/lib/utils";
+import { ACCESS_OPTIONS, EVENT_TYPES, INDUSTRIES } from "@/payload/constants";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
 
 interface Props {
@@ -25,20 +22,46 @@ interface Props {
   date: string;
 }
 
+const info = "font-courier text-[15px] sm:text-lg";
+
+// Figma: Event Row / Desktop and Mobile (325:1770, 325:1782). The order never
+// changes: time, name, type · industry, access, venue, action.
 export default function EventListCard({ event, city, timezone, date }: Props) {
   const router = useRouter();
   const cardRef = useRef<HTMLElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const path = eventPath(event, city);
-  // const mapUrl = externalUrl(event.venue?.mapUrl);
   const anchor = eventAnchor(event, date);
+
+  // Times only, as in the design; the day heading already gives the date.
+  const time = event.allDay
+    ? "All day"
+    : [event.startAt, event.endAt]
+        .filter((instant): instant is string => Boolean(instant))
+        .map((instant) => formatTime(instant, timezone))
+        .join(" to ");
+  const category = [
+    EVENT_TYPES.find((item) => item.value === event.eventType)?.label,
+    INDUSTRIES.find((item) => item.value === event.industry)?.label,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  const access =
+    ACCESS_OPTIONS.find((item) => item.value === event.access)?.label ??
+    event.access;
+  const status =
+    event.status === "cancelled"
+      ? "Cancelled"
+      : event.status === "postponed"
+        ? "Postponed · New date to be confirmed"
+        : null;
 
   return (
     <article
       ref={cardRef}
       id={anchor}
       aria-labelledby={anchor + "-title"}
-      className="group relative isolate cursor-pointer scroll-mt-56 border-b border-light-gray py-6"
+      className="group relative isolate flex cursor-pointer scroll-mt-56 flex-col gap-1.5 border-b border-ink py-5 text-ink lg:flex-row lg:items-start lg:gap-5 lg:py-7 xl:gap-8"
       onClick={(e) => {
         if (
           e.defaultPrevented ||
@@ -66,42 +89,49 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
       onPointerLeave={() => setIsHovered(false)}
       onPointerCancel={() => setIsHovered(false)}
     >
-      <Link
-        href={path}
-        className="relative z-10 block w-fit focus-visible:outline-2 focus-visible:outline-primary"
+      <p
+        className={cn(
+          "relative z-10 font-courier text-sm tracking-cou text-red uppercase lg:w-1/6 lg:shrink-0 lg:text-base lg:tracking-normal lg:text-ink lg:normal-case xl:text-lg",
+        )}
       >
-        <FadeUpText
-          as="h3"
-          id={anchor + "-title"}
-          delay={0.3}
-          className="font-apris text-2xl font-medium wrap-break-word text-primary uppercase sm:text-3xl"
-          text={event.title}
-        />
-      </Link>
-      <div className="relative z-10 mt-1 space-y-1 text-xs leading-relaxed uppercase sm:text-sm">
-        <EventFacts event={event} timezone={timezone} />
-        {/* <div
-          data-event-actions
-          className="flex w-full flex-wrap items-center justify-between gap-x-6 gap-y-1"
+        <time dateTime={event.startAt}>{time}</time>
+      </p>
+
+      <div className="relative z-10 flex min-w-20 flex-1 flex-col gap-1.5 lg:gap-2">
+        <Link
+          href={path}
+          className="w-fit focus-visible:outline-2 focus-visible:outline-red"
         >
-          {event.venue &&
-            (mapUrl ? (
-              <EventExternalAction
-                url={mapUrl}
-                label={event.venue.name}
-                className="max-w-full justify-start text-left text-xs whitespace-normal sm:text-xs"
-              />
-            ) : (
-              <p>{event.venue.name}</p>
-            ))}
-          <EventAttendanceAction event={event} />
-        </div> */}
+          <FadeUpText
+            as="h3"
+            id={anchor + "-title"}
+            delay={0.2}
+            className="font-montreal text-xl font-medium tracking-mono wrap-break-word uppercase sm:text-[26px]"
+            text={event.title}
+          />
+        </Link>
+        {category && <p className={info}>{category}</p>}
+        {status && (
+          <p className="font-courier text-sm tracking-cou text-red uppercase">
+            {status}
+          </p>
+        )}
       </div>
+
+      <p className={cn(info, "relative z-10 lg:w-1/6 lg:shrink-0")}>{access}</p>
+
+      <p className="relative z-10 font-montreal text-base empty:hidden sm:text-lg lg:w-1/6 lg:shrink-0 lg:empty:block">
+        {event.venue?.name}
+      </p>
+
       <div
         data-event-actions
-        className="relative z-10 mt-4 flex flex-wrap gap-x-6 gap-y-1"
+        className="relative z-10 pt-1.5 empty:hidden lg:flex lg:w-1/9 lg:shrink-0 lg:justify-end lg:pt-0 lg:empty:flex"
       >
-        <EventCalendarActions event={event} timezone={timezone} />
+        <EventAttendanceAction
+          event={event}
+          className="text-[15px] font-normal tracking-cou text-red"
+        />
       </div>
 
       <AnimatePresence>
@@ -117,11 +147,11 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
           >
             <PixelBlast
               interactionRef={cardRef}
-              variant="square"
-              pixelSize={6}
-              color="#F5D3B7"
+              variant="circle"
+              pixelSize={12}
+              color="#EAC5AE"
               patternScale={2}
-              patternDensity={0.8}
+              patternDensity={0.5}
               pixelSizeJitter={0}
               enableRipples
               rippleSpeed={0.4}

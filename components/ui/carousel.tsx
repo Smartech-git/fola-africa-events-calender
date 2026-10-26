@@ -72,9 +72,7 @@ const Carousel = React.forwardRef<
       },
       [
         ...(plugins ?? []),
-        ...(autoplay
-          ? [Autoplay({ delay, stopOnInteraction: false })]
-          : []),
+        ...(autoplay ? [Autoplay({ delay, stopOnInteraction: false })] : []),
       ],
     );
     const [canScrollPrev, setCanScrollPrev] = React.useState(false);

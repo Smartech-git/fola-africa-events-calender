@@ -8,6 +8,7 @@ export const FILTER_KEYS = {
   industry: "industry",
   access: "access",
   page: "page",
+  homeDate: 'homeDate'
 } as const;
 
 export const EVENTS_FILTER = [

@@ -26,6 +26,7 @@ import {
   weekHeading,
 } from "@/lib/events/event-week";
 import { getSeasonDays, getSeasonBands } from "@/lib/events/season-calendar";
+import { cn } from "@/lib/utils";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
 import type { SeasonSummary } from "@/requests/helpers/types";
 
@@ -106,7 +107,7 @@ export default function EventWeek({
       >
         <header className="mb-4 space-y-2 sm:mb-8">
           <FadeUpText
-            className="font-inter text-3xl uppercase sm:text-4xl"
+            className="font-courier text-3xl uppercase sm:text-4xl"
             text={heading.title}
           />
           <p className="text-xs uppercase">{heading.year}</p>
@@ -167,12 +168,23 @@ export default function EventWeek({
                       >
                         <HoverText text={formatDay(date, "EEE")} />
                       </h3>
-                      <time
-                        dateTime={date}
-                        className="text-2xl leading-8 font-medium"
-                      >
-                        {formatDay(date, "dd")}
-                      </time>
+                      <div className="flex items-center gap-1.5">
+                        <time
+                          dateTime={date}
+                          className={cn(
+                            "-ml-2 flex size-11 items-center justify-center rounded-full border border-transparent text-2xl leading-8 font-medium",
+                            date === today && "border-current",
+                          )}
+                        >
+                          {formatDay(date, "dd")}
+                        </time>
+                        {(grouped.get(date)?.length ?? 0) > 0 && (
+                          <span
+                            aria-hidden="true"
+                            className="size-2 rounded-full bg-primary"
+                          />
+                        )}
+                      </div>
                     </Link>
                     {(grouped.get(date) ?? []).map((event) => (
                       <Link
@@ -183,7 +195,7 @@ export default function EventWeek({
                       >
                         <HoverText
                           text={event.title}
-                          className="font-apris text-lg font-medium wrap-break-word text-primary uppercase sm:text-xl"
+                          className="font-montreal text-lg font-medium wrap-break-word text-primary uppercase sm:text-xl"
                         />
                         <p className="mt-2 text-xs uppercase">{time(event)}</p>
                         {(event.status === "cancelled" ||

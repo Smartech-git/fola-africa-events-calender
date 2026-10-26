@@ -4,6 +4,7 @@ import Link from "next/link";
 import HoverText from "@/components/animations/hover-text";
 import Button from "@/components/ui/button";
 import { FILTER_KEYS } from "@/constants/filters";
+import { DEFAULT_CITY_SLUG } from "@/constants/nav";
 import { useRouteParam } from "@/hooks/use-route-param";
 
 export default function ExploreEvent() {
@@ -12,10 +13,10 @@ export default function ExploreEvent() {
   return (
     <Link
       className="w-fit max-sm:w-full"
-      href={`/events/${getFilterValue(FILTER_KEYS.city) ?? "lagos"}`}
+      href={`/calendar/${getFilterValue(FILTER_KEYS.city) ?? DEFAULT_CITY_SLUG}`}
     >
       <Button size="sm" className="max-sm:w-full!">
-        <HoverText text="Explore events" />
+        <HoverText text="See what’s happening" />
       </Button>
     </Link>
   );

@@ -1,8 +1,6 @@
-import { FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
 
-export const BUSINESS_EMAIL = "work@folapr.com";
-
-export const ENQUIRY_EMAIL = "hello@folapr.com";
+export const CONTACT_EMAIL = "hello@happeningsofafrica.com";
 
 export type Social = {
   link: string;
@@ -12,13 +10,8 @@ export type Social = {
 
 export const socials: Social[] = [
   {
-    link: "https://www.instagram.com/wewantfola",
+    link: "https://www.instagram.com/happeningsofafrica",
     name: "Instagram",
     Icon: FaInstagram,
-  },
-  {
-    link: "https://www.linkedin.com/company/fola-pr",
-    name: "LinkedIn",
-    Icon: FaLinkedinIn,
   },
 ];

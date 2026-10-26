@@ -16,14 +16,14 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       {...props}
       classNames={{
         ...classNames,
-        base: cn("max-w-full items-start gap-2 py-2", classNames?.base),
+        base: cn("max-w-full items-start gap-3 py-2", classNames?.base),
         wrapper: cn(
-          "mt-0.5 shrink-0 rounded-none before:rounded-none before:border before:border-light-gray after:rounded-none after:bg-dark-gray group-data-[focus-visible=true]:ring-primary",
+          "mt-0.5 shrink-0 rounded-none bg-white before:rounded-none before:border before:border-ink after:rounded-none after:bg-red group-data-[invalid=true]:before:border-red group-data-[focus-visible=true]:ring-red",
           classNames?.wrapper,
         ),
-        icon: cn("text-primary-light", classNames?.icon),
+        icon: cn("text-white", classNames?.icon),
         label: cn(
-          "text-xs w-full leading-5 font-normal text-dark-gray uppercase",
+          "w-full font-courier text-xs leading-5 font-normal tracking-mono text-ink uppercase",
           classNames?.label,
         ),
       }}

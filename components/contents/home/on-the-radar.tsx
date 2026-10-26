@@ -19,7 +19,7 @@ function ExploreIndustry({
   citySlug?: string;
 }) {
   const href = citySlug
-    ? `/events/${encodeURIComponent(citySlug)}?industry=${industry}`
+    ? `/calendar/${encodeURIComponent(citySlug)}?industry=${industry}`
     : "#cities";
 
   return (
@@ -48,7 +48,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           id="radar-heading"
           as="h2"
           text="On the radar"
-          className="font-apris text-5xl leading-none uppercase sm:text-5xl lg:text-6xl"
+          className="font-montreal text-5xl leading-none uppercase sm:text-5xl lg:text-6xl"
         />
         <FadeUpText
           text={"The people. The places.\nThe moments that move us."}
@@ -74,7 +74,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           <FadeUpText
             as="h3"
             text={"The next\nbig idea."}
-            className="font-apris text-5xl uppercase lg:text-6xl"
+            className="font-montreal text-5xl uppercase lg:text-6xl"
           />
           <ExploreIndustry industry="technology" citySlug={citySlug} />
         </article>
@@ -100,7 +100,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           <FadeUpText
             as="h3"
             text={"New ways\nof seeing."}
-            className="font-apris text-5xl uppercase lg:text-6xl"
+            className="font-montreal text-5xl uppercase lg:text-6xl"
           />
           <ExploreIndustry industry="art" citySlug={citySlug} />
         </article>
@@ -115,7 +115,7 @@ export default function OnTheRadar({ citySlug }: OnTheRadarProps) {
           <FadeUpText
             as="h3"
             text={"The city\ndoesn’t\nsleep."}
-            className="font-apris text-5xl uppercase lg:text-6xl"
+            className="font-montreal text-5xl uppercase lg:text-6xl"
           />
           <FadeUpText
             text={"From first set to last dance.\nFind your next night out."}

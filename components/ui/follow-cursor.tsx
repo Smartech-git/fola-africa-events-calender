@@ -16,7 +16,7 @@ interface FollowCursorProps {
   stiffness?: number;
   damping?: number;
   className?: string;
-  isLight?: boolean
+  isLight?: boolean;
 }
 
 export default function FollowCursor({

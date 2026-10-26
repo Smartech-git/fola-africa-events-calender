@@ -236,7 +236,19 @@ export interface Organiser {
    * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
    */
   slug: string;
-  type: 'brand' | 'label' | 'gallery' | 'promoter' | 'institution' | 'individual';
+  type:
+    | 'brand'
+    | 'company'
+    | 'agency'
+    | 'promoter'
+    | 'gallery'
+    | 'institution'
+    | 'foundation'
+    | 'media'
+    | 'venue'
+    | 'individual'
+    | 'label'
+    | 'other';
   website?: string | null;
   /**
    * Internal only. Never included in public event responses.
@@ -305,7 +317,7 @@ export interface Season {
   createdAt: string;
 }
 /**
- * Administrators can create, approve and publish events without AI review. Other staff must complete AI review and human approval before publication. Content changes require reapproval.
+ * Public submissions require AI review and administrator approval. Choose existing organiser/venue records or create them from the submitted details on approval. Publishing records approval too. Content changes require reapproval.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
@@ -322,50 +334,129 @@ export interface Event {
   endAt?: string | null;
   allDay?: boolean | null;
   industry:
+    | 'business'
+    | 'technology'
     | 'fashion'
     | 'art'
     | 'music'
     | 'design'
     | 'film-television'
-    | 'technology'
-    | 'business'
     | 'food-drink'
     | 'beauty'
     | 'sport';
   secondaryIndustry?:
     | (
+        | 'business'
+        | 'technology'
         | 'fashion'
         | 'art'
         | 'music'
         | 'design'
         | 'film-television'
-        | 'technology'
-        | 'business'
         | 'food-drink'
         | 'beauty'
         | 'sport'
       )
     | null;
   eventType:
+    | 'summit'
+    | 'conference'
+    | 'forum'
+    | 'convening'
+    | 'programme'
+    | 'awards'
+    | 'workshop'
+    | 'talk'
+    | 'launch'
+    | 'dinner'
     | 'show'
     | 'presentation'
     | 'exhibition'
     | 'opening'
+    | 'fair'
+    | 'festival'
     | 'concert'
     | 'performance'
     | 'screening'
-    | 'talk'
-    | 'conference'
-    | 'dinner'
     | 'party'
-    | 'launch'
     | 'pop-up'
     | 'run';
-  access: 'tickets' | 'free' | 'rsvp' | 'invitation-only' | 'private';
+  access: 'free' | 'tickets' | 'rsvp' | 'invitation-only' | 'private' | 'industry-only';
   visibility: 'public' | 'industry' | 'held-date';
+  /**
+   * Ticket, registration or RSVP link. Required for Tickets and RSVP required.
+   */
   actionUrl?: string | null;
-  organiser: number | Organiser;
+  /**
+   * Shown on Full listings only.
+   */
+  website?: string | null;
+  /**
+   * Shown on Full listings only.
+   */
+  instagram?: string | null;
+  /**
+   * Public event contact. Shown on Full listings only; never use a private address here.
+   */
+  publicContactEmail?: string | null;
+  /**
+   * Choose an existing organiser after reviewing possible AI matches. Required before approval for manually entered events.
+   */
+  organiser?: (number | null) | Organiser;
   venue?: (number | null) | Venue;
+  /**
+   * Private submitted details. No organiser record is created until administrator approval. Editing these details requires a new AI review.
+   */
+  submittedOrganiser?: {
+    name?: string | null;
+    type?:
+      | (
+          | 'brand'
+          | 'company'
+          | 'agency'
+          | 'promoter'
+          | 'gallery'
+          | 'institution'
+          | 'foundation'
+          | 'media'
+          | 'venue'
+          | 'individual'
+          | 'label'
+          | 'other'
+        )
+      | null;
+    website?: string | null;
+    contactEmail?: string | null;
+  };
+  organiserResolution?: ('use-existing' | 'update-existing' | 'create-new') | null;
+  organiserUpdate?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Private submitted details. Match a venue in this city or create it on approval. Editing these details requires a new AI review.
+   */
+  submittedVenue?: {
+    name?: string | null;
+    area?: string | null;
+    address?: string | null;
+    mapUrl?: string | null;
+  };
+  venueResolution?: ('use-existing' | 'update-existing' | 'create-new' | 'omit') | null;
+  venueUpdate?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   seasons?: (number | Season)[] | null;
   description?: string | null;
   status: 'submitted' | 'approved' | 'published' | 'cancelled' | 'postponed';
@@ -387,7 +478,10 @@ export interface Event {
   submittedBy?: {
     name?: string | null;
     email?: string | null;
-    relationship?: ('organiser' | 'pr' | 'venue' | 'other') | null;
+    phone?: string | null;
+    organisation?: string | null;
+    role?: string | null;
+    relationship?: ('organiser' | 'company' | 'pr' | 'venue' | 'partner' | 'other') | null;
   };
   isDemo?: boolean | null;
   reviews?: {
@@ -399,7 +493,7 @@ export interface Event {
   createdAt: string;
 }
 /**
- * AI findings and the original listing are retained alongside the human decision. Administrators can update AI status or record a manual decision without AI review.
+ * AI findings and submitted details are retained alongside the human decision. Public submissions require completed AI review; administrator approval or publication records the final decision.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "event-reviews".
@@ -417,7 +511,7 @@ export interface EventReview {
     | boolean
     | null;
   /**
-   * Groq processes queued reviews. To retry a failed review, set this to Pending. Administrator approval can still proceed manually.
+   * Anthropic processes queued reviews. To retry a failed review, set this to Pending. Public submissions cannot be approved until AI review completes.
    */
   aiStatus: 'pending' | 'processing' | 'completed' | 'failed';
   promptVersion?: string | null;
@@ -456,7 +550,7 @@ export interface EventReview {
   createdAt: string;
 }
 /**
- * Private delivery records for event receipts and publication emails. Failed jobs can be retried from Jobs.
+ * Private delivery records for publication emails and historical submission receipts. Failed jobs can be retried from Jobs.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "email-notifications".
@@ -812,8 +906,31 @@ export interface EventsSelect<T extends boolean = true> {
   access?: T;
   visibility?: T;
   actionUrl?: T;
+  website?: T;
+  instagram?: T;
+  publicContactEmail?: T;
   organiser?: T;
   venue?: T;
+  submittedOrganiser?:
+    | T
+    | {
+        name?: T;
+        type?: T;
+        website?: T;
+        contactEmail?: T;
+      };
+  organiserResolution?: T;
+  organiserUpdate?: T;
+  submittedVenue?:
+    | T
+    | {
+        name?: T;
+        area?: T;
+        address?: T;
+        mapUrl?: T;
+      };
+  venueResolution?: T;
+  venueUpdate?: T;
   seasons?: T;
   description?: T;
   status?: T;
@@ -831,6 +948,9 @@ export interface EventsSelect<T extends boolean = true> {
     | {
         name?: T;
         email?: T;
+        phone?: T;
+        organisation?: T;
+        role?: T;
         relationship?: T;
       };
   isDemo?: T;
@@ -952,7 +1072,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Groq reviews submitted events and suggests edits. Staff make publication decisions. API credentials stay in server environment variables.
+ * Anthropic reviews submitted events and suggests edits. Staff make publication decisions. API credentials stay in server environment variables.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "review-settings".
@@ -962,7 +1082,7 @@ export interface ReviewSetting {
   promptVersion: string;
   systemPrompt: string;
   /**
-   * GPT-OSS 120B on Groq. The worker uses this model with strict structured output.
+   * Claude on Anthropic with strict structured output. Set ANTHROPIC_MODEL in the server environment to override the default model.
    */
   model?: string | null;
   updatedAt?: string | null;

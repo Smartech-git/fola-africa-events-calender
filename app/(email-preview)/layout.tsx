@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// This route group does not load the site stylesheet, so the Happenings
+// palette is applied inline.
 export default function EmailPreviewLayout({
   children,
 }: {
@@ -19,9 +21,9 @@ export default function EmailPreviewLayout({
       <body
         style={{
           margin: 0,
-          background: "#F4F1EE",
-          color: "#201D1D",
-          fontFamily: "Arial, sans-serif",
+          background: "#FFFFFF",
+          color: "#1A1A1A",
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         }}
       >
         {children}

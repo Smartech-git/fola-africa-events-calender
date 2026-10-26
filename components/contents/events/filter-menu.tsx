@@ -2,7 +2,13 @@
 
 import { useId, useState } from "react";
 
-import { parseDate, type CalendarDate } from "@internationalized/date";
+import {
+  endOfMonth,
+  endOfWeek,
+  parseDate,
+  today,
+  type CalendarDate,
+} from "@internationalized/date";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 
 import DrawHorizontalLine from "@/components/animations/draw-horizontal-line";
@@ -12,6 +18,7 @@ import LabelTitle from "@/components/common/label-title";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import LenisProvider from "@/components/providers/lenis-provider";
 import Button from "@/components/ui/button";
+import Chip from "@/components/ui/chip";
 import DatePicker from "@/components/ui/date-picker";
 import Drawer from "@/components/ui/drawer";
 import {
@@ -41,6 +48,14 @@ interface Filters {
   industry: string[];
   access: string[];
 }
+
+type DatePreset = "today" | "week" | "month";
+
+const DATE_PRESETS: { label: string; value: DatePreset }[] = [
+  { label: "Today", value: "today" },
+  { label: "This week", value: "week" },
+  { label: "This month", value: "month" },
+];
 
 const focusStyle =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
@@ -94,7 +109,7 @@ export default function FilterMenu({
 
   return (
     <Drawer.Root>
-      <div className="flex-row flex gap-4">
+      <div className="flex flex-row gap-4">
         {EVENTS_FILTER.map((item) => (
           <Drawer.Trigger
             key={item.key}
@@ -149,7 +164,7 @@ export default function FilterMenu({
                 <SectionWrapper className="gap-8 pt-4 pb-10 sm:gap-10 sm:pt-6 sm:pb-16">
                   <div className="space-y-3">
                     <FadeUpText
-                      className="font-apris text-3xl uppercase sm:text-4xl"
+                      className="font-montreal text-3xl uppercase sm:text-4xl"
                       text="Filter events"
                     />
                     <FadeUpText
@@ -206,6 +221,19 @@ function FilterOptions({
     filters.dateTo &&
     filters.dateFrom.compare(filters.dateTo) > 0,
   );
+
+  // Presets use the selected city's calendar, not the visitor's.
+  const presetRange = (preset: DatePreset) => {
+    if (!selectedCity) return undefined;
+    const from = today(selectedCity.timezone);
+    const to =
+      preset === "today"
+        ? from
+        : preset === "week"
+          ? endOfWeek(from, "en-GB")
+          : endOfMonth(from);
+    return { from, to };
+  };
 
   const toggleOption = (key: "industry" | "access", value: string) => {
     setFilters((previous) => ({
@@ -296,7 +324,7 @@ function FilterOptions({
                 handleParamSet(
                   { [FILTER_KEYS.city]: city },
                   undefined,
-                  "/events/" + encodeURIComponent(city),
+                  "/calendar/" + encodeURIComponent(city),
                 );
                 onClose();
               }
@@ -310,6 +338,36 @@ function FilterOptions({
             ))}
           </DropdownMenu>
         </Dropdown>
+      </div>
+
+      <div role="group" aria-labelledby={`${id}-date`} className="space-y-3">
+        <FilterLabel id={`${id}-date`} title="Date" />
+        <div className="flex w-full flex-wrap gap-2">
+          {DATE_PRESETS.map((preset) => {
+            const range = presetRange(preset.value);
+            const isSelected = Boolean(
+              range &&
+              filters.dateFrom?.compare(range.from) === 0 &&
+              filters.dateTo?.compare(range.to) === 0,
+            );
+            return (
+              <ChoiceButton
+                key={preset.value}
+                label={preset.label}
+                isSelected={isSelected}
+                disabled={seasonSelected || !range}
+                onPress={() =>
+                  range &&
+                  setFilters((previous) => ({
+                    ...previous,
+                    dateFrom: range.from,
+                    dateTo: range.to,
+                  }))
+                }
+              />
+            );
+          })}
+        </div>
       </div>
 
       <div className="grid max-w-full grid-cols-1 gap-6 sm:grid-cols-2">
@@ -361,6 +419,9 @@ function FilterOptions({
         options={INDUSTRIES}
         selected={filters.industry}
         onToggle={(value) => toggleOption("industry", value)}
+        onClear={() =>
+          setFilters((previous) => ({ ...previous, industry: [] }))
+        }
       />
       <FilterChoices
         id={`${id}-access`}
@@ -368,6 +429,7 @@ function FilterOptions({
         options={ACCESS_OPTIONS}
         selected={filters.access}
         onToggle={(value) => toggleOption("access", value)}
+        onClear={() => setFilters((previous) => ({ ...previous, access: [] }))}
       />
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
@@ -407,12 +469,30 @@ function FilterLabel({
     <div id={id} className="flex items-center gap-2">
       <LabelTitle title={title} />
       {count > 0 && (
-        <span className="inline-flex h-4 min-w-4 items-center justify-center bg-dark-gray font-inter text-xs text-white">
+        <span className="inline-flex h-4 min-w-4 items-center justify-center bg-dark-gray font-courier text-xs text-white">
           <span className="sr-only">Active filters: </span>
           {count}
         </span>
       )}
     </div>
+  );
+}
+
+function ChoiceButton({
+  label,
+  isSelected,
+  disabled,
+  onPress,
+}: {
+  label: string;
+  isSelected: boolean;
+  disabled?: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <Chip isSelected={isSelected} disabled={disabled} onClick={onPress}>
+      {label}
+    </Chip>
   );
 }
 
@@ -422,36 +502,32 @@ function FilterChoices({
   options,
   selected,
   onToggle,
+  onClear,
 }: {
   id: string;
   title: string;
   options: { label: string; value: string }[];
   selected: string[];
   onToggle: (value: string) => void;
+  onClear: () => void;
 }) {
   return (
     <div role="group" aria-labelledby={id} className="space-y-3">
       <FilterLabel id={id} title={title} count={selected.length} />
-      <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3">
-        {options.map((option) => {
-          const isSelected = selected.includes(option.value);
-          return (
-            <Button
-              key={option.value}
-              type="button"
-              variant="bordered"
-              aria-pressed={isSelected}
-              onPress={() => onToggle(option.value)}
-              className={cn(
-                "h-11 w-full justify-start border-light-gray px-3 text-left font-normal hover:border-primary hover:text-primary",
-                focusStyle,
-                isSelected && "border-none bg-secondary text-primary",
-              )}
-            >
-              {option.label}
-            </Button>
-          );
-        })}
+      <div className="flex w-full flex-wrap gap-2">
+        <ChoiceButton
+          label="All"
+          isSelected={selected.length === 0}
+          onPress={onClear}
+        />
+        {options.map((option) => (
+          <ChoiceButton
+            key={option.value}
+            label={option.label}
+            isSelected={selected.includes(option.value)}
+            onPress={() => onToggle(option.value)}
+          />
+        ))}
       </div>
     </div>
   );

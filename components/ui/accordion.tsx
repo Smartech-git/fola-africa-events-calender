@@ -50,9 +50,7 @@ export const Accordion = ({
           key={item.key}
           aria-label={`Accordion item ${item.key}`}
           title={item.title}
-          classNames={{
-
-          }}
+          classNames={{}}
         >
           {item.content}
         </HeroUIAccordionItem>

@@ -7,11 +7,11 @@ export default function EmailPreviewPage() {
   if (process.env.NODE_ENV !== "development") notFound();
 
   const sample = {
-    title: "Lagos Art & Culture Weekend",
+    title: "Financial Times Africa Summit",
     name: "Amara",
     recipient: "amara@example.com",
-    sender: "hello@example.com",
-    url: "https://wewantfola.com/events/lagos/lagos-art-culture-weekend",
+    sender: "hello@happeningsofafrica.com",
+    url: "https://happeningsofafrica.com/calendar/lagos/financial-times-africa-summit",
   };
 
   return (

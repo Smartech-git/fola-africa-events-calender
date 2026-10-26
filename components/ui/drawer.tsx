@@ -85,14 +85,18 @@ const Drawer = {
   >) {
     const { isOpen, onOpenChange, onClose } = useDrawer();
 
+    const motionProps = {
+      initial: { opacity: 1, y: 0, scale: 1.02 },
+      animate: { opacity: 1, y: 0, scale: 1 },
+      exit: { opacity: 0, y: 0, scale: 1.02 },
+    };
     return (
       <HeroDrawer
-        size="sm"
+        size="full"
         hideCloseButton={true}
-        // motionProps={motionProps}
+        motionProps={motionProps}
         className={cn("w-full rounded-none", className)}
         isOpen={isOpen}
-        placement="bottom"
         classNames={{
           backdrop: ["z-99 bg-transparent!"],
           wrapper: ["z-99"],
@@ -120,11 +124,12 @@ const Drawer = {
   },
 
   Body: function DrawerBody(props: ComponentProps<typeof HeroDrawerBody>) {
-    const { className, ...rest } = props;
+    const { className, smoothScroll, ...rest } = props;
 
     return (
       <HeroDrawerBody
-        className={cn("px-pg-sm sm:px-pg", className)}
+        smoothScroll
+        className={cn("scrollbar-none px-pg-sm sm:px-pg", className)}
         {...rest}
       />
     );

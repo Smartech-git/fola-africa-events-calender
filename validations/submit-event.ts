@@ -6,11 +6,17 @@ import {
   EVENT_TYPES,
   INDUSTRIES,
   ORGANISER_TYPES,
+  LINK_REQUIRED_ACCESS,
   PRIVATE_ACCESS,
+  PRIVATE_SUBMITTERS,
   SUBMITTER_RELATIONSHIPS,
   VISIBILITY_OPTIONS,
 } from "@/payload/constants";
-import { httpURL, shortDescription } from "@/payload/validation";
+import {
+  httpURL,
+  instagramProfile,
+  shortDescription,
+} from "@/payload/validation";
 import type { Event, Organiser } from "@/payload-types";
 
 const text = z.string().trim().max(200);
@@ -22,6 +28,18 @@ const url = z
   .refine(
     (value) => httpURL(value) === true,
     "Enter an HTTP or HTTPS URL without embedded credentials.",
+  );
+const optionalEmail = z.union([
+  z.literal(""),
+  z.string().trim().email("Enter a valid email address.").max(254),
+]);
+const instagram = z
+  .string()
+  .trim()
+  .max(200)
+  .refine(
+    (value) => !value || Boolean(instagramProfile(value)),
+    "Enter an Instagram handle or profile link.",
   );
 const id = z.string().regex(/^[1-9]\d*$/, "Select an option.");
 const choice = <T extends string>(options: { value: string }[]) =>
@@ -58,6 +76,9 @@ export const submitEventSchema = z
     access: choice<Event["access"]>(ACCESS_OPTIONS),
     visibility: choice<Event["visibility"]>(VISIBILITY_OPTIONS),
     actionUrl: url,
+    eventWebsite: url,
+    instagram,
+    publicContactEmail: optionalEmail,
     organiserName: requiredText,
     organiserType: choice<Organiser["type"]>(ORGANISER_TYPES),
     organiserWebsite: url,
@@ -85,6 +106,14 @@ export const submitEventSchema = z
       .trim()
       .email("Enter a valid email address.")
       .max(254),
+    submitterPhone: z
+      .string()
+      .trim()
+      .min(5, "Enter a phone or WhatsApp number.")
+      .max(40)
+      .regex(/^\+?[\d\s().-]+$/, "Enter a valid phone or WhatsApp number."),
+    submitterOrganisation: text,
+    submitterRole: text,
     relationship: choice<
       NonNullable<NonNullable<Event["submittedBy"]>["relationship"]>
     >(SUBMITTER_RELATIONSHIPS),
@@ -102,18 +131,18 @@ export const submitEventSchema = z
       ctx.addIssue({ code: "custom", path: [path], message });
     if (data.endAt && data.endAt <= data.startAt)
       issue("endAt", "End time must be later than start time.");
-    if (["tickets", "rsvp"].includes(data.access) && !data.actionUrl)
-      issue("actionUrl", "Tickets and RSVP require an action URL.");
+    if (LINK_REQUIRED_ACCESS.includes(data.access) && !data.actionUrl)
+      issue("actionUrl", "Tickets and RSVP need a ticket or RSVP link.");
     if (PRIVATE_ACCESS.includes(data.access)) {
       if (data.actionUrl)
         issue(
           "actionUrl",
           "Private and invitation-only events cannot have an action URL.",
         );
-      if (!["organiser", "pr"].includes(data.relationship))
+      if (!PRIVATE_SUBMITTERS.includes(data.relationship))
         issue(
           "relationship",
-          "Only the organiser or their representative may submit a private event.",
+          "Only the organiser, the company or brand, or their agency or PR may submit a private event.",
         );
     }
     if (data.visibility === "held-date" && data.access !== "private")
@@ -141,6 +170,9 @@ export const submitEventDefaults: Partial<SubmitEventValues> = {
   access: undefined,
   visibility: "public",
   actionUrl: "",
+  eventWebsite: "",
+  instagram: "",
+  publicContactEmail: "",
   organiserName: "",
   organiserType: undefined,
   organiserWebsite: "",
@@ -153,6 +185,9 @@ export const submitEventDefaults: Partial<SubmitEventValues> = {
   seasons: [],
   submitterName: "",
   submitterEmail: "",
+  submitterPhone: "",
+  submitterOrganisation: "",
+  submitterRole: "",
   relationship: undefined,
   agreement: false,
   website: "",

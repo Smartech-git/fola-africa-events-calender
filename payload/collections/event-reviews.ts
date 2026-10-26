@@ -51,13 +51,15 @@ export const eventReviews: CollectionConfig = {
             req,
           });
           publicSubmission = event.source === "submission";
+          // An administrator may complete the review by hand when the AI is unavailable.
           if (
             publicSubmission &&
             data.aiStatus === "completed" &&
-            originalDoc?.aiStatus !== "completed"
+            originalDoc?.aiStatus !== "completed" &&
+            roleOf(req.user) !== "admin"
           )
             throw new APIError(
-              "Only the AI worker can complete a public submission's review.",
+              "Only the AI worker or an administrator can complete a public submission's review.",
               400,
             );
         }
@@ -114,7 +116,7 @@ export const eventReviews: CollectionConfig = {
       access: { update: adminField },
       admin: {
         description:
-          "Anthropic processes queued reviews. To retry a failed review, set this to Pending. Public submissions cannot be approved until AI review completes.",
+          "Anthropic processes queued reviews. To retry a failed review, set this to Pending. If the AI is unavailable, an administrator can set this to Completed after checking the submission. Public submissions cannot be approved until the review is completed.",
       },
     },
     {

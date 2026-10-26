@@ -7,32 +7,36 @@ import { cva } from "class-variance-authority";
 import type { VariantProps } from "class-variance-authority";
 import { LoaderCircle } from "lucide-react";
 
-// import FollowCursor from "@/components/ui/follow-cursor";
 import { cn } from "@/lib/utils";
 
+// Figma: Components — HOA / Button. Square corners, Courier Prime caps.
 const button = cva(
-  "group relative flex w-fit flex-none cursor-pointer items-center justify-center gap-1 overflow-hidden font-inter text-xs font-semibold text-nowrap whitespace-nowrap uppercase transition-all outline-none hover:opacity-100 data-[pressed=true]:scale-[0.97]",
+  "group relative flex w-fit flex-none cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-none font-courier text-sm leading-none font-normal tracking-cou text-nowrap whitespace-nowrap uppercase transition-colors outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-offset-2 data-[focus-visible=true]:outline-red data-[pressed=true]:scale-[0.97]",
   {
     variants: {
       variant: {
-        solid:
-          "border-none bg-dark-gray text-primary-light hover:bg-dark-gray data-[disabled=true]:border-1.5 data-[disabled=true]:border-none data-[disabled=true]:bg-dark-gray! data-[disabled=true]:text-primary-light data-[disabled=true]:opacity-70!",
-        bordered: "border border-primary bg-transparent text-dark-gray",
-        flat: "rounded-none! bg-transparent text-dark-gray hover:text-primary",
-        link: "rounded-none! border-b border-inherit hover:text-primary text-dark-gray",
+        solid: "bg-red text-white hover:bg-red/90",
+        ink: "bg-ink text-white hover:bg-ink/90",
+        bordered:
+          "border-[1.5px] border-ink bg-transparent text-ink hover:bg-ink hover:text-white",
+        onWhite: "bg-white text-red",
+        outlineWhite:
+          "border-[1.5px] border-white bg-transparent text-white hover:bg-white hover:text-red",
+        flat: "bg-transparent text-ink",
+        link: "border-b border-current bg-transparent text-ink hover:text-red",
         light: "text-black",
       },
       size: {
-        icon: "size-8",
-        xs: "h-[36px] px-3",
-        sm: "h-[40px] px-3 py-1.5",
-        md: "h-[48px] px-6 py-2.5",
-        lg: "h-[56px] px-6 py-2.5",
-        fit: "p-0 min-h-fit h-fit pb-0",
+        icon: "size-9",
+        xs: "h-9 px-3 text-xs",
+        sm: "h-[38px] px-5",
+        md: "h-[48px] px-7",
+        lg: "h-15 px-8",
+        fit: "h-fit min-h-fit p-0",
       },
       disabled: {
         false: null,
-        true: "opacity-70",
+        true: "pointer-events-none opacity-50",
       },
     },
 
@@ -73,7 +77,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       bubbleContent,
       bubbleClassName,
-      isFollowCursorLight,
+      // Not DOM attributes; keep them off the rendered <button>.
+      isFollowCursorLight: _isFollowCursorLight,
+      disableAnimation: _disableAnimation,
       ...props
     },
     ref,
@@ -122,7 +128,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {bubbleContent && (
           <div
             className={cn(
-              "absolute -top-2 -right-2 z-40 flex h-5 min-w-5 animate-jump-in items-center justify-center rounded-full border border-white bg-dark-gray text-xs font-bold text-white",
+              "absolute -top-2 -right-2 z-40 flex h-5 min-w-5 animate-jump-in items-center justify-center rounded-full border border-white bg-ink text-xs font-bold text-white",
               bubbleClassName,
             )}
           >

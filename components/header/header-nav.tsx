@@ -2,69 +2,65 @@
 
 import Link from "next/link";
 
+import HoverText from "@/components/animations/hover-text";
 import Button from "@/components/ui/button";
-import { Nav } from "@/constants/nav";
+import { NAV, type Nav } from "@/constants/nav";
 import { useIsPathActive } from "@/hooks/use-is-path-active";
 import { cn } from "@/lib/utils";
 
 interface Props {
   className?: string;
-  nav: Nav[];
+  linkClassName?: string;
+  nav?: Nav[];
+  onNavigate?: () => void;
 }
-export default function HeaderNav({ className, nav }: Props) {
+
+export default function HeaderNav({
+  className,
+  linkClassName,
+  nav = NAV,
+  onNavigate,
+}: Props) {
   const { isPathActive } = useIsPathActive();
 
   return (
-    <div className={cn("flex w-full flex-col gap-4 font-inter", className)}>
-      <div className="flex flex-col">
-        {nav.map((item) =>
-          item?.isMultiple ? (
-            item.paths
-              .filter((item) => !item.isMultiple)
-              .map((subItem) => (
+    <nav aria-label="Main" className={cn("gap-6", className)}>
+      <ul className="contents">
+        {nav
+          .filter((item) => !item?.isFooter)
+          .map((item) => {
+            const active = isPathActive(item.pathId);
+            return (
+              <li key={item.pathId} className="contents">
                 <Link
-                  key={subItem.pathId}
-                  className="group w-full"
-                  href={subItem.link}
+                  href={item.link}
+                  onClick={onNavigate}
+                  aria-current={active ? "page" : undefined}
+                  className={cn("w-fit", linkClassName)}
                 >
                   <Button
-                    className="w-full justify-between border-b border-black/20 px-4 py-6 text-sm sm:text-base"
-                    size="fit"
-                    variant="link"
-                    endContent={
-                      <div className="size-3 rounded-full bg-secondary group-not-first:hidden" />
+                    startContent={
+                      <span
+                        aria-hidden="true"
+                        className={cn(
+                          "size-1.5 shrink-0 rounded-full bg-current",
+                          active
+                            ? "animate-fade animate-duration-500"
+                            : "hidden",
+                        )}
+                      />
                     }
-                    disableAnimation={true}
+                    className="text-inherit"
+                    variant="flat"
+                    size="fit"
                   >
-                    <span
-                      className={cn(
-                        isPathActive(subItem.pathId) && "underline",
-                      )}
-                    >
-                      {subItem.title}
-                    </span>
+                    <HoverText text={item.title} />
                   </Button>
                 </Link>
-              ))
-          ) : (
-            <Link key={item.pathId} className="group w-full" href={item.link}>
-              <Button
-                className="m:text-base w-full justify-between border-b border-black/20 px-4 py-6 text-sm"
-                size="fit"
-                variant="link"
-                endContent={
-                  <div className="size-3 rounded-full bg-secondary group-not-first:hidden" />
-                }
-                disableAnimation={true}
-              >
-                <span className={cn(isPathActive(item.pathId) && "underline")}>
-                  {item.title}
-                </span>
-              </Button>
-            </Link>
-          ),
-        )}
-      </div>
-    </div>
+              </li>
+            );
+          })}
+      </ul>
+    </nav>
   );
 }

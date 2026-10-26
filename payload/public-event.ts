@@ -1,4 +1,4 @@
-import { INDUSTRIES, PUBLIC_STATUSES } from "@/payload/constants";
+import { INDUSTRIES, LINKED_ACCESS, PUBLIC_STATUSES } from "@/payload/constants";
 import type { Event } from "@/payload-types";
 
 /** The only projection that should be used for public pages, exports or API responses. */
@@ -12,9 +12,11 @@ export function toPublicEvent(event: Event) {
     return null;
   const held = event.visibility === "held-date";
   const publicDetails = event.visibility === "public";
+  const industryEntry = INDUSTRIES.find(
+    (entry) => entry.value === event.industry,
+  );
   const industry =
-    INDUSTRIES.find((entry) => entry.value === event.industry)?.label ||
-    event.industry;
+    industryEntry?.short || industryEntry?.label || event.industry;
   const city =
     typeof event.city === "object"
       ? {
@@ -56,10 +58,13 @@ export function toPublicEvent(event: Event) {
     access: held ? "private" : event.access,
     eventType: held ? undefined : event.eventType,
     actionUrl:
-      !held && ["tickets", "rsvp", "free"].includes(event.access)
+      !held && LINKED_ACCESS.includes(event.access)
         ? event.actionUrl
         : undefined,
     description: publicDetails ? event.description : undefined,
+    website: publicDetails ? event.website : undefined,
+    instagram: publicDetails ? event.instagram : undefined,
+    publicContactEmail: publicDetails ? event.publicContactEmail : undefined,
     organiser,
     venue,
     verified: held ? undefined : event.verified,

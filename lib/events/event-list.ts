@@ -168,7 +168,7 @@ export function dayPath(city: string, date: string, pathname?: string) {
     [FILTER_KEYS.eventLayoutKey]: "list",
     [FILTER_KEYS.date]: date,
   });
-  return `${pathname ?? `/events/${encodeURIComponent(city)}`}?${params}`;
+  return `${pathname ?? `/calendar/${encodeURIComponent(city)}`}?${params}`;
 }
 
 export function eventAnchor(event: PublicEvent, date: string) {
@@ -176,7 +176,7 @@ export function eventAnchor(event: PublicEvent, date: string) {
 }
 
 export function eventPath(event: PublicEvent, city: string) {
-  return `/events/${encodeURIComponent(city)}/${encodeURIComponent(event.slug)}`;
+  return `/calendar/${encodeURIComponent(city)}/${encodeURIComponent(event.slug)}`;
 }
 
 export function eventSharePath(event: PublicEvent) {

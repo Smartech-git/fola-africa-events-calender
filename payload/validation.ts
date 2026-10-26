@@ -1,3 +1,5 @@
+import { LINK_REQUIRED_ACCESS, LINKED_ACCESS } from "@/payload/constants";
+
 export function httpURL(value: unknown): true | string {
   if (!value) return true;
   try {
@@ -18,6 +20,35 @@ export function shortDescription(value: unknown): true | string {
     : "Descriptions must contain no more than 60 words.";
 }
 
+/** Turn an Instagram handle or profile link into a canonical profile URL. */
+export function instagramProfile(value: unknown): string | undefined {
+  const input = String(value ?? "").trim();
+  if (!input) return undefined;
+  const handle = /^@?([A-Za-z0-9._]{1,30})$/.exec(input)?.[1];
+  if (handle) return `https://www.instagram.com/${handle}`;
+  try {
+    // Accept pasted links with or without the scheme, e.g. instagram.com/name.
+    const url = new URL(
+      /^https?:\/\//i.test(input) ? input : `https://${input}`,
+    );
+    const name = /^\/([A-Za-z0-9._]{1,30})\/?$/.exec(url.pathname)?.[1];
+    if (
+      ["instagram.com", "www.instagram.com", "m.instagram.com"].includes(
+        url.hostname.toLowerCase(),
+      ) &&
+      name
+    )
+      return `https://www.instagram.com/${name}`;
+  } catch {}
+  return undefined;
+}
+
+export function instagramURL(value: unknown): true | string {
+  return !value || instagramProfile(value) === value
+    ? true
+    : "Use an Instagram profile link such as https://www.instagram.com/name.";
+}
+
 export function relationID(value: unknown): string | number | undefined {
   if (typeof value === "number" || typeof value === "string") return value;
   if (value && typeof value === "object" && "id" in value)
@@ -35,9 +66,9 @@ export function eventProblems(event: Record<string, any>): string[] {
       Date.parse(event.endAt) <= start)
   )
     errors.push("End time must be later than start time.");
-  if (["tickets", "rsvp"].includes(event.access) && !event.actionUrl)
+  if (LINK_REQUIRED_ACCESS.includes(event.access) && !event.actionUrl)
     errors.push("Tickets and RSVP require an action URL.");
-  if (["invitation-only", "private"].includes(event.access) && event.actionUrl)
+  if (!LINKED_ACCESS.includes(event.access) && event.actionUrl)
     errors.push(
       "Invitation only and Private listings cannot have an action URL.",
     );

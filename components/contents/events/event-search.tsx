@@ -64,7 +64,7 @@ export default function EventSearch({ className }: Props) {
         {...register("search")}
         type="search"
         aria-label="Search events"
-        placeholder="Search events, organisers, venues or seasons"
+        placeholder="Search Happenings"
         autoComplete="off"
         enterKeyHint="search"
         maxLength={100}

@@ -13,7 +13,7 @@ export default function HeaderTitle({ text, className, as, id }: Props) {
       as={as}
       id={id}
       className={cn(
-        "font-apris text-3xl font-medium tracking-wider text-primary uppercase sm:text-4xl",
+        "font-montreal text-3xl font-medium tracking-wider text-primary uppercase sm:text-4xl",
         className,
       )}
       text={text}

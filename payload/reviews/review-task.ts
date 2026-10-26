@@ -1,6 +1,7 @@
 import type { CollectionAfterChangeHook, TaskConfig } from "payload";
 
 import { DEFAULT_REVIEW_PROMPT } from "@/payload/constants";
+import { reviewAfterChange } from "@/payload/reviews/after-change";
 import {
   buildReviewPrompt,
   AnthropicReviewError,
@@ -34,13 +35,15 @@ export const enqueueReview: CollectionAfterChangeHook = async ({
     depth: 0,
     req,
   });
-  if (!event.isDemo)
-    await req.payload.jobs.queue({
-      task: "review-event",
-      queue: REVIEW_QUEUE,
-      input: { reviewId: doc.id },
-      req,
-    });
+  if (event.isDemo) return doc;
+  // The job commits with the review; it runs once the response is sent.
+  const job = await req.payload.jobs.queue({
+    task: "review-event",
+    queue: REVIEW_QUEUE,
+    input: { reviewId: doc.id },
+    req,
+  });
+  reviewAfterChange(job.id);
   return doc;
 };
 
@@ -87,6 +90,8 @@ export const reviewEventTask: TaskConfig<{
           and: [
             { id: { equals: review.id } },
             { humanDecision: { equals: "pending" } },
+            // An administrator may have completed the review by hand meanwhile.
+            { aiStatus: { not_equals: "completed" } },
           ],
         },
         data,

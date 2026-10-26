@@ -4,6 +4,7 @@ import { parseDateTime, toZoned } from "@internationalized/date";
 
 import { formatSlug } from "@/payload/fields/format-slug";
 import { getCalendarPayload } from "@/payload/queries/calendar-query";
+import { instagramProfile } from "@/payload/validation";
 import {
   submitEventSchema,
   type SubmitEventValues,
@@ -216,6 +217,11 @@ export async function createEventSubmission(
           access: data.access,
           visibility: data.visibility,
           actionUrl: data.actionUrl || undefined,
+          website: data.eventWebsite || undefined,
+          instagram: instagramProfile(data.instagram),
+          publicContactEmail: data.publicContactEmail
+            ? data.publicContactEmail.toLowerCase()
+            : undefined,
           submittedOrganiser: {
             name: data.organiserName,
             type: data.organiserType,
@@ -235,6 +241,9 @@ export async function createEventSubmission(
           submittedBy: {
             name: data.submitterName,
             email: data.submitterEmail.toLowerCase(),
+            phone: data.submitterPhone,
+            organisation: data.submitterOrganisation || undefined,
+            role: data.submitterRole || undefined,
             relationship: data.relationship,
           },
           source: "submission",

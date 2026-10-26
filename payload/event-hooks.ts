@@ -6,7 +6,11 @@ import {
 } from "payload";
 
 import { roleOf } from "@/payload/access";
-import { PRIVATE_ACCESS, PUBLIC_STATUSES } from "@/payload/constants";
+import {
+  PRIVATE_ACCESS,
+  PRIVATE_SUBMITTERS,
+  PUBLIC_STATUSES,
+} from "@/payload/constants";
 import {
   editorialChange,
   eventSnapshot,
@@ -108,10 +112,10 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
   if (
     event.source === "submission" &&
     PRIVATE_ACCESS.includes(event.access) &&
-    !["organiser", "pr"].includes(event.submittedBy?.relationship)
+    !PRIVATE_SUBMITTERS.includes(event.submittedBy?.relationship)
   ) {
     throw new APIError(
-      "Private and invitation-only submissions must come from an organiser or their representative.",
+      "Private and invitation-only submissions must come from the organiser, the company or brand, or their agency or PR.",
       400,
     );
   }

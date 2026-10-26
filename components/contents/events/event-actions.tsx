@@ -17,6 +17,7 @@ import {
 } from "@/lib/events/event-actions";
 import { googleCalendarUrl } from "@/lib/events/event-calendar";
 import { eventSharePath, externalUrl } from "@/lib/events/event-list";
+import { cn } from "@/lib/utils";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
 
 export function EventExternalAction({
@@ -51,15 +52,18 @@ export function EventExternalAction({
 const attendanceLabels: Record<string, string> = {
   tickets: "Buy tickets",
   rsvp: "RSVP",
-  free: "More information",
+  free: "Register",
+  "industry-only": "Register",
 };
 
 export function EventAttendanceAction({
   event,
   prominent = false,
+  className,
 }: {
   event: PublicEvent;
   prominent?: boolean;
+  className?: string;
 }) {
   const label = attendanceLabels[event.access];
   if (!label || event.status !== "published") return null;
@@ -69,7 +73,7 @@ export function EventAttendanceAction({
       label={label}
       variant={prominent ? "solid" : "flat"}
       size={prominent ? "sm" : "fit"}
-      className={prominent ? "min-w-48" : undefined}
+      className={cn(prominent && "min-w-48", className)}
     />
   );
 }

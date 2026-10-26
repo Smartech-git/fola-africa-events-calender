@@ -16,6 +16,16 @@
 
 - For future API work, do not add Markdown documentation files or tests unless the user explicitly requests them. Explain API usage in the response instead. Existing documentation and tests may remain; this preference does not request their deletion.
 
+# Design reference
+
+- Figma design file: https://www.figma.com/design/9MEUwS4YgdPJmg53IjQaoD/FOLA---Africa’s-Events-Calendar-·-Design (file key `9MEUwS4YgdPJmg53IjQaoD`). Read it through the Figma MCP tools.
+- The current design is the new direction on page `04 / Happenings — New Direction` (node `324:1720`). It contains the cover, the `Components — HOA` frame, one section per screen (desktop 1440 with its mobile 390 alongside) and the brand assets (favicon, app icon, Open Graph). Use only this page for design work and implementation.
+- Pages `01 / Guide & Components - Deprecated` (node `0:1`) and `02 / Desktop & Admin - Deprecated` (node `5:2`) are the superseded direction. Do not build from them.
+- The new direction follows the HOA brand book in `docs/HOA Assets/HOA Assets/BRAND BOOK/HOA Visual Identity.pdf`: colours Happenings Red `#B51C17`, Cream `#F4E3D7`, Blush `#EAC5AE`, Ink `#1A1A1A` and White; Neue Montreal (Regular and Medium only) with Courier for dates, times, labels and access; the circle marks dates, moments and live states and is never decoration. In Figma, Instrument Sans and Courier Prime stand in for these fonts.
+- Consult the design when building or changing UI. Follow the icon conventions above even where the design uses other icons. The user's explicit requests take precedence over the design.
+- Do not copy line-height (`leading-*`) or letter-spacing (`tracking-*`) values from Figma. The project has exactly two tracking tokens in `app/styles/globals.css`: `tracking-mono` for Neue Montreal display text and `tracking-cou` for Courier Prime caps (labels, dates, buttons). Use only these; do not add arbitrary tracking values.
+- Build page sections with `components/layout/section-wrapper.tsx` and keep its built-in vertical padding. Do not copy section vertical padding (`py-*`, `pt-*`, `pb-*`) from Figma onto `SectionWrapper`; adjust only gaps and layout inside it.
+
 # Project references
 
 - Cities are editable and extensible through Payload. The six seeded cities are starter data, not a fixed allowed list. This user requirement supersedes the brief's fixed-city beta scope.

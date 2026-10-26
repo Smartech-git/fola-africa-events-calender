@@ -236,7 +236,19 @@ export interface Organiser {
    * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
    */
   slug: string;
-  type: 'brand' | 'label' | 'gallery' | 'promoter' | 'institution' | 'individual';
+  type:
+    | 'brand'
+    | 'company'
+    | 'agency'
+    | 'promoter'
+    | 'gallery'
+    | 'institution'
+    | 'foundation'
+    | 'media'
+    | 'venue'
+    | 'individual'
+    | 'label'
+    | 'other';
   website?: string | null;
   /**
    * Internal only. Never included in public event responses.
@@ -322,48 +334,71 @@ export interface Event {
   endAt?: string | null;
   allDay?: boolean | null;
   industry:
+    | 'business'
+    | 'technology'
     | 'fashion'
     | 'art'
     | 'music'
     | 'design'
     | 'film-television'
-    | 'technology'
-    | 'business'
     | 'food-drink'
     | 'beauty'
     | 'sport';
   secondaryIndustry?:
     | (
+        | 'business'
+        | 'technology'
         | 'fashion'
         | 'art'
         | 'music'
         | 'design'
         | 'film-television'
-        | 'technology'
-        | 'business'
         | 'food-drink'
         | 'beauty'
         | 'sport'
       )
     | null;
   eventType:
+    | 'summit'
+    | 'conference'
+    | 'forum'
+    | 'convening'
+    | 'programme'
+    | 'awards'
+    | 'workshop'
+    | 'talk'
+    | 'launch'
+    | 'dinner'
     | 'show'
     | 'presentation'
     | 'exhibition'
     | 'opening'
+    | 'fair'
+    | 'festival'
     | 'concert'
     | 'performance'
     | 'screening'
-    | 'talk'
-    | 'conference'
-    | 'dinner'
     | 'party'
-    | 'launch'
     | 'pop-up'
     | 'run';
-  access: 'tickets' | 'free' | 'rsvp' | 'invitation-only' | 'private';
+  access: 'free' | 'tickets' | 'rsvp' | 'invitation-only' | 'private' | 'industry-only';
   visibility: 'public' | 'industry' | 'held-date';
+  /**
+   * Ticket, registration or RSVP link. Required for Tickets and RSVP required.
+   */
   actionUrl?: string | null;
+  /**
+   * Shown on Full listings only.
+   */
+  website?: string | null;
+  /**
+   * Shown on Full listings only.
+   */
+  instagram?: string | null;
+  /**
+   * Public event contact. Shown on Full listings only; never use a private address here.
+   */
+  publicContactEmail?: string | null;
   /**
    * Choose an existing organiser after reviewing possible AI matches. Required before approval for manually entered events.
    */
@@ -374,7 +409,22 @@ export interface Event {
    */
   submittedOrganiser?: {
     name?: string | null;
-    type?: ('brand' | 'label' | 'gallery' | 'promoter' | 'institution' | 'individual') | null;
+    type?:
+      | (
+          | 'brand'
+          | 'company'
+          | 'agency'
+          | 'promoter'
+          | 'gallery'
+          | 'institution'
+          | 'foundation'
+          | 'media'
+          | 'venue'
+          | 'individual'
+          | 'label'
+          | 'other'
+        )
+      | null;
     website?: string | null;
     contactEmail?: string | null;
   };
@@ -428,7 +478,10 @@ export interface Event {
   submittedBy?: {
     name?: string | null;
     email?: string | null;
-    relationship?: ('organiser' | 'pr' | 'venue' | 'other') | null;
+    phone?: string | null;
+    organisation?: string | null;
+    role?: string | null;
+    relationship?: ('organiser' | 'company' | 'pr' | 'venue' | 'partner' | 'other') | null;
   };
   isDemo?: boolean | null;
   reviews?: {
@@ -458,7 +511,7 @@ export interface EventReview {
     | boolean
     | null;
   /**
-   * Anthropic processes queued reviews. To retry a failed review, set this to Pending. Public submissions cannot be approved until AI review completes.
+   * Anthropic processes queued reviews. To retry a failed review, set this to Pending. If the AI is unavailable, an administrator can set this to Completed after checking the submission. Public submissions cannot be approved until the review is completed.
    */
   aiStatus: 'pending' | 'processing' | 'completed' | 'failed';
   promptVersion?: string | null;
@@ -853,6 +906,9 @@ export interface EventsSelect<T extends boolean = true> {
   access?: T;
   visibility?: T;
   actionUrl?: T;
+  website?: T;
+  instagram?: T;
+  publicContactEmail?: T;
   organiser?: T;
   venue?: T;
   submittedOrganiser?:
@@ -892,6 +948,9 @@ export interface EventsSelect<T extends boolean = true> {
     | {
         name?: T;
         email?: T;
+        phone?: T;
+        organisation?: T;
+        role?: T;
         relationship?: T;
       };
   isDemo?: T;

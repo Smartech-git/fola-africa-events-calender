@@ -22,7 +22,7 @@ export default function MarqueeText({ text, className }: MarqueeTextProps) {
             {[0, 1, 2, 3].map((index) => (
               <div
                 key={index}
-                className="relative shrink-0 sm:px-4 px-0 py-2 font-apris leading-none font-medium text-dark-gray uppercase text-7xl md:text-9xl lg:text-[150px]"
+                className="relative shrink-0 sm:px-4 px-0 py-2 font-montreal leading-none font-medium text-dark-gray uppercase text-7xl md:text-9xl lg:text-[150px]"
               >
                 {/* Reserve the full text size for the canvas without fitting it down. */}
                 <span className="invisible block">{text}</span>

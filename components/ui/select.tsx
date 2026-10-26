@@ -35,37 +35,43 @@ const Select = forwardRef<HTMLSelectElement, Props>(
       ref={ref}
       variant="bordered"
       radius="none"
-      labelPlacement="outside"
+      labelPlacement="outside-top"
       validationBehavior="aria"
       placeholder="Select an option"
-      selectorIcon={<ChevronDown size={16} aria-hidden="true" />}
+      selectorIcon={<ChevronDown size={24} aria-hidden="true" />}
       {...props}
       classNames={{
         ...classNames,
-        base: cn("min-w-0 w-full font-inter", classNames?.base),
+        base: cn("min-w-0 w-full", classNames?.base),
         trigger: cn(
-          "h-[46px] min-h-[46px] rounded-none border border-light-gray bg-transparent! px-3 shadow-none",
-          "data-[hover=true]:border-primary data-[open=true]:border-primary data-[focus-visible=true]:outline-primary data-[focus-visible=true]:outline-offset-2 group-data-[invalid=true]:border-danger",
+          "h-14 min-h-14 data-[open=true]:border-red data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-offset-2 data-[focus-visible=true]:outline-red",
+          "rounded-none border border-ink bg-white! px-4 shadow-none data-[hover=true]:border-red group-data-[focus=true]:border-red group-data-[invalid=true]:border-red",
           classNames?.trigger,
         ),
         value: cn(
-          "truncate text-left text-xs font-normal text-dark-gray uppercase group-data-[has-value=true]:text-dark-gray!",
+          "truncate text-left",
+          "font-montreal text-base! leading-normal font-normal normal-case text-ink! placeholder:text-ink/40 sm:text-lg!",
+          "group-data-[has-value=false]:text-ink/40!",
           classNames?.value,
         ),
-        selectorIcon: cn("shrink-0 text-dark-gray", classNames?.selectorIcon),
+        selectorIcon: cn("size-6 shrink-0 text-ink", classNames?.selectorIcon),
         label: cn(
-          "text-xs! font-normal text-dark-gray! uppercase",
+          "font-courier text-sm! leading-[1.3] font-normal tracking-mono text-red! uppercase",
+          "pb-2",
           classNames?.label,
         ),
         helperWrapper: cn("px-0 pt-2", classNames?.helperWrapper),
         description: cn(
-          "text-xs leading-5 uppercase text-dark-gray/75",
+          "font-courier text-xs leading-5 tracking-mono text-ink/70 uppercase",
           classNames?.description,
         ),
-        errorMessage: cn("text-xs uppercase text-danger", classNames?.errorMessage),
+        errorMessage: cn(
+          "font-courier text-xs leading-5 tracking-mono text-red uppercase",
+          classNames?.errorMessage,
+        ),
         listboxWrapper: cn("max-h-72 p-0", classNames?.listboxWrapper),
         popoverContent: cn(
-          "rounded-none border border-light-gray bg-primary-light p-1 font-inter text-dark-gray shadow-none",
+          "rounded-none border border-ink bg-white p-0 text-ink shadow-none",
           classNames?.popoverContent,
         ),
       }}
@@ -76,7 +82,7 @@ const Select = forwardRef<HTMLSelectElement, Props>(
           ...popoverProps?.classNames,
           base: cn("z-[110]", popoverProps?.classNames?.base),
           content: cn(
-            "rounded-none border border-light-gray bg-primary-light",
+            "rounded-none border border-ink bg-white p-0 text-ink shadow-none",
             popoverProps?.classNames?.content,
           ),
         },
@@ -87,17 +93,14 @@ const Select = forwardRef<HTMLSelectElement, Props>(
         itemClasses: {
           ...listboxProps?.itemClasses,
           base: cn(
-            "min-h-9 cursor-pointer rounded-none px-2 py-2 text-dark-gray hover:bg-secondary! data-[hover=true]:bg-secondary! data-[hover=true]:text-primary data-[focus=true]:bg-secondary! data-[selected=true]:text-primary data-[selected=true]:bg-secondary data-[focus-visible=true]:outline-primary",
+            "min-h-11 cursor-pointer rounded-none px-4 py-2.5 text-ink data-[hover=true]:bg-cream! data-[hover=true]:text-red data-[focus=true]:bg-cream! data-[selectable=true]:focus:bg-cream data-[selected=true]:text-red data-[focus-visible=true]:outline-red",
             listboxProps?.itemClasses?.base,
           ),
           title: cn(
-            "text-xs font-normal uppercase",
+            "font-montreal text-base font-normal",
             listboxProps?.itemClasses?.title,
           ),
-          selectedIcon: cn(
-            "text-primary",
-            listboxProps?.itemClasses?.selectedIcon,
-          ),
+          selectedIcon: cn("text-red", listboxProps?.itemClasses?.selectedIcon),
         },
       }}
     >

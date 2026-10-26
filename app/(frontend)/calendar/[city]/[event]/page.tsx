@@ -53,14 +53,14 @@ export default async function EventPage({ params }: Props) {
         <SectionWrapper className="pb-0 sm:pb-0">
           <Link
             className="relative z-10 w-fit"
-            href={`/events/${encodeURIComponent(city)}`}
+            href={`/calendar/${encodeURIComponent(city)}`}
           >
             <Button
               startContent={<ArrowLeft size={12} />}
               variant="flat"
               size="fit"
             >
-              <HoverText text="Back to events" />
+              <HoverText text="Back to calendar" />
             </Button>
           </Link>
           <div className="mt-8 space-y-4">
@@ -69,7 +69,7 @@ export default async function EventPage({ params }: Props) {
             </p>
             <FadeUpText
               as="h1"
-              className="relative z-10 w-fit font-apris text-4xl text-primary uppercase sm:text-6xl lg:text-7xl"
+              className="relative z-10 w-fit font-montreal text-4xl text-primary uppercase sm:text-6xl lg:text-7xl"
               text={event.title}
             />
             <div className="relative z-10 w-fit space-y-2 text-xs uppercase sm:text-sm">
@@ -132,13 +132,35 @@ export default async function EventPage({ params }: Props) {
               />
             </section>
           )}
+          {(event.website || event.instagram || event.publicContactEmail) && (
+            <section
+              aria-labelledby="event-links"
+              className="space-y-4 border-t border-light-gray pt-8"
+            >
+              <h2 id="event-links">
+                <LabelTitle title="Links and information" />
+              </h2>
+              <div className="flex flex-wrap gap-x-8 gap-y-3">
+                <EventExternalAction url={event.website} label="Website" />
+                <EventExternalAction url={event.instagram} label="Instagram" />
+                {event.publicContactEmail && (
+                  <Link
+                    href={`mailto:${event.publicContactEmail}`}
+                    className="text-xs font-semibold uppercase transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-primary"
+                  >
+                    <HoverText text={event.publicContactEmail} />
+                  </Link>
+                )}
+              </div>
+            </section>
+          )}
           <EventLocation event={event} />
           {event.seasons.length > 0 && (
             <section
               aria-labelledby="event-seasons"
               className="space-y-4 border-t border-light-gray pt-8"
             >
-              <LabelTitle title=" Part of" />
+              <LabelTitle title="In the diary" />
 
               <ul className="flex flex-wrap gap-6 text-sm uppercase">
                 {event.seasons.map((season) => (

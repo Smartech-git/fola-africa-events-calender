@@ -14,9 +14,9 @@ export async function generateMetadata({ params }: Props) {
   const { city } = await params;
   const header = await getEventsHeader({ city });
   return pageMetadata(
-    `${header.city.name} events`,
-    `Explore concerts, exhibitions, business gatherings and more in ${header.city.name}. Browse ${SITE_NAME} by date, industry and access.`,
-    `/events/${encodeURIComponent(city)}`,
+    `What’s happening in ${header.city.name}`,
+    `See what’s happening in ${header.city.name}. Browse ${SITE_NAME} by date, industry and access.`,
+    `/calendar/${encodeURIComponent(city)}`,
   );
 }
 

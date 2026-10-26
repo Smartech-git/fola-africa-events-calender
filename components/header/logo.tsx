@@ -1,65 +1,61 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import Button from "@/components/ui/button";
+import { SITE_NAME } from "@/constants/brand";
 import { cn } from "@/lib/utils";
 
+const WORDMARKS = {
+  red: "/assets/brand/wordmark-red.svg",
+  ink: "/assets/brand/wordmark-ink.svg",
+  white: "/assets/brand/wordmark-white.svg",
+} as const;
+
+const SYMBOL = { src: "/assets/brand/logo-white.svg", width: 360, height: 17 };
+
+export type LogoVariant = keyof typeof WORDMARKS;
 
 interface Props {
   className?: string;
   wrapperClassName?: string;
-  isLight?: boolean;
-  useLogo?: boolean;
+  variant?: LogoVariant;
+  type?: "wordmark" | "symbol";
 }
 
 export default function Logo({
   className,
   wrapperClassName,
-  isLight = false,
-  useLogo,
+  variant = "red",
+  type = "wordmark",
 }: Props) {
+  if (type === "symbol")
+    return (
+      <Image
+        src={SYMBOL.src}
+        width={SYMBOL.width}
+        height={SYMBOL.height}
+        alt=""
+        aria-hidden="true"
+        className={cn("h-auto w-full", className)}
+      />
+    );
+
   return (
     <Link
       href="/"
+      aria-label={`${SITE_NAME} home`}
       className={cn(
-        "size-fit flex-none decoration-0 outline-none",
+        "flex size-fit flex-none items-center outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current",
         wrapperClassName,
       )}
     >
-      <Button
-        isFollowCursorLight={isLight}
-        variant="flat"
-        size="fit"
-        className="w-fit"
-      >
-        {useLogo ? (
-          <Image
-            src="/assets/images/logo-810x673.svg"
-            width={810}
-            height={673}
-            quality={100}
-            alt="FOLA"
-            preload
-            sizes="(max-width: 640px) 40px, 40px"
-            className={cn("h-auto w-8", className)}
-          />
-        ) : (
-          <Image
-            src={
-              isLight
-                ? "/assets/images/wordmark-light-1440x550.svg"
-                : "/assets/images/wordmark-1440x550.svg"
-            }
-            width={1440}
-            height={550}
-            quality={100}
-            alt="FOLA"
-            sizes="(max-width: 640px) 110px, 58px"
-            preload
-            className={cn("h-auto w-13", className)}
-          />
-        )}
-      </Button>
+      <Image
+        src={WORDMARKS[variant]}
+        width={360}
+        height={27}
+        alt={SITE_NAME}
+        preload
+        className={cn("h-auto w-44 sm:w-56", className)}
+      />
     </Link>
   );
 }

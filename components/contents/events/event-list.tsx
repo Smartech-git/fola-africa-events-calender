@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef } from "react";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { useLenis } from "lenis/react";
@@ -13,6 +14,7 @@ import EventLayout from "@/components/contents/events/event-layout";
 import EventListCard from "@/components/contents/events/event-list-card";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
+import { FILTER_KEYS } from "@/constants/filters";
 import { useEventCalendar } from "@/hooks/use-event-calendar";
 import { useRouteParam } from "@/hooks/use-route-param";
 import { shareLink } from "@/lib/events/event-actions";
@@ -23,6 +25,15 @@ import {
   groupEventsByDay,
 } from "@/lib/events/event-list";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
+
+const FILTERABLE_KEYS = [
+  FILTER_KEYS.search,
+  FILTER_KEYS.date,
+  FILTER_KEYS.dateFrom,
+  FILTER_KEYS.dateTo,
+  FILTER_KEYS.industry,
+  FILTER_KEYS.access,
+];
 
 interface Props {
   city: string;
@@ -55,7 +66,8 @@ export default function EventList({
   const container = useRef<HTMLDivElement>(null);
   const scrolledHash = useRef(false);
   const lenis = useLenis();
-  const { clearAllParams } = useRouteParam();
+  const { clearAllParams, getFilterValue } = useRouteParam();
+  const filtered = FILTERABLE_KEYS.some((key) => getFilterValue(key));
   const days = useMemo(
     () => groupEventsByDay(events, timezone, query.range),
     [events, timezone, query.range],
@@ -93,7 +105,7 @@ export default function EventList({
             <header className="sticky top-header z-30 bg-primary-light pt-4 pb-2">
               <h2
                 id={`day-${day.date}`}
-                className="font-inter text-2xl font-light uppercase sm:text-4xl"
+                className="font-courier text-2xl font-light uppercase sm:text-4xl"
               >
                 <time dateTime={day.date}>
                   <FadeUpText text={formatDay(day.date, "dd MMMM")} />
@@ -133,14 +145,31 @@ export default function EventList({
 
         {!days.length && !error && (
           <div className="space-y-3 py-12" role="status">
-            <h2 className="font-apris text-3xl uppercase">No events found</h2>
-            <p className="text-xs uppercase">
-              There are no published events matching these filters. Try another
-              date or clear your filters.
-            </p>
-            <Button size="sm" className="mt-8" onPress={clearAllParams}>
-              Clear filters
-            </Button>
+            {filtered ? (
+              <>
+                <h2 className="font-montreal text-3xl uppercase">
+                  Nothing matches yet.
+                </h2>
+                <p className="text-xs uppercase">
+                  Try another date or filter.
+                </p>
+                <Button size="sm" className="mt-8" onPress={clearAllParams}>
+                  <HoverText text="Clear filters" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <h2 className="font-montreal text-3xl uppercase">
+                  Nothing here yet.
+                </h2>
+                <p className="text-xs uppercase">Know something we don’t?</p>
+                <Link href="/submit-event" className="mt-8 block w-fit">
+                  <Button size="sm">
+                    <HoverText text="Submit a happening" />
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         )}
         {error && (

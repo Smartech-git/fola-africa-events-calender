@@ -26,7 +26,8 @@ const Dropdown = ({
       ...classNames,
       base: cn("z-[110]", classNames?.base),
       content: cn(
-        "max-w-[calc(100vw-2rem)] rounded-none border border-light-gray bg-primary-light p-1 font-inter text-dark-gray shadow-sm",
+        "max-w-[calc(100vw-2rem)]",
+        "rounded-none border border-ink bg-white p-0 text-ink shadow-none",
         classNames?.content,
       ),
     }}
@@ -64,7 +65,9 @@ const DropdownTrigger = ({
         disableAnimation={true}
         {...props}
         className={cn(
-          "w-full justify-between rounded-none border-light-gray px-3 text-left font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+          // Variant "bordered" renders as a select-style field (Figma Field / Select).
+          variant === "bordered" &&
+            "h-14 w-full justify-between border border-ink bg-white px-4 text-left font-montreal text-base tracking-normal normal-case hover:border-red hover:bg-white hover:text-ink sm:text-lg",
           className,
           buttonClassName,
         )}
@@ -91,11 +94,14 @@ const DropdownMenu = ({
     itemClasses={{
       ...itemClasses,
       base: cn(
-        "min-h-7 cursor-pointer rounded-none px-2 py-2 text-dark-gray data-[hover=true]:bg-secondary data-[hover=true]:text-primary data-[selectable=true]:focus:bg-secondary data-[selected=true]:text-primary data-[focus-visible=true]:outline-primary",
+        "min-h-11 cursor-pointer rounded-none px-4 py-2.5 text-ink data-[hover=true]:bg-cream! data-[hover=true]:text-red data-[focus=true]:bg-cream! data-[selectable=true]:focus:bg-cream data-[selected=true]:text-red data-[focus-visible=true]:outline-red",
         itemClasses?.base,
       ),
-      title: cn("font-inter text-xs font-normal uppercase", itemClasses?.title),
-      selectedIcon: cn("text-primary", itemClasses?.selectedIcon),
+      title: cn(
+        "font-courier text-xs font-normal tracking-mono uppercase",
+        itemClasses?.title,
+      ),
+      selectedIcon: cn("text-red", itemClasses?.selectedIcon),
     }}
   />
 );

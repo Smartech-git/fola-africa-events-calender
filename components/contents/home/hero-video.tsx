@@ -2,9 +2,9 @@
 
 import { useRef, useState } from "react";
 
-import { motion, useInView, useReducedMotion } from "framer-motion";
 import { AudioLines, AudioLinesOff } from "lucide-react";
 
+import Fade from "@/components/animations/fade";
 import FadeUpText from "@/components/animations/fade-up-text";
 import MaskedHeading from "@/components/animations/masked-heading";
 import Button from "@/components/ui/button";
@@ -12,23 +12,18 @@ import Button from "@/components/ui/button";
 export default function HeroVideo() {
   const [muted, setMuted] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(containerRef, { once: false, amount: 0.3 });
-  const reduceMotion = useReducedMotion();
 
   return (
-    <div
+    <Fade
       ref={containerRef}
+      translateY={120}
+      duration={0.6}
       className="relative mt-4 flex aspect-2/3 w-full justify-center overflow-hidden sm:aspect-video"
     >
-      <motion.div
-        className="relative flex h-full items-center justify-center overflow-hidden bg-dark-gray"
-        initial={{ width: "0%" }}
-        animate={{ width: inView || reduceMotion ? "100%" : "0%" }}
-        transition={{ duration: reduceMotion ? 0 : 0.8, ease: "circOut" }}
-      >
+      <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-dark-gray">
         <FadeUpText
           delay={1.3}
-          className="absolute top-4 left-4 z-10 w-40 text-xs text-white uppercase"
+          className="absolute top-4 left-4 z-10 w-80 text-sm tracking-cou text-white uppercase"
           text="IN THE MOMENT / BLACK COFFEE IN LAGOS"
         />
 
@@ -51,17 +46,17 @@ export default function HeroVideo() {
           parallax={26}
           trigger="view"
           drift={18}
-          className="absolute z-10 w-auto text-6xl font-medium uppercase sm:text-7xl lg:text-9xl"
+          className="absolute z-10 w-auto font-montreal text-7xl sm:text-7xl lg:text-[200px]"
         />
         <Button
           onClick={() => setMuted((prev) => !prev)}
-          variant="flat"
-          className="absolute right-4 bottom-4 z-10 text-white"
-          size="fit"
+          variant="outlineWhite"
+          className="absolute right-4 bottom-4 z-10 rounded-full text-white"
+          size="icon"
         >
-          {muted ? <AudioLinesOff size={20} /> : <AudioLines size={20} />}
+          {muted ? <AudioLinesOff size={16} /> : <AudioLines size={16} />}
         </Button>
-      </motion.div>
-    </div>
+      </div>
+    </Fade>
   );
 }

@@ -32,6 +32,7 @@ import {
   ACCESS_OPTIONS,
   EVENT_TYPES,
   INDUSTRIES,
+  LINK_REQUIRED_ACCESS,
   ORGANISER_TYPES,
   PRIVATE_ACCESS,
   SUBMITTER_RELATIONSHIPS,
@@ -49,6 +50,19 @@ type TextFieldName = Exclude<
   "allDay" | "agreement" | "seasons"
 >;
 
+const ACTION_LINKS: Record<string, { title: string; description: string }> = {
+  tickets: {
+    title: "Ticket link",
+    description: "Required for ticketed events.",
+  },
+  rsvp: { title: "RSVP link", description: "Required when RSVP is required." },
+  free: { title: "Registration link", description: "Optional." },
+  "industry-only": {
+    title: "Registration link",
+    description: "Optional. Where industry guests can register.",
+  },
+};
+
 const initialActionState: SubmitEventActionState = {
   success: false,
   status: 0,
@@ -57,7 +71,6 @@ const initialActionState: SubmitEventActionState = {
 export default function SubmitEventForm(options: SubmissionOptions) {
   const [formVersion, setFormVersion] = useState(0);
 
-  // Reset the form library and controlled inputs together, including validation.
   return (
     <EventSubmissionForm
       key={formVersion}
@@ -91,12 +104,13 @@ function EventSubmissionForm({
       ? (state.error ??
         (state.fieldErrors ? "Please check the highlighted fields." : ""))
       : "";
-  const [city, access, description, startAt] = useWatch({
+  const [city, access, visibility, description, startAt] = useWatch({
     control,
-    name: ["city", "access", "description", "startAt"],
+    name: ["city", "access", "visibility", "description", "startAt"],
   });
   const selectedCity = cities.find((item) => item.value === city);
   const privateEvent = PRIVATE_ACCESS.includes(access);
+  const actionLink = ACTION_LINKS[access] ?? ACTION_LINKS.free;
   const busy = isSubmitting || isPending || state.success;
 
   const input = (
@@ -241,10 +255,18 @@ function EventSubmissionForm({
       <div id="submit-event-heading" className="relative w-full">
         <SectionWrapper>
           <div className="relative space-y-4 uppercase">
-            <HeaderTitle text="Submit an event" />
-            <p className="max-w-150 text-xs uppercase">
-              Every listing is reviewed by FOLA. Expect a response within two
-              working days
+            <HeaderTitle as="h1" text="Put it on Happenings." />
+            <p className="text-sm uppercase">
+              Planning something? Tell us what’s happening.
+            </p>
+            <p className="max-w-150 text-xs leading-5 uppercase">
+              From summits, conferences and launches to exhibitions, screenings,
+              shows, dinners, concerts and private gatherings, submit your event
+              for consideration on Happenings of Africa.
+            </p>
+            <p className="max-w-150 text-xs leading-5 uppercase">
+              Public, ticketed, RSVP, invitation only or private. Every
+              submission is reviewed before appearing on the calendar.
             </p>
           </div>
         </SectionWrapper>
@@ -253,11 +275,19 @@ function EventSubmissionForm({
 
       <SectionWrapper className="pb-16 sm:pb-20">
         <p className="mb-4 w-fit bg-secondary px-2 py-0.5 text-xxs uppercase sm:text-xs">
-          Fields marked * are required. Your contact details are never displayed
+          Fields marked * are required. Your contact details are never
+          displayed.
         </p>
         <form noValidate onSubmit={onSubmit}>
-          <FormSection title="01 / Event details">
-            {input("title", "Event title", true)}
+          <FormSection title="01 / The Happening">
+            {input("title", "Event name", true)}
+            {input("organiserName", "Organiser, company or brand", true)}
+            {select(
+              "organiserType",
+              "What best describes the organiser?",
+              ORGANISER_TYPES,
+              true,
+            )}
             {select("city", "City", cities, true)}
             {dateInput(
               "startAt",
@@ -309,53 +339,8 @@ function EventSubmissionForm({
               false,
               "Optional; used for filtering only. Select again to clear.",
             )}
-          </FormSection>
-          <FormSection title="02 / Access & visibility">
-            {select("access", "Access", ACCESS_OPTIONS, true)}
-            {select("visibility", "Visibility", VISIBILITY_OPTIONS, true)}
-            <div className="sm:col-span-2">
-              {privateEvent ? (
-                <p className="text-xs leading-5 uppercase">
-                  Private and invitation-only listings have no action link. Only
-                  the organiser or their authorised representative may submit
-                  them. Held dates conceal event details on the calendar.
-                </p>
-              ) : (
-                input(
-                  "actionUrl",
-                  "Organiser action URL",
-                  ["tickets", "rsvp"].includes(access),
-                  "url",
-                  "Required for tickets and RSVP. Optional for free events.",
-                )
-              )}
-            </div>
-          </FormSection>
-          <FormSection title="03 / Organiser & venue">
-            {input("organiserName", "Organiser name", true)}
-            {select("organiserType", "Organiser type", ORGANISER_TYPES, true)}
-            {input("organiserWebsite", "Organiser website", false, "url")}
-            {input(
-              "organiserContact",
-              "Organiser contact",
-              true,
-              "email",
-              "For verification only; never displayed.",
-            )}
-            {input(
-              "venueName",
-              "Venue name",
-              false,
-              "text",
-              "Optional; displayed according to visibility.",
-            )}
-            {input("venueArea", "Venue area")}
-            {input("venueAddress", "Venue address")}
-            {input("venueMapUrl", "Venue map link", false, "url")}
-          </FormSection>
-          <FormSection title="04 / Context">
             <div className="space-y-3 sm:col-span-2">
-              <FieldLabel name="description" title="Description" />
+              <FieldLabel name="description" title="Short description" />
               <Textarea
                 {...register("description")}
                 id="description"
@@ -370,24 +355,95 @@ function EventSubmissionForm({
             <div className="sm:col-span-2">
               {select(
                 "seasons",
-                "Seasons",
+                "In the diary",
                 seasons.filter((season) => season.city === city),
                 false,
-                "Optional. Select existing seasons for this city; FOLA manages season records.",
+                "Optional. Choose a major period in this city that the event belongs to.",
               )}
             </div>
           </FormSection>
-          <FormSection title="05 / Your details">
-            {input("submitterName", "Your name", true)}
-            {input("submitterEmail", "Your email", true, "email")}
+          <FormSection title="02 / Who can attend?">
+            {select("access", "Access", ACCESS_OPTIONS, true)}
+            {privateEvent ? (
+              <p className="self-end text-xs leading-5 uppercase">
+                Private and invitation only events have no public link. Only the
+                organiser, the company or brand, or their agency or PR may
+                submit them.
+              </p>
+            ) : (
+              input(
+                "actionUrl",
+                actionLink.title,
+                LINK_REQUIRED_ACCESS.includes(access),
+                "url",
+                actionLink.description,
+              )
+            )}
+          </FormSection>
+          <FormSection title="03 / What should Happenings show?">
+            {select(
+              "visibility",
+              "Listing",
+              VISIBILITY_OPTIONS,
+              true,
+              VISIBILITY_OPTIONS.find((option) => option.value === visibility)
+                ?.description,
+            )}
+            <p className="self-end text-xs leading-5 uppercase">
+              For private events, you choose what appears publicly. A held date
+              shows only the industry, date, time and Private status.
+            </p>
+          </FormSection>
+          <FormSection title="04 / Where is it happening?">
+            {input("venueName", "Venue")}
+            {input("venueArea", "Area")}
+            {input("venueAddress", "Full address")}
+            {input("venueMapUrl", "Map link", false, "url")}
+          </FormSection>
+          <FormSection title="05 / Links and information">
+            {input("eventWebsite", "Website", false, "url")}
+            {input(
+              "instagram",
+              "Instagram",
+              false,
+              "text",
+              "Handle or profile link.",
+            )}
+            {input("organiserWebsite", "Organiser website", false, "url")}
+            {input(
+              "publicContactEmail",
+              "Public contact email",
+              false,
+              "email",
+              "Optional. Shown on full listings so guests can get in touch.",
+            )}
             <div className="sm:col-span-2">
-              {select(
-                "relationship",
-                "Relationship to event",
-                SUBMITTER_RELATIONSHIPS,
+              {input(
+                "organiserContact",
+                "Organiser contact email",
                 true,
+                "email",
+                "For verification only; never displayed.",
               )}
             </div>
+          </FormSection>
+          <FormSection title="06 / About you">
+            <p className="text-xs leading-5 uppercase sm:col-span-2">
+              Your contact information is used to verify and manage your
+              submission. It will not appear publicly unless you add it above as
+              the public contact email.
+            </p>
+            {input("submitterName", "Name", true)}
+            {input("submitterEmail", "Email", true, "email")}
+            {input("submitterPhone", "Phone or WhatsApp", true, "tel")}
+            {input("submitterOrganisation", "Organisation")}
+            {input("submitterRole", "Role")}
+            {select(
+              "relationship",
+              "Relationship to event",
+              SUBMITTER_RELATIONSHIPS,
+              true,
+            )}
           </FormSection>
           <div className="space-y-4 py-8">
             <Controller
@@ -446,7 +502,7 @@ function EventSubmissionForm({
               className="w-full min-w-40 sm:w-fit"
               size="sm"
             >
-              <HoverText text="Submit for review" />
+              <HoverText text="Submit a happening" />
             </Button>
           </div>
         </form>

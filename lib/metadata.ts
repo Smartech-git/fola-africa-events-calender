@@ -6,7 +6,7 @@ export const siteUrl = new URL(
   process.env.BASE_URL || "https://happeningsofafrica.com",
 );
 
-export const siteDescription = `Discover creative, cultural and business events across Africa. Explore city calendars and find your next event with ${SITE_NAME}.`;
+export const siteDescription = `One calendar for the events shaping Africa’s cities, across business, finance, technology, fashion, art, music, film, design, food, beauty and sport.`;
 
 export const openGraphImage = {
   url: new URL("/opengraph-image.jpg", siteUrl).toString(),

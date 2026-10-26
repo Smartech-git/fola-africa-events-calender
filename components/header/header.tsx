@@ -1,31 +1,48 @@
-"use client";
-
-// import HoverText from "@/components/animations/hover-text";
+import HeaderNav from "@/components/header/header-nav";
 import Logo from "@/components/header/logo";
-// import Button from "@/components/ui/button";
+import MobileMenu from "@/components/header/mobile-menu";
+import SearchEvent from "@/components/header/search-event";
+// import SignIn from "@/components/header/sign-in";
+import SubmitEvent from "@/components/header/submit-event";
 import { cn } from "@/lib/utils";
+import { getCities, type CitySummary } from "@/requests/get-cities";
 
 interface Props {
   className?: string;
   isLight?: boolean;
-  hideLogo?: boolean;
 }
 
-export default function Header({ className, isLight }: Props) {
+async function headerCities(): Promise<CitySummary[]> {
+  try {
+    return (await getCities({})).data;
+  } catch (error) {
+    console.error("Header cities request failed", error);
+    return [];
+  }
+}
+
+export default async function Header({ className, isLight = false }: Props) {
+  const cities = await headerCities();
+
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 flex h-sm-header w-full flex-none grid-cols-3 items-center justify-center bg-primary-light px-pg-sm sm:h-header sm:px-pg lg:grid-cols-5 2xl:px-pg-2xl 4k:px-pg-4k",
+        "sticky top-0 z-50 flex h-sm-header w-full flex-none items-center justify-between gap-6 bg-white px-pg-sm text-ink sm:h-header sm:px-pg 2xl:px-pg-2xl 4k:px-pg-4k",
+        isLight && "bg-red text-white",
         className,
       )}
     >
-      <Logo
-        isLight={isLight}
-        wrapperClassName="justify-self-center border-black/20"
-      />
-      {/* <Button variant="flat" size="fit">
-        <HoverText text="Log in" />
-      </Button> */}
+      <Logo variant={isLight ? "white" : "red"} />
+      <div className="flex items-center gap-1 lg:gap-6">
+        <HeaderNav className="flex items-center max-lg:hidden" />
+        <SearchEvent />
+        <SubmitEvent
+          className="max-lg:hidden"
+          variant={isLight ? "onWhite" : "solid"}
+        />
+        {/* <SignIn className="max-lg:hidden" /> */}
+        <MobileMenu cities={cities} className="lg:hidden" />
+      </div>
     </header>
   );
 }

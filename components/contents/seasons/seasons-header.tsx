@@ -6,6 +6,7 @@ import { ArrowLeft, Dot } from "lucide-react";
 
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
+import LabelTitle from "@/components/common/label-title";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
 import { shareLink } from "@/lib/events/event-actions";
@@ -23,22 +24,23 @@ export default function SeasonsHeader({
     <SectionWrapper>
       <Link
         className="relative z-10 w-fit"
-        href={`/events/${encodeURIComponent(city.slug)}`}
+        href={`/calendar/${encodeURIComponent(city.slug)}`}
       >
         <Button
           startContent={<ArrowLeft size={12} />}
           variant="flat"
           size="fit"
         >
-          <HoverText text="Back to events" />
+          <HoverText text={`Back to ${city.name}`} />
         </Button>
       </Link>
 
       <div className="mt-8 flex w-full flex-col justify-between gap-8 sm:flex-row">
         <div className="flex-wrap items-center space-y-2">
+          <LabelTitle title="In the diary" />
           <FadeUpText
             as="h1"
-            className="relative z-10 w-full font-apris text-4xl text-primary uppercase sm:text-6xl lg:text-7xl"
+            className="relative z-10 w-full font-montreal text-4xl text-primary uppercase sm:text-6xl lg:text-7xl"
             text={season.name}
           />
           <div className="flex flex-col gap-x-4 gap-y-2 sm:flex-row sm:items-center">

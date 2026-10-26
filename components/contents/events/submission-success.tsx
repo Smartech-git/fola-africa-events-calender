@@ -12,7 +12,7 @@ import LabelTitle from "@/components/common/label-title";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
 import Drawer from "@/components/ui/drawer";
-import { SITE_NAME } from "@/constants/brand";
+import { NAV } from "@/constants/nav";
 
 export default function SubmissionSuccess({
   isOpen,
@@ -47,25 +47,25 @@ export default function SubmissionSuccess({
             </Drawer.Header>
             <Drawer.Body className="scrollbar-none px-0! py-0">
               <SectionWrapper className="items-start py-8">
-                <LabelTitle title="Submission received" />
+                <LabelTitle title="Submitted" />
 
-                <HeaderTitle className="mt-4" text=" Thank you!" />
+                <HeaderTitle className="mt-4" text="We’ve got it." />
                 <FadeUpText
                   className="text-xs uppercase"
                   delay={0.3}
-                  text={`Your event is with the ${SITE_NAME} team for review`}
+                  text="Your Happening has been submitted for review."
                 />
                 <FadeUpText
                   delay={0.6}
                   className="mt-12 max-w-100 text-xs leading-5 uppercase"
-                  text={`Expected response: within two working days. Your listing will appear only after FOLA approval.`}
+                  text="If we need anything else, we’ll be in touch. Nothing appears on the calendar until it has been approved."
                 />
 
                 <Button
                   className="mt-8 w-full sm:w-fit"
-                  onPress={() => router.push("/event/lagos")}
+                  onPress={() => router.push(NAV[0].link)}
                 >
-                  <HoverText text="Return to calendar" />
+                  <HoverText text="Back to calendar" />
                 </Button>
                 <div className="mt-4 w-full justify-center max-sm:flex">
                   <Button
@@ -74,7 +74,7 @@ export default function SubmissionSuccess({
                     size="fit"
                     onPress={onSubmitAnother}
                   >
-                    <HoverText text="Submit another event" />
+                    <HoverText text="Submit another happening" />
                   </Button>
                 </div>
               </SectionWrapper>

@@ -1,7 +1,7 @@
 import { getCalendarPayload } from "@/payload/queries/calendar-query";
 import { REVIEW_QUEUE } from "@/payload/reviews/review-schema";
 
-export async function runReviews(limit = 1) {
+export async function runReviews(limit = 1, jobId?: number | string) {
   if (!process.env.ANTHROPIC_API_KEY?.trim()) return { configured: false };
   const payload = await getCalendarPayload();
   // Recover jobs left running if Vercel terminated an invocation.
@@ -22,6 +22,7 @@ export async function runReviews(limit = 1) {
     overrideAccess: true,
   });
   const result = await payload.jobs.run({
+    ...(jobId ? { where: { id: { equals: jobId } } } : {}),
     queue: REVIEW_QUEUE,
     limit,
     sequential: true,

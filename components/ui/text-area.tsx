@@ -12,29 +12,34 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       ref={ref}
       variant={variant}
       radius="none"
-      labelPlacement="outside"
+      labelPlacement="outside-top"
       validationBehavior="aria"
-      minRows={3}
+      minRows={4}
       {...props}
       classNames={{
         ...classNames,
-        base: cn("min-w-0 w-full font-inter", classNames?.base),
+        base: cn("min-w-0 w-full", classNames?.base),
         input: cn(
-          "text-xs! uppercase font-normal text-dark-gray! placeholder:text-dark-gray/45",
+          "font-montreal text-base! leading-normal font-normal normal-case text-ink! placeholder:text-ink/40 sm:text-lg!",
           classNames?.input,
         ),
-        label: cn("text-xs! text-dark-gray! uppercase", classNames?.label),
+        label: cn(
+          "font-courier text-sm! leading-[1.3] font-normal tracking-mono text-red! uppercase",
+          "pb-2",
+          classNames?.label,
+        ),
         inputWrapper: cn(
-          "items-start rounded-none border border-light-gray bg-transparent! px-3 py-3 shadow-none",
-          "data-[hover=true]:border-primary group-data-[focus=true]:border-primary group-data-[invalid=true]:border-danger",
+          "min-h-35 items-start py-3.5",
+          "rounded-none border border-ink bg-white! px-4 shadow-none data-[hover=true]:border-red group-data-[focus=true]:border-red group-data-[invalid=true]:border-red",
           classNames?.inputWrapper,
         ),
+        helperWrapper: cn("px-0 pt-2", classNames?.helperWrapper),
         description: cn(
-          "text-xs leading-5 text-dark-gray/75 uppercase",
+          "font-courier text-xs leading-5 tracking-mono text-ink/70 uppercase",
           classNames?.description,
         ),
         errorMessage: cn(
-          "text-xs text-danger uppercase",
+          "font-courier text-xs leading-5 tracking-mono text-red uppercase",
           classNames?.errorMessage,
         ),
       }}

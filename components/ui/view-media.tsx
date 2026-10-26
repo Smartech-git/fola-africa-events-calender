@@ -85,7 +85,7 @@ export default function ViewMedia({
         render={{
           slide: ({ slide }) => <LightboxSlide slide={slide} />,
           iconClose: () => (
-            <span className="font-inter! text-xs font-semibold text-primary-light! uppercase sm:text-sm">
+            <span className="font-courier! text-xs font-semibold text-primary-light! uppercase sm:text-sm">
               CLose
             </span>
           ),

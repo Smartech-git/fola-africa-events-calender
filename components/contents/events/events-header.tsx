@@ -21,20 +21,21 @@ export default function EventsHeader({ data: { city, seasons } }: Props) {
     <SectionWrapper className="gap-6 pb-2 sm:pb-4">
       <div className="flex w-full justify-between gap-8">
         <div className="flex w-full flex-col">
-          <HeaderTitle text={city.name} />
-          <span className="text-xs uppercase">
-            Time in {city.timezoneLabel || city.timezone}
+          <HeaderTitle as="h1" text={city.name} />
+          <p className="text-sm uppercase">What’s happening in {city.name}.</p>
+          <span className="mt-1 text-xxs uppercase">
+            Times in {city.timezoneLabel || city.timezone}
           </span>
         </div>
         <Link className="mt-1 w-fit" href={`/submit-event`}>
           <Button size="fit" variant="link">
-            <HoverText text="Submit event" />
+            <HoverText text="Submit a happening" />
           </Button>
         </Link>
       </div>
       {seasons.length > 0 && (
         <div className="flex flex-col gap-2">
-          <LabelTitle title="Upcoming seasons" />
+          <LabelTitle title="In the diary" />
           <LenisProvider
             orientation="horizontal"
             className="h-fit overflow-x-auto overflow-y-hidden *:flex *:min-h-0 *:w-max *:gap-2"

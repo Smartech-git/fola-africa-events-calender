@@ -25,7 +25,7 @@ export default function Fade({
   translateX = 0,
   duration = 0.3,
   delay = 0,
-  once = true,
+  once = false,
   amount = 0.2,
   viewportRef,
   ...props

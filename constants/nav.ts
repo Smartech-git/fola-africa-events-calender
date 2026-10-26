@@ -1,47 +1,34 @@
-export type Nav =
-  | {
-      isMultiple?: false;
-      title: string;
-      link: string;
-      pathId: string;
-      paths?: never;
-    }
-  | {
-      isMultiple: true;
-      title: string;
-      paths: Nav[];
-    };
+export type Nav = {
+  title: string;
+  link: string;
+  pathId: string;
+  isFooter?: boolean;
+};
+
+export const DEFAULT_CITY_SLUG = "lagos";
+export const DEFAULT_CITY_TIMEZONE = "Africa/Lagos";
+export const DEFAULT_CITY_NAME = "Lagos";
 
 export const NAV: Nav[] = [
   {
+    title: "Calendar",
+    link: `/calendar/${DEFAULT_CITY_SLUG}`,
+    pathId: "calendar",
+  },
+  {
+    title: "Cities",
+    link: "/cities",
+    pathId: "cities",
+  },
+  {
     title: "About",
-    link: "/about-us",
-    pathId: "about-us",
+    link: "/about",
+    pathId: "about",
   },
   {
-    title: "Journal",
-    link: "/journal",
-    pathId: "journal",
-  },
-  {
-    isMultiple: true,
-    title: "Services",
-    paths: [
-      {
-        title: "Services",
-        link: "/services",
-        pathId: "services",
-      },
-      {
-        title: "Studio fola",
-        link: "/studio-fola",
-        pathId: "studio-fola",
-      },
-    ],
-  },
-  {
-    title: "Contact",
-    link: "/contact",
-    pathId: "contact",
+    title: "Submit a Happening",
+    link: "/submit-event",
+    pathId: "submit-event",
+    isFooter: true,
   },
 ];
