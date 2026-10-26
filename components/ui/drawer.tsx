@@ -124,11 +124,10 @@ const Drawer = {
   },
 
   Body: function DrawerBody(props: ComponentProps<typeof HeroDrawerBody>) {
-    const { className, smoothScroll, ...rest } = props;
+    const { className, ...rest } = props;
 
     return (
       <HeroDrawerBody
-        smoothScroll
         className={cn("scrollbar-none px-pg-sm sm:px-pg", className)}
         {...rest}
       />
