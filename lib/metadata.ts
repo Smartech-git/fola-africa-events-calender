@@ -9,7 +9,7 @@ export const siteUrl = new URL(
 export const siteDescription = `One calendar for the events shaping Africa’s cities, across business, finance, technology, fashion, art, music, film, design, food, beauty and sport.`;
 
 export const openGraphImage = {
-  url: new URL("/opengraph-image.jpg", siteUrl).toString(),
+  url: new URL("/opengraph-image.gif", siteUrl).toString(),
   width: 1200,
   height: 630,
   type: "image/jpeg",
@@ -17,7 +17,7 @@ export const openGraphImage = {
 };
 
 export const twitterImage = {
-  url: new URL("/twitter-image.jpg", siteUrl).toString(),
+  url: new URL("/twitter-image.gif", siteUrl).toString(),
   alt: openGraphImage.alt,
 };
 

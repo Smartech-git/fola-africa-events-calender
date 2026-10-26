@@ -101,7 +101,7 @@ export default function ThisWeek({ city, weekStart, today, events }: Props) {
                     </span>
                     <span
                       className={cn(
-                        "flex size-11 items-center justify-center rounded-full border-[1.5px] font-courier text-lg tracking-cou transition-colors sm:size-16 sm:text-[22px]",
+                        "flex size-11 items-center justify-center rounded-full border-[1.5px] font-courier text-lg tracking-cou transition-colors sm:size-16 sm:text-2xl",
                         chosen
                           ? "border-red text-red"
                           : "border-transparent group-hover/day:border-ink/30",

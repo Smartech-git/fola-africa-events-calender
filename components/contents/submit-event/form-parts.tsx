@@ -42,7 +42,7 @@ export function FormSection({
     <fieldset
       id={id}
       aria-labelledby={`${id}-title`}
-      className="flex min-w-0 first:pt-0 first:border-t-0 scroll-mt-32 flex-col gap-5 border-t-[1.5px] border-ink pt-10 pb-12"
+      className="flex min-w-0 scroll-mt-32 flex-col gap-5 border-t-[1.5px] border-ink pt-10 pb-12 first:border-t-0 first:pt-0"
     >
       <div className="flex items-center gap-4">
         <DateCircle size="sm">{number(index)}</DateCircle>
@@ -238,7 +238,6 @@ export function SectionNav({ active }: { active: FormSectionId }) {
   );
 }
 
-
 export function SectionProgress({ active }: { active: FormSectionId }) {
   const index = FORM_SECTIONS.findIndex((section) => section.id === active);
 
@@ -296,7 +295,7 @@ export function FormHeader({ header }: { header: ReactNode }) {
         <FadeUpText
           text="Every submission is reviewed before appearing on the calendar. Listings are reviewed within two working days."
           delay={0.2}
-          className="max-w-190 font-montreal text-lg text-cream sm:text-[22px]"
+          className="max-w-190 font-montreal text-lg text-cream sm:text-2xl"
         />
       </SectionWrapper>
     </div>

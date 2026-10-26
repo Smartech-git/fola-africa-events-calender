@@ -54,7 +54,7 @@ export default function Logo({
         height={27}
         alt={SITE_NAME}
         preload
-        className={cn("h-auto w-44 sm:w-56", className)}
+        className={cn("h-auto w-50 sm:w-56", className)}
       />
     </Link>
   );

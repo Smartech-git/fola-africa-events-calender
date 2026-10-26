@@ -6,7 +6,6 @@ import HoverText from "@/components/animations/hover-text";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
 
-// Figma: Home, "Put it on Happenings" (327:2186 desktop, 329:2123 mobile).
 export default function PutItOnHappenings() {
   return (
     <section
@@ -18,12 +17,12 @@ export default function PutItOnHappenings() {
           as="h2"
           id="put-it-on-heading"
           text="Put it on Happenings."
-          className="font-montreal text-6xl font-medium tracking-mono uppercase sm:text-9xl xl:text-[160px]"
+          className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-9xl xl:text-[160px]"
         />
         <FadeUpText
           text="Planning something? Tell us what’s happening. Every submission is reviewed before it appears on the calendar."
           delay={0.15}
-          className="max-w-150 font-montreal text-lg text-cream sm:text-[22px]"
+          className="max-w-150 font-montreal text-lg text-cream sm:text-2xl"
         />
         <Link href="/submit-event" className="w-full pt-2 sm:w-fit">
           <Button variant="onWhite" size="md" className="w-full">

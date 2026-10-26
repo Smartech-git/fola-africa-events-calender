@@ -35,7 +35,7 @@ export default function Cities({ cities, headingLevel = "h2" }: Props) {
           <FadeUpText
             text="Choose a city."
             delay={0.15}
-            className="w-fit font-montreal text-lg text-cream sm:text-[22px]"
+            className="w-fit font-montreal text-lg text-cream sm:text-2xl"
           />
         </div>
 

@@ -46,7 +46,7 @@ export default function HeroVideo() {
           parallax={26}
           trigger="view"
           drift={18}
-          className="absolute z-10 w-auto font-montreal text-7xl sm:text-7xl lg:text-[200px]"
+          className="absolute z-10 w-auto font-montreal text-6xl sm:text-7xl lg:text-[200px]"
         />
         <Button
           onClick={() => setMuted((prev) => !prev)}

@@ -21,15 +21,15 @@ export default function SurTitle({
     <Tag
       id={id}
       className={cn(
-        "flex items-center font-courier text-sm tracking-cou text-red uppercase",
-        dot && "flex w-fit items-center gap-2.5",
+        "flex font-courier text-sm tracking-cou text-red uppercase",
+        dot && "flex w-fit gap-2.5",
         className,
       )}
     >
       {dot && (
         <span
           aria-hidden="true"
-          className="size-2.5 shrink-0 animate-fade rounded-full bg-current animate-duration-500"
+          className="size-2.5 mt-1 shrink-0 animate-fade rounded-full bg-current animate-duration-500"
         />
       )}
       {content}

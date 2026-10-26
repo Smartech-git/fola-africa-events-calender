@@ -83,7 +83,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${montreal.variable} ${courierPrime.variable} scrollbar-thin h-full bg-primary-light font-courier scrollbar-thumb-primary scrollbar-track-primary-light max-sm:scrollbar-none`}
+      className={`${montreal.variable} ${courierPrime.variable} scrollbar-thin h-full bg-red font-courier scrollbar-thumb-primary scrollbar-track-primary-light max-sm:scrollbar-none`}
     >
       <body className="w-full bg-primary-light text-ink">
         <LenisProvider>

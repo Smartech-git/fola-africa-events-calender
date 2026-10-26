@@ -36,7 +36,7 @@ export default function LandingHero() {
             <FadeUpText
               text="From summits, conferences and launches to exhibitions, screenings, shows, dinners, concerts and private gatherings, submit your event for consideration on Happenings of Africa."
               delay={0.3}
-              className="font-montreal text-lg sm:text-[22px]"
+              className="font-montreal text-lg sm:text-2xl"
             />
             <p className="font-courier text-sm tracking-cou uppercase">
               Public, ticketed, RSVP, invitation only or private.

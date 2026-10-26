@@ -25,7 +25,7 @@ export default function InTheDiary({ seasons }: { seasons: UpcomingSeason[] }) {
           <FadeUpText
             text="Major dates and seasons, from investor forums to fashion weeks. The first day is circled."
             delay={0.1}
-            className="max-w-85 font-montreal text-2xl"
+            className="max-w-85 font-montreal text-lg sm:text-2xl"
           />
         </div>
 

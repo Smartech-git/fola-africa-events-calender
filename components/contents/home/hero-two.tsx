@@ -12,7 +12,7 @@ import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
 import SurTitle from "@/components/common/sur-title";
 import HeroVideo from "@/components/contents/home/hero-video";
-import Logo from "@/components/header/logo";
+// import Logo from "@/components/header/logo";
 import SubmitEvent from "@/components/header/submit-event";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
@@ -20,7 +20,6 @@ import { DEFAULT_CITY_SLUG, NAV } from "@/constants/nav";
 import { useCalendarToday } from "@/hooks/use-calendar-today";
 import { dayPath, formatDay } from "@/lib/events/event-list";
 import { cn } from "@/lib/utils";
-
 
 const EXPO_OUT = [0.16, 1, 0.3, 1] as const;
 
@@ -52,7 +51,7 @@ export default function Hero({ header }: Props) {
               .filter(Boolean)
               .join(" · ")}
           />
-
+{/* 
           <Fade
             translateY={16}
             delay={0.1}
@@ -64,7 +63,7 @@ export default function Hero({ header }: Props) {
               wrapperClassName="w-full"
               className="w-full sm:w-full"
             />
-          </Fade>
+          </Fade> */}
 
           <FadeUpText
             as="h1"
@@ -76,7 +75,7 @@ export default function Hero({ header }: Props) {
           <FadeUpText
             text="One calendar for what is happening across Africa’s cities."
             delay={0.3}
-            className="max-w-155 font-montreal text-lg text-cream sm:text-[22px]"
+            className="max-w-155 font-montreal text-lg text-cream sm:text-2xl"
           />
 
           <Fade
