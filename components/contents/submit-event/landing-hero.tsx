@@ -19,7 +19,7 @@ export default function LandingHero() {
           as="h1"
           text="Put it on Happenings."
           delay={0.1}
-          className="font-montreal text-6xl font-medium tracking-mono uppercase sm:text-8xl xl:text-[168px]"
+          className="font-montreal text-6xl font-medium tracking-mono uppercase sm:text-6xl lg:text-8xl xl:text-[168px]"
         />
 
         <div className="flex flex-col gap-8 lg:flex-row lg:gap-20">

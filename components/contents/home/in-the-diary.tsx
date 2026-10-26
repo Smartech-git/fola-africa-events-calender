@@ -20,7 +20,7 @@ export default function InTheDiary({ seasons }: { seasons: UpcomingSeason[] }) {
             as="h2"
             id="in-the-diary-heading"
             text="In the diary"
-            className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-8xl"
+            className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-6xl lg:text-8xl"
           />
           <FadeUpText
             text="Major dates and seasons, from investor forums to fashion weeks. The first day is circled."
