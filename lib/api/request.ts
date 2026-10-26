@@ -13,8 +13,8 @@ export const request: FetchFunction = async ({ endpoint = "", options }) => {
     useAuth = false,
     // Requests often run while a page renders, so fail fast rather than
     // holding the render (and the build) for minutes.
-    retry = 1,
-    delay = 500,
+    retry = 3,
+    delay = 10000,
   } = options;
 
   const isFormData = data instanceof FormData;
@@ -48,7 +48,6 @@ export const request: FetchFunction = async ({ endpoint = "", options }) => {
   let lastError: Error;
 
   while (attempts <= retry) {
-    // Each attempt gets its own timeout; a shared signal stays aborted.
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
     try {

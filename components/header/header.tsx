@@ -5,29 +5,13 @@ import SearchEvent from "@/components/header/search-event";
 // import SignIn from "@/components/header/sign-in";
 import SubmitEvent from "@/components/header/submit-event";
 import { cn } from "@/lib/utils";
-import {
-  getCalendarPayload,
-  queryCitySummaries,
-} from "@/payload/queries/calendar-query";
-import type { CitySummary } from "@/requests/get-cities";
 
 interface Props {
   className?: string;
   isLight?: boolean;
 }
 
-async function headerCities(): Promise<CitySummary[]> {
-  try {
-    return await queryCitySummaries(await getCalendarPayload());
-  } catch (error) {
-    console.error("Header cities request failed", error);
-    return [];
-  }
-}
-
-export default async function Header({ className, isLight = false }: Props) {
-  const cities = await headerCities();
-
+export default function Header({ className, isLight = false }: Props) {
   return (
     <header
       className={cn(
@@ -45,7 +29,7 @@ export default async function Header({ className, isLight = false }: Props) {
           variant={isLight ? "onWhite" : "solid"}
         />
         {/* <SignIn className="max-lg:hidden" /> */}
-        <MobileMenu cities={cities} className="lg:hidden" />
+        <MobileMenu className="lg:hidden" />
       </div>
     </header>
   );

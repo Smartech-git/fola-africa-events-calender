@@ -19,20 +19,23 @@ import Button from "@/components/ui/button";
 import Drawer from "@/components/ui/drawer";
 import { DEFAULT_CITY_SLUG, NAV, type Nav } from "@/constants/nav";
 import { socials } from "@/constants/socials";
+import { useAPI } from "@/hooks/use-api";
 import { useCalendarToday } from "@/hooks/use-calendar-today";
 import { useIsPathActive } from "@/hooks/use-is-path-active";
 import { cn } from "@/lib/utils";
-import type { CitySummary } from "@/requests/get-cities";
-
+import type { Cities, CitySummary } from "@/requests/get-cities";
 
 const instagram = socials.find((social) => social.name === "Instagram");
 
 interface Props {
   className?: string;
-  cities?: CitySummary[];
 }
 
-export default function MobileMenu({ className, cities = [] }: Props) {
+const CITIES_ENDPOINT = `/api/public/cities?${new URLSearchParams({ page: "1", limit: "100" })}`;
+
+export default function MobileMenu({ className }: Props) {
+  const { data } = useAPI<Cities>(CITIES_ENDPOINT);
+  const cities = data?.data ?? [];
   const pathname = usePathname();
   const { isPathActive } = useIsPathActive();
 

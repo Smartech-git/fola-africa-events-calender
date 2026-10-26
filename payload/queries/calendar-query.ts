@@ -12,7 +12,6 @@ import {
 } from "@/payload/constants";
 import { toPublicEvent } from "@/payload/public-event";
 import config from "@/payload.config";
-import type { CitySummary } from "@/requests/get-cities";
 import type { SeasonSummary } from "@/requests/helpers/types";
 import type { City } from "@/types/payload-types";
 
@@ -472,33 +471,6 @@ export async function queryCities(payload: Payload, params: URLSearchParams) {
   );
 
   return publicPage(result, data);
-}
-
-export async function queryCitySummaries(
-  payload: Payload,
-): Promise<CitySummary[]> {
-  const result = await payload.find({
-    collection: "cities",
-    pagination: false,
-    sort: "id",
-    depth: 0,
-    overrideAccess: false,
-    select: {
-      name: true,
-      slug: true,
-      country: true,
-      timezone: true,
-      timezoneLabel: true,
-    },
-  });
-  return result.docs.map((city) => ({
-    id: city.id,
-    name: city.name,
-    slug: city.slug,
-    country: city.country,
-    timezone: city.timezone,
-    timezoneLabel: city.timezoneLabel,
-  }));
 }
 
 /**
