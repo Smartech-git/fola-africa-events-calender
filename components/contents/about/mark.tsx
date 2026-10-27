@@ -150,7 +150,7 @@ export default function Mark() {
           />
           <FadeUpText
             text="Make what is happening easier to see."
-            className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-7xl xl:text-[120px]"
+            className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-6xl xl:text-7xl"
           />
         </div>
       </SectionWrapper>
