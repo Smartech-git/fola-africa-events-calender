@@ -108,7 +108,7 @@ function TodayMark({
       <Link
         href={href}
         aria-label={linkLabel}
-        className="group pointer-events-auto absolute top-[10vw] left-[47.7vw] flex w-[45vw] flex-col items-center gap-2 text-center transition-colors hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-white lg:top-[14vw] lg:left-[73.6vw] lg:w-[21.7vw]"
+        className="group pointer-events-auto absolute top-[10vw] left-[47.7vw] flex w-[50vw] flex-col items-center gap-2 text-center transition-colors hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-white lg:top-[14vw] lg:left-[73.6vw] lg:w-[21.7vw]"
       >
         <FadeUpText text={caption} delay={1.1} className={label} />
         <FadeUpText
