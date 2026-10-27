@@ -41,8 +41,6 @@ export default async function Home() {
   return (
     <div className="relative -mt-sm-header flex min-h-dvh w-full flex-col items-center bg-primary-light sm:-mt-header">
       <Hero header={<Header isLight />} />
-      <Industries />
-      <Cities cities={cities} />
       <ThisWeek
         city={{
           slug: DEFAULT_CITY_SLUG,
@@ -53,6 +51,9 @@ export default async function Home() {
         today={today}
         events={weekEvents}
       />
+      <Industries />
+      <Cities cities={cities} />
+
       <InTheDiary seasons={seasons.data} />
       <PutItOnHappenings />
     </div>

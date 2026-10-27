@@ -17,7 +17,12 @@ import {
   validateEvent,
 } from "@/payload/event-hooks";
 import { slugField } from "@/payload/fields/slug-field";
-import { httpURL, instagramURL, shortDescription } from "@/payload/validation";
+import {
+  httpURL,
+  normalizeWebURL,
+  instagramURL,
+  shortDescription,
+} from "@/payload/validation";
 
 export const events: CollectionConfig = {
   slug: "events",
@@ -33,7 +38,7 @@ export const events: CollectionConfig = {
       "isDemo",
     ],
     description:
-      "Public submissions require AI review and administrator approval. Choose existing organiser/venue records or create them from the submitted details on approval. Publishing records approval too. Content changes require reapproval.",
+      "Public submissions get one AI review when received, then need administrator approval. Choose existing organiser/venue records or create them from the submitted details on approval. Publishing records approval too. Content changes require reapproval.",
   },
   // Raw records and counts stay private. Public callers use the whitelisted calendar projection.
   access: {
@@ -115,6 +120,7 @@ export const events: CollectionConfig = {
       name: "actionUrl",
       type: "text",
       validate: httpURL,
+      hooks: { beforeValidate: [normalizeWebURL] },
       admin: {
         description:
           "Ticket, registration or RSVP link. Required for Tickets and RSVP required.",
@@ -124,6 +130,7 @@ export const events: CollectionConfig = {
       name: "website",
       type: "text",
       validate: httpURL,
+      hooks: { beforeValidate: [normalizeWebURL] },
       admin: { description: "Shown on Full listings only." },
     },
     {
@@ -171,12 +178,17 @@ export const events: CollectionConfig = {
       admin: {
         condition: (data) => data.source === "submission",
         description:
-          "Private submitted details. No organiser record is created until administrator approval. Editing these details requires a new AI review.",
+          "Private submitted details. No organiser record is created until administrator approval. Editing these details requires reapproval.",
       },
       fields: [
         { name: "name", type: "text" },
         { name: "type", type: "select", options: ORGANISER_TYPES },
-        { name: "website", type: "text", validate: httpURL },
+        {
+          name: "website",
+          type: "text",
+          validate: httpURL,
+          hooks: { beforeValidate: [normalizeWebURL] },
+        },
         { name: "contactEmail", type: "email" },
       ],
     },
@@ -221,13 +233,18 @@ export const events: CollectionConfig = {
       admin: {
         condition: (data) => data.source === "submission",
         description:
-          "Private submitted details. Match a venue in this city or create it on approval. Editing these details requires a new AI review.",
+          "Private submitted details. Match a venue in this city or create it on approval. Editing these details requires reapproval.",
       },
       fields: [
         { name: "name", type: "text" },
         { name: "area", type: "text" },
         { name: "address", type: "textarea" },
-        { name: "mapUrl", type: "text", validate: httpURL },
+        {
+          name: "mapUrl",
+          type: "text",
+          validate: httpURL,
+          hooks: { beforeValidate: [normalizeWebURL] },
+        },
       ],
     },
     {
@@ -336,7 +353,12 @@ export const events: CollectionConfig = {
         { label: "Demo fixture", value: "demo" },
       ],
     },
-    { name: "sourceUrl", type: "text", validate: httpURL },
+    {
+      name: "sourceUrl",
+      type: "text",
+      validate: httpURL,
+      hooks: { beforeValidate: [normalizeWebURL] },
+    },
     {
       name: "submittedBy",
       type: "group",

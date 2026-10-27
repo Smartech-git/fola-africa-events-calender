@@ -2,7 +2,7 @@ import { cityDate, formatDay } from "@/lib/events/event-list";
 import type { SeasonSummary } from "@/requests/helpers/types";
 
 export function formatSeasonDates(
-  season: SeasonSummary,
+  season: Pick<SeasonSummary, "startDate" | "endDate">,
   timezone: string,
   full = false,
 ) {

@@ -80,16 +80,3 @@ export function editorialChange(
     )
   );
 }
-
-export function matchesSnapshot(
-  event: Partial<Record<(typeof editorialFields)[number], unknown>>,
-  snapshot: unknown,
-) {
-  return (
-    !!snapshot &&
-    typeof snapshot === "object" &&
-    !Array.isArray(snapshot) &&
-    JSON.stringify(eventSnapshot(event)) ===
-      JSON.stringify(eventSnapshot(snapshot as Record<string, unknown>))
-  );
-}

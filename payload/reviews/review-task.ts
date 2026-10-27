@@ -8,7 +8,6 @@ import {
   anthropicReview,
 } from "@/payload/reviews/anthropic-review";
 import { reviewModel } from "@/payload/reviews/anthropic-settings";
-import { matchesSnapshot } from "@/payload/reviews/event-snapshot";
 import {
   reviewContext,
   validateReviewMatches,
@@ -103,16 +102,13 @@ export const reviewEventTask: TaskConfig<{
       if (result.errors.length) throw new Error("Unable to save AI review.");
       return result;
     };
-    if (
-      !event ||
-      event.isDemo ||
-      event.status !== "submitted" ||
-      !matchesSnapshot(event, review.originalListing)
-    ) {
+    // Each submission is reviewed once, on its current details, so staff edits
+    // made before the review runs do not cancel it.
+    if (!event || event.isDemo || event.status !== "submitted") {
       await update({
         aiStatus: "failed",
         failureReason:
-          "Review skipped: the event was changed, removed, already approved, or is demo data.",
+          "Review skipped: the event was removed, already approved, or is demo data.",
       });
       return { output: {} };
     }
@@ -136,25 +132,6 @@ export const reviewEventTask: TaskConfig<{
       const context = await reviewContext(event, req);
       const result = await anthropicReview(prompt, context, model);
       validateReviewMatches(result, context);
-      const current = await payload.find({
-        collection: "events",
-        where: { id: { equals: event.id } },
-        depth: 0,
-        limit: 1,
-        req,
-      });
-      if (
-        !current.docs[0] ||
-        current.docs[0].status !== "submitted" ||
-        !matchesSnapshot(current.docs[0], review.originalListing)
-      ) {
-        await update({
-          aiStatus: "failed",
-          failureReason:
-            "Event changed during AI review. Use the review for the latest event details.",
-        });
-        return { output: {} };
-      }
       await update({ ...result, aiStatus: "completed", failureReason: null });
       return { output: {} };
     } catch (error) {

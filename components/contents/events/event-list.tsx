@@ -113,7 +113,7 @@ export default function EventList({
               </h2>
               <div className="flex flex-wrap items-center justify-between gap-x-4">
                 <p className="text-xs font-medium tracking-wide uppercase">
-                  {formatDay(day.date, "EEEE \u00b7 yyyy")}
+                  {formatDay(day.date, "EEE \u00b7 yyyy")}
                 </p>
                 <Button
                   variant="link"

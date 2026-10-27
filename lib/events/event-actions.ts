@@ -19,6 +19,11 @@ export async function shareLink(title: string, path: string) {
       if (error instanceof Error && error.name === "AbortError") return;
     }
   }
+  await copyLink(path);
+}
+
+export async function copyLink(path: string) {
+  const url = new URL(path, window.location.origin).href;
   try {
     await navigator.clipboard.writeText(url);
     toast.success("Link copied");

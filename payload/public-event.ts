@@ -1,4 +1,8 @@
-import { INDUSTRIES, LINKED_ACCESS, PUBLIC_STATUSES } from "@/payload/constants";
+import {
+  INDUSTRIES,
+  LINKED_ACCESS,
+  PUBLIC_STATUSES,
+} from "@/payload/constants";
 import type { Event } from "@/payload-types";
 
 /** The only projection that should be used for public pages, exports or API responses. */
@@ -72,7 +76,14 @@ export function toPublicEvent(event: Event) {
       ? []
       : (event.seasons || []).flatMap((season) =>
           typeof season === "object" && season.isPublished && !season.isDemo
-            ? [{ name: season.name, slug: season.slug }]
+            ? [
+                {
+                  name: season.name,
+                  slug: season.slug,
+                  startDate: season.startDate,
+                  endDate: season.endDate,
+                },
+              ]
             : [],
         ),
   };

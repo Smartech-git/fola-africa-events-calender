@@ -3,7 +3,7 @@ import { APIError, type CollectionConfig } from "payload";
 import { staffAccess } from "@/payload/access";
 import { ORGANISER_TYPES } from "@/payload/constants";
 import { slugField } from "@/payload/fields/slug-field";
-import { httpURL } from "@/payload/validation";
+import { httpURL, normalizeWebURL } from "@/payload/validation";
 
 export const organisers: CollectionConfig = {
   slug: "organisers",
@@ -47,7 +47,12 @@ export const organisers: CollectionConfig = {
       required: true,
       options: ORGANISER_TYPES,
     },
-    { name: "website", type: "text", validate: httpURL },
+    {
+      name: "website",
+      type: "text",
+      validate: httpURL,
+      hooks: { beforeValidate: [normalizeWebURL] },
+    },
     {
       name: "contact",
       type: "group",

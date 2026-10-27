@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload";
 
 import { staffAccess } from "@/payload/access";
 import { slugField } from "@/payload/fields/slug-field";
-import { httpURL } from "@/payload/validation";
+import { httpURL, normalizeWebURL } from "@/payload/validation";
 
 export const venues: CollectionConfig = {
   slug: "venues",
@@ -24,7 +24,12 @@ export const venues: CollectionConfig = {
     },
     { name: "area", type: "text" },
     { name: "address", type: "textarea" },
-    { name: "mapUrl", type: "text", validate: httpURL },
+    {
+      name: "mapUrl",
+      type: "text",
+      validate: httpURL,
+      hooks: { beforeValidate: [normalizeWebURL] },
+    },
     {
       name: "isDemo",
       type: "checkbox",

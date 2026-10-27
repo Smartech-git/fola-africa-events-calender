@@ -15,11 +15,7 @@ import SurTitle from "@/components/common/sur-title";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import { FILTER_KEYS } from "@/constants/filters";
 import { DEFAULT_CITY_SLUG } from "@/constants/nav";
-import { cn } from "@/lib/utils";
 import { INDUSTRIES } from "@/payload/constants";
-
-/** Business and Finance and Technology lead in red so the calendar never reads as culture-only. */
-const PROMINENT = ["business", "technology"];
 
 const EXPO_OUT = [0.16, 1, 0.3, 1] as const;
 /** Seconds between each word or circle entering. */
@@ -51,7 +47,6 @@ export default function Industries() {
   const reduceMotion = useReducedMotion();
   const state = reduceMotion || inView ? "show" : "hidden";
 
-  // One running order across words and circles keeps the stagger in reading order.
   let order = 0;
 
   return (
@@ -68,7 +63,7 @@ export default function Industries() {
           ref={textRef}
           initial={reduceMotion ? false : "hidden"}
           animate={state}
-          className="font-montreal text-4xl font-medium tracking-mono uppercase sm:text-6xl lg:text-8xl"
+          className="font-montreal text-4xl font-medium tracking-mono uppercase sm:text-6xl lg:text-7xl"
         >
           {INDUSTRIES.map((industry, index) => (
             <Fragment key={industry.value}>
@@ -88,17 +83,11 @@ export default function Industries() {
                   [FILTER_KEYS.industry]: industry.value,
                 })}`}
                 aria-label={`See ${industry.label} happenings`}
-                className={cn(
-                  "transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red",
-                  PROMINENT.includes(industry.value)
-                    ? "text-red hover:text-ink"
-                    : "hover:text-red",
-                )}
+                className="transition-colors hover:text-red focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red"
               >
                 {industry.label.split(" ").map((part, partIndex) => (
                   <Fragment key={partIndex}>
                     {partIndex > 0 && " "}
-                    {/* Middle-aligned like the circles so both share a centre line. */}
                     <span className="inline-block overflow-hidden align-middle">
                       <motion.span
                         custom={order++}

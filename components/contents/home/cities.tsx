@@ -30,7 +30,7 @@ export default function Cities({ cities, headingLevel = "h2" }: Props) {
             id="cities-heading"
             as={headingLevel}
             text="What’s happening?"
-            className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-6xl lg:text-8xl xl:text-[160px]"
+            className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-6xl xl:text-7xl"
           />
           <FadeUpText
             text="Choose a city."

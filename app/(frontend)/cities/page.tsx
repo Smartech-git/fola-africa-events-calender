@@ -20,7 +20,6 @@ export default async function Page() {
   }
 
   return (
-    // Shift up under the site header so the hero's cream header replaces it.
     <div className="relative -mt-sm-header flex w-full flex-col sm:-mt-header">
       <CitiesHero />
       <CitiesTable cities={cities} />

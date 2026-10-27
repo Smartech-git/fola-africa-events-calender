@@ -42,8 +42,8 @@
   --breakpoint-3xl: 120rem; /* 1920px */
   --breakpoint-4k: 160rem; /* 2560px */
 
-  --spacing-pg-4k: 12dvw;
-  --spacing-pg-2xl: 8dvw;
+  --spacing-pg-4k: 16dvw;
+  --spacing-pg-2xl: 10dvw;
   --spacing-pg: 4dvw;
   --spacing-pg-sm: 1rem;
   --spacing-header: 80px;

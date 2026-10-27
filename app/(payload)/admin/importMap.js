@@ -8,6 +8,7 @@ import { ReviewFindings as ReviewFindings_dc331a26ac0d395b7d62f53008418258 } fro
 import { ReviewSummary as ReviewSummary_dc331a26ac0d395b7d62f53008418258 } from '@/payload/components/review-fields'
 import { ReviewSuggestedListing as ReviewSuggestedListing_dc331a26ac0d395b7d62f53008418258 } from '@/payload/components/review-fields'
 import { ReviewRecommendation as ReviewRecommendation_dc331a26ac0d395b7d62f53008418258 } from '@/payload/components/review-fields'
+import { ReviewCountBadge as ReviewCountBadge_0bbe7fb3019a9603cfbf92a523ebc4b6 } from '@/payload/components/review-count-badge'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -22,5 +23,6 @@ export const importMap = {
   "@/payload/components/review-fields#ReviewSummary": ReviewSummary_dc331a26ac0d395b7d62f53008418258,
   "@/payload/components/review-fields#ReviewSuggestedListing": ReviewSuggestedListing_dc331a26ac0d395b7d62f53008418258,
   "@/payload/components/review-fields#ReviewRecommendation": ReviewRecommendation_dc331a26ac0d395b7d62f53008418258,
+  "@/payload/components/review-count-badge#ReviewCountBadge": ReviewCountBadge_0bbe7fb3019a9603cfbf92a523ebc4b6,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

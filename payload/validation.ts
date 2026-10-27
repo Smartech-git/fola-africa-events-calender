@@ -1,18 +1,41 @@
+import type { FieldHook } from "payload";
+
 import { LINK_REQUIRED_ACCESS, LINKED_ACCESS } from "@/payload/constants";
 
 export function httpURL(value: unknown): true | string {
-  if (!value) return true;
+  if (!value || webURL(value)) return true;
+  return "Enter a web address such as example.com or https://example.com, without embedded credentials.";
+}
+
+/**
+ * Turn a web address into an HTTP(S) URL, assuming HTTPS when the scheme is
+ * left out (example.com becomes https://example.com). Undefined when invalid.
+ */
+export function webURL(value: unknown): string | undefined {
+  const input = String(value ?? "").trim();
+  if (!input) return undefined;
+  // A scheme has no dots, so example.com:8080 still counts as a bare domain.
+  const hasScheme = /^[a-z][a-z\d+-]*:/i.test(input);
+  const candidate = hasScheme ? input : `https://${input.replace(/^\/+/, "")}`;
   try {
-    const url = new URL(String(value));
-    return ["https:", "http:"].includes(url.protocol) &&
-      !url.username &&
-      !url.password
-      ? true
-      : "Use an HTTP or HTTPS URL without embedded credentials.";
+    const url = new URL(candidate);
+    if (
+      !["https:", "http:"].includes(url.protocol) ||
+      url.username ||
+      url.password ||
+      // Bare input needs a real domain, so a stray word is not a link.
+      (!hasScheme && !/\.[a-z]{2,}$/i.test(url.hostname))
+    )
+      return undefined;
+    return candidate;
   } catch {
-    return "Enter a valid HTTP or HTTPS URL.";
+    return undefined;
   }
 }
+
+/** Field hook: store bare domains typed in the admin as HTTPS URLs. */
+export const normalizeWebURL: FieldHook = ({ value }) =>
+  typeof value === "string" && value.trim() ? (webURL(value) ?? value) : value;
 
 export function shortDescription(value: unknown): true | string {
   return !value || String(value).trim().split(/\s+/u).length <= 60

@@ -14,7 +14,6 @@ import {
 import {
   editorialChange,
   eventSnapshot,
-  matchesSnapshot,
 } from "@/payload/reviews/event-snapshot";
 import { approveSubmissionRelations } from "@/payload/submissions/approve-submission-relations";
 import { eventProblems, relationID } from "@/payload/validation";
@@ -170,7 +169,9 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
           "Confirm private listings directly with the organiser before approval.",
           400,
         );
-      if (!administrator || event.source === "submission") {
+      // Website submissions are reviewed by AI once, when received. Later
+      // edits need human reapproval but not another AI review.
+      if (event.source === "submission") {
         if (!originalDoc)
           throw new APIError(
             "Submit this event for AI review before approval or publication.",
@@ -188,28 +189,25 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
         if (
           !review ||
           review.aiStatus !== "completed" ||
-          !matchesSnapshot(event, review.originalListing) ||
           (!administrator &&
             !["accepted", "amended"].includes(review.humanDecision || ""))
         )
           throw new APIError(
-            "Complete the AI review of the current event details before approval or publication.",
+            "Complete the AI review before approval or publication.",
             400,
           );
-        if (event.source === "submission") {
-          Object.assign(
-            data,
-            await approveSubmissionRelations(event as Event, req),
-          );
-          if (!["accepted", "amended"].includes(review.humanDecision || ""))
-            await req.payload.update({
-              collection: "event-reviews",
-              id: review.id,
-              req,
-              depth: 0,
-              data: { humanDecision: "accepted" },
-            });
-        }
+        Object.assign(
+          data,
+          await approveSubmissionRelations(event as Event, req),
+        );
+        if (!["accepted", "amended"].includes(review.humanDecision || ""))
+          await req.payload.update({
+            collection: "event-reviews",
+            id: review.id,
+            req,
+            depth: 0,
+            data: { humanDecision: "accepted" },
+          });
       }
       data.approvedBy =
         originalDoc?.status === "approved"
@@ -268,14 +266,17 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
 
 export const queueEventReview: CollectionAfterChangeHook = async ({
   doc,
-  previousDoc,
   operation,
   req,
 }) => {
-  // Administrator entries follow the manual approval path without an AI job.
-  if (roleOf(req.user) === "admin" && doc.source !== "submission") return doc;
-  const changed = operation === "create" || editorialChange(previousDoc, doc);
-  if (doc.status !== "submitted" || !changed) return doc;
+  // AI reviews each website submission once, when it is received. Staff
+  // entries and later edits follow the manual approval path.
+  if (
+    operation !== "create" ||
+    doc.source !== "submission" ||
+    doc.status !== "submitted"
+  )
+    return doc;
   const originalListing = eventSnapshot(doc);
   await req.payload.create({
     collection: "event-reviews",

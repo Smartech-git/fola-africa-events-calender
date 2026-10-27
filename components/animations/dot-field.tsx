@@ -58,7 +58,7 @@ export default function DotField({
   dotSize = 6,
   color = "#FFFFFF",
   restOpacity = 0.22,
-  activeRatio = 0.7,
+  activeRatio = 0.2,
   minDuration = 1.6,
   maxDuration = 3.2,
   maxRepeatDelay = 8,

@@ -74,20 +74,11 @@ function CityRow({ city, index }: { city: CityOverview; index: number }) {
           season ? `. Next in the diary: ${season.name}` : ""
         }`}
         className={cn(
-          "group/city flex flex-wrap px-3.5 lg:px-6 items-center gap-x-8 gap-y-3 py-5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red lg:flex-nowrap lg:py-7",
-          current
-            ? "bg-red"
-            : "text-ink hover:bg-cream",
+          "group/city flex flex-wrap items-center gap-x-8 gap-y-3 px-3.5 py-5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red lg:flex-nowrap lg:px-6 lg:py-7",
+          current ? "bg-red" : "text-ink hover:bg-cream",
         )}
       >
-        <span
-          className={cn(
-            caps,
-            COLUMNS.number,
-            "text-[22px] max-lg:hidden",
-            !current && "text-red",
-          )}
-        >
+        <span className={cn(caps, COLUMNS.number, "text-[22px] max-lg:hidden", current && "text-white")}>
           {String(index + 1).padStart(2, "0")}
         </span>
 
@@ -102,14 +93,17 @@ function CityRow({ city, index }: { city: CityOverview; index: number }) {
             />
             <HoverText
               text={city.name}
-              className="font-montreal text-4xl font-medium tracking-mono uppercase lg:text-5xl"
+              className={cn(
+                "font-montreal text-4xl font-medium tracking-mono uppercase lg:text-5xl",
+                current && "text-white",
+              )}
             />
           </div>
           <span
             className={cn(
               caps,
               "text-[11px] sm:text-[13px]",
-              current ? "text-white/85" : "text-ink/60",
+              current ? "text-white/85" : "text-ink",
             )}
           >
             {city.country} · {city.timezoneLabel || city.timezone}
@@ -120,6 +114,7 @@ function CityRow({ city, index }: { city: CityOverview; index: number }) {
           aria-hidden="true"
           className={cn(
             COLUMNS.arrow,
+            current && "text-white",
             "size-6 shrink-0 transition-transform duration-300 group-hover/city:translate-x-1.5 group-focus-visible/city:translate-x-1.5 motion-reduce:transition-none lg:order-last",
           )}
         />
@@ -154,7 +149,12 @@ function CityRow({ city, index }: { city: CityOverview; index: number }) {
                 {seasonDay}
               </DateCircle>
               <span className="flex min-w-0 flex-col gap-1">
-                <span className="font-montreal text-sm font-medium uppercase lg:text-lg">
+                <span
+                  className={cn(
+                    "font-montreal text-sm font-medium uppercase lg:text-lg",
+                    current && "text-white",
+                  )}
+                >
                   {season.name}
                 </span>
                 {seasonDates && (
@@ -210,6 +210,7 @@ function Count({
         className={cn(
           "text-xs lg:text-5xl lg:leading-none",
           tone === "red" && "text-red",
+          tone === "white" && "text-white",
         )}
       >
         {value}

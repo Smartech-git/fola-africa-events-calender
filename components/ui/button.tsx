@@ -18,7 +18,7 @@ const button = cva(
         solid: "bg-red text-white hover:bg-red/90",
         ink: "bg-ink text-white hover:bg-ink/90",
         bordered:
-          "border-[1.5px] border-ink bg-transparent text-ink hover:bg-ink hover:text-white",
+          "border-[1.5px] border-ink bg-transparent text-ink",
         onWhite: "bg-white text-red",
         outlineWhite:
           "border-[1.5px] border-white bg-transparent text-white hover:bg-white hover:text-red",

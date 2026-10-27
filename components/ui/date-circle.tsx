@@ -15,7 +15,7 @@ const circle = cva(
         outlineWhite: "border-white bg-transparent text-white",
       },
       size: {
-        md: "size-16 text-[22px]",
+        md: "size-12 text-lg",
         sm: "size-10 text-sm",
       },
     },

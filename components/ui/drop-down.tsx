@@ -65,7 +65,6 @@ const DropdownTrigger = ({
         disableAnimation={true}
         {...props}
         className={cn(
-          // Variant "bordered" renders as a select-style field (Figma Field / Select).
           variant === "bordered" &&
             "h-14 w-full justify-between border border-ink bg-white px-4 text-left font-montreal text-base tracking-normal normal-case hover:border-red hover:bg-white hover:text-ink sm:text-lg",
           className,
@@ -98,7 +97,7 @@ const DropdownMenu = ({
         itemClasses?.base,
       ),
       title: cn(
-        "font-courier text-xs font-normal tracking-mono uppercase",
+        "font-courier text-sm font-normal tracking-mono uppercase",
         itemClasses?.title,
       ),
       selectedIcon: cn("text-red", itemClasses?.selectedIcon),

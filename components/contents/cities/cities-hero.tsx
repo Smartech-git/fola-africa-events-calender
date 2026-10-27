@@ -22,7 +22,7 @@ export default function CitiesHero() {
             id="cities-heading"
             text="What’s happening?"
             delay={0.1}
-            className="font-montreal text-5xl font-medium tracking-mono text-red uppercase sm:text-6xl lg:text-8xl xl:text-[120px]"
+            className="font-montreal text-5xl font-medium tracking-mono text-red uppercase sm:text-6xl lg:text-7xl xl:text-[120px]"
           />
           <FadeUpText
             text="Choose a city."

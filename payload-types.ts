@@ -317,7 +317,7 @@ export interface Season {
   createdAt: string;
 }
 /**
- * Public submissions require AI review and administrator approval. Choose existing organiser/venue records or create them from the submitted details on approval. Publishing records approval too. Content changes require reapproval.
+ * Public submissions get one AI review when received, then need administrator approval. Choose existing organiser/venue records or create them from the submitted details on approval. Publishing records approval too. Content changes require reapproval.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
@@ -405,7 +405,7 @@ export interface Event {
   organiser?: (number | null) | Organiser;
   venue?: (number | null) | Venue;
   /**
-   * Private submitted details. No organiser record is created until administrator approval. Editing these details requires a new AI review.
+   * Private submitted details. No organiser record is created until administrator approval. Editing these details requires reapproval.
    */
   submittedOrganiser?: {
     name?: string | null;
@@ -439,7 +439,7 @@ export interface Event {
     | boolean
     | null;
   /**
-   * Private submitted details. Match a venue in this city or create it on approval. Editing these details requires a new AI review.
+   * Private submitted details. Match a venue in this city or create it on approval. Editing these details requires reapproval.
    */
   submittedVenue?: {
     name?: string | null;

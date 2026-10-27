@@ -31,6 +31,11 @@ export default buildConfig({
   admin: {
     meta: { titleSuffix: `| ${SITE_NAME}` },
     user: users.slug,
+    components: {
+      beforeNavLinks: [
+        "@/payload/components/review-count-badge#ReviewCountBadge",
+      ],
+    },
     importMap: {
       baseDir: path.resolve(dirname),
     },

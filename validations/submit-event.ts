@@ -13,22 +13,24 @@ import {
   VISIBILITY_OPTIONS,
 } from "@/payload/constants";
 import {
-  httpURL,
   instagramProfile,
   shortDescription,
+  webURL,
 } from "@/payload/validation";
 import type { Event, Organiser } from "@/payload-types";
 
 const text = z.string().trim().max(200);
 const requiredText = text.min(1, "This field is required.");
+// Accepts example.com or https://example.com; bare domains are saved as HTTPS.
 const url = z
   .string()
   .trim()
   .max(2000)
   .refine(
-    (value) => httpURL(value) === true,
-    "Enter an HTTP or HTTPS URL without embedded credentials.",
-  );
+    (value) => !value || Boolean(webURL(value)),
+    "Enter a web address such as example.com or https://example.com.",
+  )
+  .transform((value) => (value ? webURL(value)! : ""));
 const optionalEmail = z.union([
   z.literal(""),
   z.string().trim().email("Enter a valid email address.").max(254),

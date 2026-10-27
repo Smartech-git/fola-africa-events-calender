@@ -3,6 +3,7 @@ import { format, parseISO } from "date-fns";
 
 import { FILTER_KEYS } from "@/constants/filters";
 import { ACCESS_OPTIONS, INDUSTRIES } from "@/payload/constants";
+import { webURL } from "@/payload/validation";
 import type { EventFilterOptions, PublicEvent } from "@/requests/helpers/types";
 
 export type EventListFilters = EventFilterOptions & {
@@ -184,11 +185,7 @@ export function eventSharePath(event: PublicEvent) {
 }
 
 export function externalUrl(value?: string | null) {
-  if (!value) return undefined;
-  try {
-    const url = new URL(value);
-    return ["https:", "http:"].includes(url.protocol) ? url.href : undefined;
-  } catch {
-    return undefined;
-  }
+  // Older records may hold a bare domain; webURL assumes HTTPS for those.
+  const href = webURL(value);
+  return href ? new URL(href).href : undefined;
 }

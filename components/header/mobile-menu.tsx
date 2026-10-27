@@ -167,7 +167,7 @@ export default function MobileMenu({ className }: Props) {
                 </nav>
 
                 <div className="flex flex-col gap-2.5 border-t border-white/25 px-4 pt-5">
-                  <SubmitEvent variant="onWhite" size="md" className="w-full" />
+                  <SubmitEvent variant="ink" size="md" className="w-full" />
                   {/* <SignIn variant="outlineWhite" size="md" className="w-full" /> */}
                 </div>
 

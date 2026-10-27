@@ -15,7 +15,7 @@ export default function SectionWrapper({
     <div
       {...props}
       className={cn(
-        "relative flex w-full flex-col bg-transparent px-pg-sm py-8 sm:px-pg sm:py-12 2xl:px-pg-2xl 4k:px-pg-4k",
+        "relative flex w-full flex-col bg-transparent px-pg-sm py-10 sm:px-pg sm:py-18 2xl:px-pg-2xl 4k:px-pg-4k",
         className,
       )}
     >

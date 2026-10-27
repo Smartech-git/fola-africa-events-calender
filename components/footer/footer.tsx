@@ -22,7 +22,7 @@ const linkClass =
   "font-montreal text-lg tracking-cou text-mono normal-case hover:text-cream";
 
 const captionClass =
-  "font-courier text-xs tracking-cou text-white/60 uppercase";
+  "font-courier text-sm tracking-cou text-white/60 uppercase";
 
 function FooterColumn({
   title,
@@ -47,7 +47,7 @@ export default function Footer() {
       <SectionWrapper className="gap-12 sm:gap-16">
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div className="flex max-w-140 flex-col gap-5.5">
-            <Logo variant="white" className="w-75 sm:w-115" />
+            {/* <Logo variant="white" className="w-75 sm:w-115" /> */}
             <FadeUpText
               as="p"
               className="tracking-mon font-montreal text-2xl sm:text-[40px]"

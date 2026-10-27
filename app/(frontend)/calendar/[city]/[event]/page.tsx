@@ -1,26 +1,21 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ArrowLeft, Check } from "lucide-react";
 import type { Metadata } from "next";
 
-import FadeUpText from "@/components/animations/fade-up-text";
-import HoverText from "@/components/animations/hover-text";
-import PixelBlast from "@/components/animations/pixel-blast";
-import LabelTitle from "@/components/common/label-title";
-import {
-  EventAttendanceAction,
-  EventCalendarActions,
-  EventExternalAction,
-} from "@/components/contents/events/event-actions";
-import EventFacts from "@/components/contents/events/event-facts";
-import EventLocation from "@/components/contents/events/event-location";
+import EventAbout from "@/components/contents/events/event-about";
+import EventArtwork from "@/components/contents/events/event-artwork";
+import EventHeader from "@/components/contents/events/event-header";
+import EventSameDay from "@/components/contents/events/event-same-day";
+import PrivateEventHeader from "@/components/contents/events/private-event-header";
+import PrivateEventListings from "@/components/contents/events/private-event-listings";
 import SectionWrapper from "@/components/layout/section-wrapper";
-import Button from "@/components/ui/button";
 import { SITE_NAME } from "@/constants/brand";
+import { isPrivateEvent } from "@/lib/events/event-details";
 import { cityDate, eventPath, formatDay } from "@/lib/events/event-list";
 import { pageMetadata } from "@/lib/metadata";
 import { getEvent } from "@/requests/events/get-event";
+import { getEventList } from "@/requests/events/get-event-list";
+import type { PublicEvent } from "@/requests/helpers/types";
 
 interface Props {
   params: Promise<{ city: string; event: string }>;
@@ -40,137 +35,45 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   );
 }
 
+async function sameDayEvents(event: PublicEvent, date: string) {
+  try {
+    const events = await getEventList({ city: event.city!.slug, date });
+    return events.filter((item) => item.id !== event.id);
+  } catch {
+    return [];
+  }
+}
+
 export default async function EventPage({ params }: Props) {
   const { city, event: slug } = await params;
   const event = await getEvent(slug, city);
   if (!event) notFound();
   const { timezone } = event.city!;
+
+  if (isPrivateEvent(event))
+    return (
+      <div className="relative -mt-sm-header flex w-full flex-col bg-ink sm:-mt-header">
+        <PrivateEventHeader event={event} timezone={timezone} />
+        <PrivateEventListings event={event} timezone={timezone} />
+      </div>
+    );
+
   const date = cityDate(event.startAt, timezone);
+  const others = await sameDayEvents(event, date);
 
   return (
-    <div>
-      <div className="relative">
-        <SectionWrapper className="pb-0 sm:pb-0">
-          <Link
-            className="relative z-10 w-fit"
-            href={`/calendar/${encodeURIComponent(city)}`}
-          >
-            <Button
-              startContent={<ArrowLeft size={12} />}
-              variant="flat"
-              size="fit"
-            >
-              <HoverText text="Back to calendar" />
-            </Button>
-          </Link>
-          <div className="mt-8 space-y-4">
-            <p className="relative z-10 w-fit text-xl font-light uppercase sm:text-3xl lg:text-5xl">
-              <time dateTime={date}>{formatDay(date, "dd MMMM")}</time>
-            </p>
-            <FadeUpText
-              as="h1"
-              className="relative z-10 w-fit font-montreal text-4xl text-primary uppercase sm:text-6xl lg:text-7xl"
-              text={event.title}
-            />
-            <div className="relative z-10 w-fit space-y-2 text-xs uppercase sm:text-sm">
-              <EventFacts event={event} timezone={timezone} showTimezone />
-
-              <div className="flex flex-wrap items-center gap-2">
-                {event.venue && <p>{event.venue.name}</p>}
-                {event.verified && (
-                  <p className="flex w-fit items-center gap-1 bg-secondary px-2 py-0.5 text-xxs sm:text-xs">
-                    <Check size={12} className="text-inherit" /> Verified by
-                    organiser
-                  </p>
-                )}
-              </div>
-            </div>
-            <div className="relative z-10 flex w-fit flex-col gap-x-8 gap-y-4 pt-4 sm:flex-row sm:items-center">
-              <EventAttendanceAction event={event} prominent />
-              <EventCalendarActions event={event} timezone={timezone} />
-            </div>
-          </div>
-        </SectionWrapper>
-        <PixelBlast
-          variant="square"
-          pixelSize={6}
-          color="#EDC09C"
-          patternScale={2}
-          patternDensity={0.8}
-          pixelSizeJitter={0}
-          enableRipples
-          rippleSpeed={0.4}
-          rippleThickness={0.12}
-          rippleIntensityScale={1.5}
-          liquid={true}
-          liquidStrength={0.12}
-          liquidRadius={1.2}
-          liquidWobbleSpeed={5}
-          speed={0.5}
-          edgeFade={0.1}
-          transparent
-        />
-      </div>
-      <SectionWrapper className="pt-0 sm:pt-0">
-        <div className="mt-8 space-y-8 border-t border-light-gray py-8">
-          {event.description && (
-            <FadeUpText
-              as="p"
-              className="w-full text-xs uppercase sm:text-sm"
-              text={event.description}
-            />
-          )}
-          {event.organiser && (
-            <section aria-labelledby="event-organiser" className="space-y-4">
-              <LabelTitle title="Organiser" />
-              <p className="text-xs uppercase sm:text-xs">
-                {event.organiser.name}
-              </p>
-              <EventExternalAction
-                url={event.organiser.website}
-                label="Organiser website"
-              />
-            </section>
-          )}
-          {(event.website || event.instagram || event.publicContactEmail) && (
-            <section
-              aria-labelledby="event-links"
-              className="space-y-4 border-t border-light-gray pt-8"
-            >
-              <h2 id="event-links">
-                <LabelTitle title="Links and information" />
-              </h2>
-              <div className="flex flex-wrap gap-x-8 gap-y-3">
-                <EventExternalAction url={event.website} label="Website" />
-                <EventExternalAction url={event.instagram} label="Instagram" />
-                {event.publicContactEmail && (
-                  <Link
-                    href={`mailto:${event.publicContactEmail}`}
-                    className="text-xs font-semibold uppercase transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-primary"
-                  >
-                    <HoverText text={event.publicContactEmail} />
-                  </Link>
-                )}
-              </div>
-            </section>
-          )}
-          <EventLocation event={event} />
-          {event.seasons.length > 0 && (
-            <section
-              aria-labelledby="event-seasons"
-              className="space-y-4 border-t border-light-gray pt-8"
-            >
-              <LabelTitle title="In the diary" />
-
-              <ul className="flex flex-wrap gap-6 text-sm uppercase">
-                {event.seasons.map((season) => (
-                  <li key={season.slug}>{season.name}</li>
-                ))}
-              </ul>
-            </section>
-          )}
-        </div>
+    <div className="flex w-full flex-col bg-white">
+      <EventHeader event={event} timezone={timezone} />
+      <SectionWrapper className="gap-10 bg-white lg:flex-row lg:items-start lg:gap-14 xl:gap-20">
+        <EventArtwork className="max-w-130 lg:w-[38%]" />
+        <EventAbout event={event} timezone={timezone} />
       </SectionWrapper>
+      <EventSameDay
+        city={event.city!}
+        timezone={timezone}
+        date={date}
+        events={others}
+      />
     </div>
   );
 }

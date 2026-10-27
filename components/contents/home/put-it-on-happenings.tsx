@@ -17,7 +17,7 @@ export default function PutItOnHappenings() {
           as="h2"
           id="put-it-on-heading"
           text="Put it on Happenings."
-          className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-9xl xl:text-[160px]"
+          className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-6xl xl:text-7xl"
         />
         <FadeUpText
           text="Planning something? Tell us what’s happening. Every submission is reviewed before it appears on the calendar."
@@ -29,12 +29,10 @@ export default function PutItOnHappenings() {
             <HoverText text="Submit a happening" />
           </Button>
         </Link>
-        {/* Mobile: the dots sit under the button. */}
-        <div className="h-24 w-full lg:hidden">
+        <div className="h-40 w-full lg:hidden">
           <DotField />
         </div>
       </SectionWrapper>
-      {/* Desktop: the dots fill the lower right, as in the frame. */}
       <div className="pointer-events-none absolute right-pg bottom-12 h-[15.5vw] w-[31vw] max-lg:hidden 2xl:right-pg-2xl">
         <DotField />
       </div>

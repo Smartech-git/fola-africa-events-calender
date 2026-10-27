@@ -8,14 +8,14 @@ export default function Hero() {
   return (
     <div className="relative z-60 flex w-full flex-col bg-red text-white">
       <Header isLight />
-      <SectionWrapper className="gap-8 lg:flex-row lg:items-end lg:justify-between">
-        <div className="flex min-w-0 flex-col gap-8">
+      <SectionWrapper className="gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex w-full min-w-0 flex-col gap-8">
           <SurTitle dot content="About Happenings" className="text-white" />
           <FadeUpText
             as="h1"
-            text="Where Africa’s people, ideas and events meet."
+            text="People, places, industries and moments, in one shared view."
             delay={0.1}
-            className="max-w-250 font-montreal text-5xl font-medium tracking-mono sm:text-7xl xl:text-[112px]"
+            className="w-full max-w-400 font-montreal text-5xl font-medium tracking-mono lg:text-7xl xl:text-8xl"
           />
         </div>
         <div className="aspect-square w-[40vw] shrink-0 self-end sm:w-[26vw] lg:w-[18vw] lg:max-w-72">

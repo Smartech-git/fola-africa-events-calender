@@ -1,6 +1,11 @@
 "use client";
 
-import { ArrowUpRight, ChevronDown } from "lucide-react";
+import {
+  ArrowUpRight,
+  CalendarPlus,
+  ChevronDown,
+  Share2,
+} from "lucide-react";
 
 import HoverText from "@/components/animations/hover-text";
 import Button, { type ButtonProps } from "@/components/ui/button";
@@ -78,7 +83,8 @@ export function EventAttendanceAction({
   );
 }
 
-export function EventCalendarActions({
+// Figma: Event Page — Desktop (333:2366), the action row under the facts.
+export function EventDetailActions({
   event,
   timezone,
 }: {
@@ -86,15 +92,23 @@ export function EventCalendarActions({
   timezone: string;
 }) {
   const path = eventSharePath(event);
+  const icon = { size: 18, "aria-hidden": true } as const;
   return (
-    <>
+    <div className="md:flex grid grid-cols-2 flex-wrap gap-3">
+      <EventAttendanceAction
+        event={event}
+        prominent
+        className="max-md:w-full col-span-2"
+      />
       <Dropdown>
         <DropdownTrigger asChild>
           <Button
-            variant={"flat"}
-            size={"fit"}
+          size="sm"
+            variant="bordered"
             aria-label={`Add ${event.title} to calendar`}
-            endContent={<ChevronDown size={16} aria-hidden="true" />}
+            startContent={<CalendarPlus {...icon} />}
+            endContent={<ChevronDown size={14} aria-hidden="true" />}
+            className="max-md:w-full"
           >
             <HoverText text="Add to calendar" />
           </Button>
@@ -125,15 +139,17 @@ export function EventCalendarActions({
         </DropdownMenu>
       </Dropdown>
       <Button
-        variant={"link"}
-        size={"fit"}
+        variant="bordered"
         aria-label={`Share ${event.title}`}
+        startContent={<Share2 {...icon} />}
+        className="max-md:w-full"
+        size="sm"
         onPress={() => {
           void shareLink(event.title, path);
         }}
       >
-        <HoverText text={"Share"} />
+        <HoverText text="Share" />
       </Button>
-    </>
+    </div>
   );
 }
