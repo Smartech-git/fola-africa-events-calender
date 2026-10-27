@@ -34,11 +34,11 @@ export default function Hero({ header }: Props) {
       : `${totalEvents} ${totalEvents === 1 ? "happening" : "happenings"}`;
 
   return (
-    <div className="relative max-h-[1200px] z-60 flex w-full flex-col overflow-hidden bg-red text-white">
+    <div className="relative max-h-300 z-60 flex w-full flex-col overflow-hidden bg-red text-white">
       {header}
       <section
         aria-labelledby="hero-heading"
-        className="relative lg:min-h-[50.6vw]"
+        className="relative lg:min-h-[48.6vw]"
       >
         <SectionWrapper className="relative z-10 items-start gap-8 lg:max-w-[60vw]">
           <FadeUpText
@@ -93,7 +93,7 @@ function TodayMark({
 }) {
   const reduceMotion = useReducedMotion();
   const circle =
-    "absolute max-md:bottom-[-12.5vw] left-[30.5vw] size-[95vw] rounded-full md:border-2  border border-white lg:top-[2.8vw] lg:left-[63.9vw] lg:size-[52.8vw]";
+    "absolute max-md:bottom-[-12.5vw] left-[30.5vw] size-[95vw] rounded-full md:border-2  border border-white lg:top-0 lg:left-[63.9vw] lg:size-[52.8vw]";
 
   return (
     <div className="pointer-events-none relative h-[72vw] lg:absolute lg:inset-0 lg:h-auto">
@@ -108,7 +108,7 @@ function TodayMark({
       <Link
         href={href}
         aria-label={linkLabel}
-        className="group pointer-events-auto absolute top-[14vw] left-[57.7vw] flex w-[37vw] flex-col items-center gap-2 text-center transition-colors hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-white lg:top-[9.3vw] lg:left-[73.6vw] lg:w-[21.7vw]"
+        className="group pointer-events-auto absolute top-[14vw] left-[57.7vw] flex w-[37vw] flex-col items-center gap-2 text-center transition-colors hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-white lg:top-[10.3vw] lg:left-[73.6vw] lg:w-[21.7vw]"
       >
         <FadeUpText
           text={`Today · ${day}`}
