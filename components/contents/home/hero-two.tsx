@@ -93,7 +93,7 @@ function TodayMark({
 }) {
   const reduceMotion = useReducedMotion();
   const circle =
-    "absolute max-md:bottom-[-12.5vw] left-[30.5vw] size-[95vw] rounded-full md:border-2  border border-white lg:top-0 lg:left-[63.9vw] lg:size-[52.8vw]";
+    "absolute max-md:bottom-[-12.5vw] left-[30.5vw] size-[95vw] rounded-full border border-white lg:top-0 lg:left-[63.9vw] lg:size-[52.8vw]";
 
   return (
     <div className="pointer-events-none relative h-[72vw] lg:absolute lg:inset-0 lg:h-auto">
