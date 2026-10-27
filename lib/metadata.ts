@@ -12,7 +12,7 @@ export const openGraphImage = {
   url: new URL("/opengraph-image.gif", siteUrl).toString(),
   width: 1200,
   height: 630,
-  type: "image/jpeg",
+  type: "image/gif",
   alt: SITE_NAME,
 };
 

@@ -8,17 +8,17 @@ export default function Hero() {
   return (
     <div className="relative z-60 flex w-full flex-col bg-red text-white">
       <Header isLight />
-      <SectionWrapper className="gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <SectionWrapper className="gap-12 lg:flex-row lg:items-end lg:justify-between">
         <div className="flex w-full min-w-0 flex-col gap-8">
           <SurTitle dot content="About Happenings" className="text-white" />
           <FadeUpText
             as="h1"
             text="People, places, industries and moments, in one shared view."
             delay={0.1}
-            className="w-full max-w-400 font-montreal text-5xl font-medium tracking-mono lg:text-7xl xl:text-8xl"
+            className="w-full max-w-450 font-montreal text-5xl font-medium tracking-mono lg:text-7xl xl:text-8xl"
           />
         </div>
-        <div className="aspect-square w-[40vw] shrink-0 self-end sm:w-[26vw] lg:w-[18vw] lg:max-w-72">
+        <div className="lg:aspect-square h-80 w-full shrink-0 self-end lg:w-72">
           <DotField />
         </div>
       </SectionWrapper>
