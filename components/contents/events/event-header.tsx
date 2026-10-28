@@ -25,15 +25,13 @@ export default function EventHeader({ event, timezone }: Props) {
               date={cityDate(event.startAt, timezone)}
               className="w-20 md:w-80"
             />
-            <div className="flex tracking-cou uppercase font-courier flex-col md:hidden">
-              <span className="">
-                {formatDay(event.startAt, "MMM yyyy")}
-              </span>
+            <div className="flex flex-col font-courier tracking-cou uppercase md:hidden">
+              <span className="">{formatDay(event.startAt, "MMM yyyy")}</span>
               <span className="text">{timeRange(event, timezone)}</span>
             </div>
           </div>
         </div>
-        <div className="flex min-w-0 flex-1 flex-col md:gap-8 gap-6 lg:pt-9">
+        <div className="flex min-w-0 flex-1 flex-col gap-6 md:gap-8 lg:pt-9">
           <div className="flex flex-col">
             <FadeUpText
               as="h1"

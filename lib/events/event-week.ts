@@ -7,7 +7,7 @@ import {
 } from "@/lib/events/event-list";
 import { monthRange } from "@/lib/events/event-month";
 
-export type CalendarView = "list" | "week" | "month";
+export type CalendarView = "list" | "day" | "week" | "month";
 
 export function weekRange(date: string) {
   const from = shiftDate(date, -new Date(`${date}T12:00:00Z`).getUTCDay());
@@ -32,13 +32,15 @@ export function getWeekQuery(
   };
 }
 
+/** A single date opens the day view; week and month cover their range. */
 export function calendarDateParams(view: CalendarView, date: string) {
+  const single = view === "list" || view === "day";
   const range = view === "month" ? monthRange(date) : weekRange(date);
   return {
-    [FILTER_KEYS.eventLayoutKey]: view,
-    [FILTER_KEYS.date]: view === "list" ? date : undefined,
-    [FILTER_KEYS.dateFrom]: view !== "list" ? range.from : undefined,
-    [FILTER_KEYS.dateTo]: view !== "list" ? range.to : undefined,
+    [FILTER_KEYS.eventLayoutKey]: single ? "day" : view,
+    [FILTER_KEYS.date]: single ? date : undefined,
+    [FILTER_KEYS.dateFrom]: single ? undefined : range.from,
+    [FILTER_KEYS.dateTo]: single ? undefined : range.to,
     [FILTER_KEYS.page]: undefined,
   };
 }

@@ -43,7 +43,7 @@ export default function HeaderNav({
                       <span
                         aria-hidden="true"
                         className={cn(
-                          "size-1.5 shrink-0 rounded-full bg-current",
+                          "size-2 shrink-0 rounded-full bg-current",
                           active
                             ? "animate-fade animate-duration-500"
                             : "hidden",

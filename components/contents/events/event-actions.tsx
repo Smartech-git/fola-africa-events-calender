@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ArrowUpRight,
-  CalendarPlus,
-  ChevronDown,
-  Share2,
-} from "lucide-react";
+import { ArrowUpRight, CalendarPlus, ChevronDown, Share2 } from "lucide-react";
 
 import HoverText from "@/components/animations/hover-text";
 import Button, { type ButtonProps } from "@/components/ui/button";
@@ -94,16 +89,16 @@ export function EventDetailActions({
   const path = eventSharePath(event);
   const icon = { size: 18, "aria-hidden": true } as const;
   return (
-    <div className="md:flex grid grid-cols-2 flex-wrap gap-3">
+    <div className="grid grid-cols-2 flex-wrap gap-3 md:flex">
       <EventAttendanceAction
         event={event}
         prominent
-        className="max-md:w-full col-span-2"
+        className="col-span-2 max-md:w-full"
       />
       <Dropdown>
         <DropdownTrigger asChild>
           <Button
-          size="sm"
+            size="sm"
             variant="bordered"
             aria-label={`Add ${event.title} to calendar`}
             startContent={<CalendarPlus {...icon} />}

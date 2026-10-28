@@ -32,7 +32,7 @@ export default function EventSameDay({ city, timezone, date, events }: Props) {
           </DateCircle>
           <h2
             id="same-day-heading"
-            className="flex-1 font-medium font-montreal text-xl tracking-mono md:text-3xl"
+            className="flex-1 font-montreal text-xl font-medium tracking-mono md:text-3xl"
           >
             Also happening on {formatDay(date, "EEEE")}
           </h2>

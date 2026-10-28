@@ -9,11 +9,14 @@ import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
 import EventDateNavigation from "@/components/contents/events/event-date-navigation";
 import EventLayout from "@/components/contents/events/event-layout";
+import NothingHereCard from "@/components/contents/events/nothing-here-card";
+import NothingMatchesCard from "@/components/contents/events/nothing-matches-card";
 import SeasonBand from "@/components/contents/events/season-band";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
 import { useEventCalendar } from "@/hooks/use-event-calendar";
 import { useRouteParam } from "@/hooks/use-route-param";
+import { activeFilterLabels } from "@/lib/events/active-filters";
 import {
   formatDay,
   formatTime,
@@ -93,7 +96,7 @@ export default function EventWeek({
 
   return (
     <div ref={container} className="min-w-0 scroll-mt-header">
-      <EventLayout view="week" date={query.range.from}>
+      <EventLayout view="week" date={query.range.from} today={today}>
         <EventDateNavigation
           view="week"
           date={query.range.from}
@@ -214,6 +217,16 @@ export default function EventWeek({
                 ))}
               </div>
             </div>
+            {!events.length && !pending && (
+              <div className="pt-8">
+                {activeFilterLabels(searchParams, { includeDates: false })
+                  .length ? (
+                  <NothingMatchesCard includeDates={false} />
+                ) : (
+                  <NothingHereCard label={`${cityName} · ${heading.title}`} />
+                )}
+              </div>
+            )}
           </>
         )}
       </SectionWrapper>

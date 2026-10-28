@@ -166,7 +166,7 @@ export function eventTime(event: PublicEvent, timezone: string) {
 
 export function dayPath(city: string, date: string, pathname?: string) {
   const params = new URLSearchParams({
-    [FILTER_KEYS.eventLayoutKey]: "list",
+    [FILTER_KEYS.eventLayoutKey]: "day",
     [FILTER_KEYS.date]: date,
   });
   return `${pathname ?? `/calendar/${encodeURIComponent(city)}`}?${params}`;

@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef } from "react";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { useLenis } from "lenis/react";
@@ -12,6 +11,8 @@ import HoverText from "@/components/animations/hover-text";
 import EventDateNavigation from "@/components/contents/events/event-date-navigation";
 import EventLayout from "@/components/contents/events/event-layout";
 import EventListCard from "@/components/contents/events/event-list-card";
+import NothingHereCard from "@/components/contents/events/nothing-here-card";
+import NothingMatchesCard from "@/components/contents/events/nothing-matches-card";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
 import { FILTER_KEYS } from "@/constants/filters";
@@ -37,6 +38,7 @@ const FILTERABLE_KEYS = [
 
 interface Props {
   city: string;
+  view: "list" | "day";
   cityName: string;
   timezone: string;
   today: string;
@@ -48,6 +50,7 @@ interface Props {
 
 export default function EventList({
   city,
+  view,
   cityName,
   timezone,
   today,
@@ -85,11 +88,12 @@ export default function EventList({
   return (
     <div ref={container}>
       <EventLayout
-        view="list"
+        view={view}
         date={query.range.from ?? query.range.to ?? today}
+        today={today}
       >
         <EventDateNavigation
-          view="list"
+          view={view}
           date={query.range.from ?? query.range.to}
           today={today}
           scrollTarget={container}
@@ -144,31 +148,11 @@ export default function EventList({
         ))}
 
         {!days.length && !error && (
-          <div className="space-y-3 py-12" role="status">
+          <div className="py-12">
             {filtered ? (
-              <>
-                <h2 className="font-montreal text-3xl uppercase">
-                  Nothing matches yet.
-                </h2>
-                <p className="text-xs uppercase">
-                  Try another date or filter.
-                </p>
-                <Button size="sm" className="mt-8" onPress={clearAllParams}>
-                  <HoverText text="Clear filters" />
-                </Button>
-              </>
+              <NothingMatchesCard />
             ) : (
-              <>
-                <h2 className="font-montreal text-3xl uppercase">
-                  Nothing here yet.
-                </h2>
-                <p className="text-xs uppercase">Know something we don’t?</p>
-                <Link href="/submit-event" className="mt-8 block w-fit">
-                  <Button size="sm">
-                    <HoverText text="Submit a happening" />
-                  </Button>
-                </Link>
-              </>
+              <NothingHereCard label={cityName} />
             )}
           </div>
         )}

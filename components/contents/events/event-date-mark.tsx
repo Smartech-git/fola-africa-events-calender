@@ -29,7 +29,7 @@ export default function EventDateMark({
       <span className="text-xl leading-none md:text-[150px]">
         {formatDay(date, "dd")}
       </span>
-      <span className="text-base max-md:hidden tracking-cou sm:text-[22px]">
+      <span className="text-base tracking-cou max-md:hidden sm:text-[22px]">
         {formatDay(date, "MMM yyyy")}
       </span>
     </time>

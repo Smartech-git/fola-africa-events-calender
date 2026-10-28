@@ -31,7 +31,7 @@ export default function EventDetailFacts({
       )}
     >
       {status && <li className="tracking-cou uppercase">{status}</li>}
-      <li className="max-md:hidden" >{timeRange(event, timezone)}</li>
+      <li className="max-md:hidden">{timeRange(event, timezone)}</li>
       <li>{categoryLabel(event)}</li>
       <li>{accessLabel(event)}</li>
       {venue && <li>{venue}</li>}

@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 const instagram = socials.find((social) => social.name === "Instagram");
 
 const linkClass =
-  "font-montreal text-lg tracking-cou text-mono normal-case hover:text-cream";
+  "font-montreal sm:text-lg text-lg tracking-cou text-mono normal-case hover:text-cream";
 
 const captionClass =
   "font-courier text-sm tracking-cou text-white/60 uppercase";
@@ -83,7 +83,7 @@ export default function Footer() {
                         <span
                           aria-hidden="true"
                           className={cn(
-                            "size-1.5 shrink-0 rounded-full bg-current",
+                            "size-2 shrink-0 rounded-full bg-current",
                             active
                               ? "animate-fade animate-duration-500"
                               : "hidden",

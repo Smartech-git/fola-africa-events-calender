@@ -3,10 +3,22 @@ import Link from "next/link";
 import FadeUpText from "@/components/animations/fade-up-text";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import DateCircle from "@/components/ui/date-circle";
+import { FILTER_KEYS } from "@/constants/filters";
 import { DEFAULT_CITY_TIMEZONE } from "@/constants/nav";
 import { cityDate, formatDay } from "@/lib/events/event-list";
 import { formatSeasonDates } from "@/lib/events/season-dates";
 import type { UpcomingSeason } from "@/requests/seasons/get-upcoming-seasons";
+
+function seasonHref(season: UpcomingSeason, timezone: string) {
+  if (!season.city || !season.startDate)
+    return `/seasons/${encodeURIComponent(season.slug)}`;
+  const params = new URLSearchParams({
+    [FILTER_KEYS.dateFrom]: cityDate(season.startDate, timezone),
+  });
+  if (season.endDate)
+    params.set(FILTER_KEYS.dateTo, cityDate(season.endDate, timezone));
+  return `/calendar/${encodeURIComponent(season.city.slug)}?${params}`;
+}
 
 export default function InTheDiary({ seasons }: { seasons: UpcomingSeason[] }) {
   return (
@@ -40,7 +52,7 @@ export default function InTheDiary({ seasons }: { seasons: UpcomingSeason[] }) {
               return (
                 <li key={season.id} className="border-t border-red">
                   <Link
-                    href={`/seasons/${encodeURIComponent(season.slug)}`}
+                    href={seasonHref(season, timezone)}
                     className="group/season flex items-center gap-4 py-5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red sm:gap-7"
                   >
                     <DateCircle className="max-sm:size-12 max-sm:text-base">

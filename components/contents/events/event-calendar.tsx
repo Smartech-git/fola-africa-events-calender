@@ -36,7 +36,7 @@ export default async function EventCalendar({
   const key = JSON.stringify([city, season?.slug, filters]);
   return (
     <>
-      <SectionWrapper className="grid items-center md:grid-cols-[minmax(250px,1fr)_auto] gap-4 gap-y-4 py-4 sm:py-4">
+      <SectionWrapper className="grid items-center gap-4 gap-y-4 py-4 sm:py-4 md:grid-cols-[minmax(250px,1fr)_auto]">
         <EventSearch />
         <FilterMenu
           cities={cities.data}
@@ -71,6 +71,7 @@ export default async function EventCalendar({
           key={key}
           {...common}
           city={city}
+          view={calendar.isDay ? "day" : "list"}
           query={calendar.query}
           initialEvents={calendar.events}
           initialError={calendar.initialError}

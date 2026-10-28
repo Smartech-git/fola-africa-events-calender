@@ -9,6 +9,7 @@ import HoverText from "@/components/animations/hover-text";
 import SurTitle from "@/components/common/sur-title";
 import EventDots from "@/components/contents/events/event-dots";
 import EventListCard from "@/components/contents/events/event-list-card";
+import NothingHereCard from "@/components/contents/events/nothing-here-card";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
 import { FILTER_KEYS } from "@/constants/filters";
@@ -65,7 +66,7 @@ export default function ThisWeek({ city, weekStart, today, events }: Props) {
             <FadeUpText
               as="h2"
               id="this-week-heading"
-              text={`What’s happening in ${city.name}.`}
+              text={`What’s happening in ${city.name}?`}
               className="font-montreal text-4xl font-medium tracking-mono sm:text-[64px]"
             />
           </div>
@@ -144,17 +145,10 @@ export default function ThisWeek({ city, weekStart, today, events }: Props) {
             ))}
           </div>
         ) : (
-          <div role="status" className="flex flex-col items-start gap-3 py-4">
-            <h3 className="font-montreal text-3xl font-medium tracking-mono uppercase">
-              Nothing here yet.
-            </h3>
-            <p className="font-montreal text-lg">Know something we don’t?</p>
-            <Link href="/submit-event" className="mt-3 w-fit">
-              <Button variant="solid" size="md">
-                <HoverText text="Submit a happening" />
-              </Button>
-            </Link>
-          </div>
+          <NothingHereCard
+            as="h3"
+            label={`${city.name} · ${formatDay(selected, "EEE dd MMM")}`}
+          />
         )}
 
         <Link

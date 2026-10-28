@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props) {
   const { city } = await params;
   const header = await getEventsHeader({ city });
   return pageMetadata(
-    `What’s happening in ${header.city.name}`,
+    `What’s happening in ${header.city.name}?`,
     `See what’s happening in ${header.city.name}. Browse ${SITE_NAME} by date, industry and access.`,
     `/calendar/${encodeURIComponent(city)}`,
   );
@@ -24,7 +24,7 @@ export default async function Page({ params, searchParams }: Props) {
   const [{ city }, filters] = await Promise.all([params, searchParams]);
   const header = await getEventsHeader({ city });
   return (
-    <>
+    <div className="relative -mt-sm-header flex w-full flex-col sm:-mt-header">
       <EventsHeader data={header} />
       <EventCalendar
         city={city}
@@ -32,6 +32,6 @@ export default async function Page({ params, searchParams }: Props) {
         seasons={header.seasons}
         filters={filters}
       />
-    </>
+    </div>
   );
 }

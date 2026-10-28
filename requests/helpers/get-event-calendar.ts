@@ -28,6 +28,7 @@ export async function getEventCalendar({
   const view = Array.isArray(viewParam) ? viewParam[0] : viewParam;
   const isWeek = view === "week";
   const isMonth = view === "month";
+  const isDay = view === "day";
   const seasonFrom = season?.startDate
     ? cityDate(season.startDate, timezone)
     : undefined;
@@ -59,7 +60,22 @@ export async function getEventCalendar({
       query = monthQuery;
     } else if (isWeek) {
       weekQuery = scope(getWeekQuery(filters, city, anchor));
-      query = weekQuery;                                              
+      query = weekQuery;
+    } else if (isDay) {
+      // The day view shows one date, today unless another is chosen.
+      const date = filters[FILTER_KEYS.date];
+      query = scope(
+        getListQuery(
+          {
+            ...filters,
+            [FILTER_KEYS.date]:
+              (Array.isArray(date) ? date[0] : date) ?? anchor,
+            [FILTER_KEYS.dateFrom]: undefined,
+            [FILTER_KEYS.dateTo]: undefined,
+          },
+          city,
+        ),
+      );
     } else {
       query = scope(
         getListQuery(filters, city, defaultDateFrom, defaultDateTo),
@@ -83,6 +99,7 @@ export async function getEventCalendar({
     today,
     isWeek,
     isMonth,
+    isDay,
     defaultDateFrom,
     defaultDateTo,
     query,

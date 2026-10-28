@@ -21,12 +21,6 @@ import Button from "@/components/ui/button";
 import Chip from "@/components/ui/chip";
 import DatePicker from "@/components/ui/date-picker";
 import Drawer from "@/components/ui/drawer";
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem_,
-} from "@/components/ui/drop-down";
 import { EVENTS_FILTER, FILTER_KEYS } from "@/constants/filters";
 import { useRouteParam } from "@/hooks/use-route-param";
 import { cn } from "@/lib/utils";
@@ -99,9 +93,6 @@ export default function FilterMenu({
     access: selectedValues(getFilterValues(FILTER_KEYS.access), ACCESS_OPTIONS),
   };
   const counts: Record<string, number> = {
-    [FILTER_KEYS.city]: cities.some((city) => city.slug === currentCity)
-      ? 1
-      : 0,
     [FILTER_KEYS.date]: filters.dateFrom || filters.dateTo ? 1 : 0,
     [FILTER_KEYS.industry]: filters.industry.length,
     [FILTER_KEYS.access]: filters.access.length,
@@ -172,8 +163,8 @@ export default function FilterMenu({
                       className="max-w-xl text-xs uppercase"
                       text={
                         seasonSelected
-                          ? "City and dates are set by the season. Industry and Access allow multiple selections."
-                          : "Choose one city and date range. Industry and Access allow multiple selections."
+                          ? "Dates are set by the season. Industry and Access allow multiple selections."
+                          : "Choose a date range. Industry and Access allow multiple selections."
                       }
                     />
                   </div>
@@ -211,10 +202,9 @@ function FilterOptions({
   defaultDateTo?: string;
   onClose: () => void;
 }) {
-  const { handleParamSet, clearAllParams } = useRouteParam();
+  const { handleParamSet, clearAllParams, getFilterValue } = useRouteParam();
   const [filters, setFilters] = useState(initialFilters);
   const id = useId();
-  const cityLabelId = `${id}-city`;
   const selectedCity = cities.find((city) => city.slug === filters.city);
   const invalidRange = Boolean(
     filters.dateFrom &&
@@ -253,6 +243,10 @@ function FilterOptions({
         [FILTER_KEYS.date]: undefined,
         [FILTER_KEYS.dateFrom]: filters.dateFrom?.toString(),
         [FILTER_KEYS.dateTo]: filters.dateTo?.toString(),
+        // A date range belongs in the list; the day view shows one date.
+        ...(getFilterValue(FILTER_KEYS.eventLayoutKey) === "day" && {
+          [FILTER_KEYS.eventLayoutKey]: "list",
+        }),
       }),
       [FILTER_KEYS.industry]: filters.industry,
       [FILTER_KEYS.access]: filters.access,
@@ -291,55 +285,6 @@ function FilterOptions({
       }}
       className="flex flex-col gap-8 sm:gap-10"
     >
-      <div className="space-y-3">
-        <FilterLabel
-          id={cityLabelId}
-          title="City"
-          count={selectedCity ? 1 : 0}
-        />
-        <Dropdown>
-          <DropdownTrigger
-            aria-labelledby={`${cityLabelId} ${id}-selected-city`}
-            disabled={seasonSelected || !cities.length}
-          >
-            <span id={`${id}-selected-city`} className="min-w-0 truncate">
-              {selectedCity?.name ?? "Select a city"}
-            </span>
-            <ChevronDown size={16} aria-hidden="true" className="shrink-0" />
-          </DropdownTrigger>
-          <DropdownMenu
-            aria-labelledby={cityLabelId}
-            selectionMode="single"
-            disallowEmptySelection
-            selectedKeys={selectedCity ? [selectedCity.slug] : []}
-            onSelectionChange={(keys) => {
-              if (seasonSelected || keys === "all") return;
-              const city = Array.from(keys)[0];
-              if (
-                typeof city === "string" &&
-                city !== filters.city &&
-                cities.some((item) => item.slug === city)
-              ) {
-                setFilters((previous) => ({ ...previous, city }));
-                handleParamSet(
-                  { [FILTER_KEYS.city]: city },
-                  undefined,
-                  "/calendar/" + encodeURIComponent(city),
-                );
-                onClose();
-              }
-            }}
-            emptyContent="No cities available"
-          >
-            {cities.map((city) => (
-              <DropdownItem_ key={city.slug} textValue={city.name}>
-                {city.name}
-              </DropdownItem_>
-            ))}
-          </DropdownMenu>
-        </Dropdown>
-      </div>
-
       <div role="group" aria-labelledby={`${id}-date`} className="space-y-3">
         <FilterLabel id={`${id}-date`} title="Date" />
         <div className="flex w-full flex-wrap gap-2">

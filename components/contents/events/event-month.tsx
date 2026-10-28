@@ -10,10 +10,13 @@ import HoverText from "@/components/animations/hover-text";
 import EventDateNavigation from "@/components/contents/events/event-date-navigation";
 import EventDots from "@/components/contents/events/event-dots";
 import EventLayout from "@/components/contents/events/event-layout";
+import NothingHereCard from "@/components/contents/events/nothing-here-card";
+import NothingMatchesCard from "@/components/contents/events/nothing-matches-card";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
 import { useEventCalendar } from "@/hooks/use-event-calendar";
 import { useRouteParam } from "@/hooks/use-route-param";
+import { activeFilterLabels } from "@/lib/events/active-filters";
 import { cityDate, formatDay, groupEventsByDay } from "@/lib/events/event-list";
 import { getMonthQuery, monthWeeks } from "@/lib/events/event-month";
 import { calendarDateParams } from "@/lib/events/event-week";
@@ -84,7 +87,7 @@ export default function EventMonth({
 
   return (
     <div ref={container} className="min-w-0 scroll-mt-header">
-      <EventLayout view="month" date={query.range.from}>
+      <EventLayout view="month" date={query.range.from} today={today}>
         <EventDateNavigation
           view="month"
           date={query.range.from}
@@ -162,7 +165,6 @@ export default function EventMonth({
                         const dayEvents = byDay.get(date) ?? [];
                         const daySeasons = seasonDays.get(date) ?? [];
                         const count = dayEvents.length;
-                        // The circle marks today and the day a season opens.
                         const marked = date === today || seasonStarts.has(date);
                         return (
                           <td
@@ -209,6 +211,18 @@ export default function EventMonth({
               </table>
             </div>
             <MonthKey />
+            {!events.length && !pending && (
+              <div className="pt-8">
+                {activeFilterLabels(searchParams, { includeDates: false })
+                  .length ? (
+                  <NothingMatchesCard includeDates={false} />
+                ) : (
+                  <NothingHereCard
+                    label={`${cityName} · ${formatDay(query.range.from, "MMMM yyyy")}`}
+                  />
+                )}
+              </div>
+            )}
           </>
         )}
       </SectionWrapper>
@@ -216,15 +230,14 @@ export default function EventMonth({
   );
 }
 
-const ring = "size-5.5 rounded-full border-[1.5px] border-red";
-const dot = "size-2 rounded-full";
+const ring = "block size-5.5 rounded-full border-[1.5px] border-red";
+const dot = "block size-2 rounded-full";
 
-// Figma: Month grid key (332:2470).
 const KEY = [
   { label: "Today", mark: <span className={ring} /> },
   {
     label: "Selected",
-    mark: <span className="size-5.5 rounded-full bg-red" />,
+    mark: <span className="block size-5.5 rounded-full bg-red" />,
   },
   { label: "Public", mark: <span className={cn(dot, "bg-red")} /> },
   { label: "Private", mark: <span className={cn(dot, "border border-red")} /> },
@@ -250,9 +263,11 @@ function MonthKey() {
       {KEY.map((item) => (
         <li
           key={item.label}
-          className="flex items-center gap-2.5 font-courier text-sm tracking-cou uppercase"
+          className="flex items-center gap-2.5 font-courier text-sm tracking-cou text-ink uppercase"
         >
-          <span aria-hidden="true">{item.mark}</span>
+          <span aria-hidden="true" className="flex shrink-0 items-center">
+            {item.mark}
+          </span>
           {item.label}
         </li>
       ))}

@@ -3,6 +3,7 @@
 import type { RefObject } from "react";
 
 import { useLenis } from "lenis/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import HoverText from "@/components/animations/hover-text";
 import Button from "@/components/ui/button";
@@ -51,28 +52,22 @@ export default function EventDateNavigation({
       <Button
         variant="flat"
         size="fit"
-        className="border-b-2 border-b-transparent text-xs focus-visible:outline-2 focus-visible:outline-primary"
+        className="border-b-2 text-red border-b-transparent text-xs"
         aria-label={`Previous ${unit}`}
+        startContent={<ChevronLeft size={16} aria-hidden="true" />}
         onPress={() => navigate(shift(-1))}
       >
-        <HoverText text="Previous" />
+        <HoverText text="Previous" className="max-sm:hidden" />
       </Button>
       <Button
         variant="flat"
         size="fit"
-        className="border-b-2 border-b-transparent text-xs focus-visible:outline-2 focus-visible:outline-primary"
-        onPress={() => navigate(today)}
-      >
-        <HoverText text="Today" />
-      </Button>
-      <Button
-        variant="flat"
-        size="fit"
-        className="border-b-2 border-b-transparent text-xs focus-visible:outline-2 focus-visible:outline-primary"
+        className="border-b-2 border-b-transparent text-xs text-red"
         aria-label={`Next ${unit}`}
+        endContent={<ChevronRight size={16} aria-hidden="true" />}
         onPress={() => navigate(shift(1))}
       >
-        <HoverText text="Next" />
+        <HoverText text="Next" className="max-sm:hidden" />
       </Button>
     </div>
   );
