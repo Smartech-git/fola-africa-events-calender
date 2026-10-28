@@ -10,7 +10,10 @@ import {
   SUBMITTER_RELATIONSHIPS,
   VISIBILITY_OPTIONS,
 } from "@/payload/constants";
-import { queueEventEmail } from "@/payload/emails/event-email-task";
+import {
+  queueEventEmail,
+  queueTeamAlert,
+} from "@/payload/emails/event-email-task";
 import {
   deleteEventReviews,
   queueEventReview,
@@ -52,7 +55,7 @@ export const events: CollectionConfig = {
   indexes: [{ fields: ["city", "status", "startAt"] }],
   hooks: {
     beforeChange: [validateEvent],
-    afterChange: [queueEventReview, queueEventEmail],
+    afterChange: [queueEventReview, queueEventEmail, queueTeamAlert],
     beforeDelete: [deleteEventReviews],
   },
   fields: [

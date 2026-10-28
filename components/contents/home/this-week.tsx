@@ -7,6 +7,7 @@ import Link from "next/link";
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
 import SurTitle from "@/components/common/sur-title";
+import EventDots from "@/components/contents/events/event-dots";
 import EventListCard from "@/components/contents/events/event-list-card";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
@@ -20,9 +21,6 @@ import {
 } from "@/lib/events/event-list";
 import { cn } from "@/lib/utils";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
-
-/** Dots under a day; more events than this still show this many. */
-const MAX_DOTS = 3;
 
 interface Props {
   city: { slug: string; name: string; timezone: string };
@@ -109,16 +107,10 @@ export default function ThisWeek({ city, weekStart, today, events }: Props) {
                     >
                       {formatDay(day, "d")}
                     </span>
-                    <span aria-hidden="true" className="flex h-1.5 gap-1">
-                      {Array.from({ length: Math.min(count, MAX_DOTS) }).map(
-                        (_, dot) => (
-                          <span
-                            key={dot}
-                            className="size-1.5 rounded-full bg-red"
-                          />
-                        ),
-                      )}
-                    </span>
+                    <EventDots
+                      events={byDay.get(day) ?? []}
+                      className="h-1.75"
+                    />
                   </button>
                 </li>
               );

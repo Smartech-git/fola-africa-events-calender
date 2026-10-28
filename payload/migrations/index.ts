@@ -6,6 +6,7 @@ import * as migration_20261003_event_email_notifications from "./20261003-event-
 import * as migration_20261005_200240_staged_submission_relations from "./20261005_200240_staged_submission_relations";
 import * as migration_20261005_221554_selective_relation_updates from "./20261005_221554_selective_relation_updates";
 import * as migration_20261022_155651_happenings_vocabulary from "./20261022_155651_happenings_vocabulary";
+import * as migration_20261028_005048_team_submission_alerts from "./20261028_005048_team_submission_alerts";
 
 export const migrations = [
   {
@@ -47,5 +48,10 @@ export const migrations = [
     up: migration_20261022_155651_happenings_vocabulary.up,
     down: migration_20261022_155651_happenings_vocabulary.down,
     name: "20261022_155651_happenings_vocabulary",
+  },
+  {
+    up: migration_20261028_005048_team_submission_alerts.up,
+    down: migration_20261028_005048_team_submission_alerts.down,
+    name: "20261028_005048_team_submission_alerts",
   },
 ];

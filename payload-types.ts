@@ -112,9 +112,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     'review-settings': ReviewSetting;
+    'notification-settings': NotificationSetting;
   };
   globalsSelect: {
     'review-settings': ReviewSettingsSelect<false> | ReviewSettingsSelect<true>;
+    'notification-settings': NotificationSettingsSelect<false> | NotificationSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -550,7 +552,7 @@ export interface EventReview {
   createdAt: string;
 }
 /**
- * Private delivery records for publication emails and historical submission receipts. Failed jobs can be retried from Jobs.
+ * Private delivery records for publication emails, submission alerts to the team and historical submission receipts. Sent through ZeptoMail. A failure marked uncertain may have been delivered: check the ZeptoMail logs before sending again.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "email-notifications".
@@ -559,7 +561,11 @@ export interface EmailNotification {
   id: number;
   key: string;
   eventId: number;
-  kind: 'submitted' | 'published';
+  kind: 'submitted' | 'published' | 'team';
+  /**
+   * Set for team alerts. Publication emails go to the submitter.
+   */
+  recipient?: string | null;
   status: 'queued' | 'sent' | 'skipped' | 'failed';
   message?:
     | {
@@ -990,6 +996,7 @@ export interface EmailNotificationsSelect<T extends boolean = true> {
   key?: T;
   eventId?: T;
   kind?: T;
+  recipient?: T;
   status?: T;
   message?: T;
   firstAttemptAt?: T;
@@ -1089,6 +1096,26 @@ export interface ReviewSetting {
   createdAt?: string | null;
 }
 /**
+ * Who the Happenings team emails when an event is submitted. Each address gets its own copy, with the submitter set as the reply-to.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification-settings".
+ */
+export interface NotificationSetting {
+  id: number;
+  /**
+   * Emailed as soon as a new event is submitted through the public form. Leave empty to stop these alerts.
+   */
+  submissionRecipients?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "review-settings_select".
  */
@@ -1096,6 +1123,21 @@ export interface ReviewSettingsSelect<T extends boolean = true> {
   promptVersion?: T;
   systemPrompt?: T;
   model?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification-settings_select".
+ */
+export interface NotificationSettingsSelect<T extends boolean = true> {
+  submissionRecipients?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

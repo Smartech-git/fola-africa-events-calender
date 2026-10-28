@@ -103,6 +103,7 @@ export default function EmailPreview({
             >
               <option value="published">Happening is live</option>
               <option value="submitted">Submission received</option>
+              <option value="team">Team alert: new submission</option>
             </select>
           </label>
           <label style={{ ...caps, color: colours.red }}>
@@ -145,7 +146,7 @@ export default function EmailPreview({
         <div style={{ overflowX: "auto", paddingBottom: 16 }}>
           {format === "html" ? (
             <iframe
-              title={`${kind === "published" ? "Happening is live" : "Submission received"} email preview`}
+              title={`${{ published: "Happening is live", submitted: "Submission received", team: "Team alert" }[kind]} email preview`}
               srcDoc={message.html}
               sandbox="allow-same-origin"
               style={{ ...frame, height: 1000, background: colours.cream }}

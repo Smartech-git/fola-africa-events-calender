@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useRef } from "react";
+import { useRef } from "react";
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -8,16 +8,16 @@ import { usePathname, useSearchParams } from "next/navigation";
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
 import EventDateNavigation from "@/components/contents/events/event-date-navigation";
+import EventDots from "@/components/contents/events/event-dots";
 import EventLayout from "@/components/contents/events/event-layout";
-import SeasonBand from "@/components/contents/events/season-band";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
 import { useEventCalendar } from "@/hooks/use-event-calendar";
 import { useRouteParam } from "@/hooks/use-route-param";
-import { formatDay, groupEventsByDay } from "@/lib/events/event-list";
+import { cityDate, formatDay, groupEventsByDay } from "@/lib/events/event-list";
 import { getMonthQuery, monthWeeks } from "@/lib/events/event-month";
 import { calendarDateParams } from "@/lib/events/event-week";
-import { getSeasonDays, getSeasonBands } from "@/lib/events/season-calendar";
+import { getSeasonDays } from "@/lib/events/season-calendar";
 import { cn } from "@/lib/utils";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
 import type { SeasonSummary } from "@/requests/events/get-events-header";
@@ -59,13 +59,18 @@ export default function EventMonth({
     invalidFilters,
   });
   const weeks = monthWeeks(query.range.from);
-  const counts = new Map(
+  const byDay = new Map(
     groupEventsByDay(events, timezone, query.range).map((day) => [
       day.date,
-      day.events.length,
+      day.events,
     ]),
   );
   const seasonDays = getSeasonDays(seasons, timezone, query.range);
+  const seasonStarts = new Set(
+    seasons.flatMap((season) =>
+      season.startDate ? [cityDate(season.startDate, timezone)] : [],
+    ),
+  );
   const dayHref = (date: string) => {
     const params = new URLSearchParams(searchParams.toString());
     for (const [key, value] of Object.entries(
@@ -116,15 +121,13 @@ export default function EventMonth({
           </div>
         ) : (
           <>
-            <p className="mb-4 w-fit bg-secondary px-2 py-0.5 text-xxs uppercase sm:text-xs">
-              Select a date to open the day's full listing.
-            </p>
             <div
               role="region"
               aria-label="Monthly event calendar"
               tabIndex={0}
-              className="w-full min-w-0 overflow-x-auto overscroll-x-contain pb-4 focus-visible:outline-2 focus-visible:outline-primary"
+              className="w-full min-w-0 overflow-x-auto overscroll-x-contain pb-4 focus-visible:outline-2 focus-visible:outline-red"
             >
+              {/* Figma: Month grid (332:2304). */}
               <table className="w-full min-w-200 table-fixed border-collapse text-left">
                 <caption className="sr-only">
                   {cityName} events for{" "}
@@ -137,7 +140,7 @@ export default function EventMonth({
                         <th
                           scope="col"
                           key={day}
-                          className="px-2 pb-2 text-xs font-medium uppercase"
+                          className="pb-2.5 font-courier text-sm font-normal tracking-cou text-red uppercase"
                         >
                           {day}
                         </th>
@@ -147,107 +150,112 @@ export default function EventMonth({
                 </thead>
                 <tbody>
                   {weeks.map((week) => (
-                    <Fragment key={week[0]}>
-                      <tr>
-                        {getSeasonBands(week, seasonDays).map((band) => (
-                          <td
-                            key={band.date}
-                            colSpan={band.span}
-                            className="p-0 align-top"
-                          >
-                            <SeasonBand
-                              seasons={band.seasons}
-                              date={band.date}
-                            />
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        {week.map((date) => {
-                          const inMonth =
-                            date >= query.range.from && date <= query.range.to;
-                          const count = counts.get(date) ?? 0;
-                          const content = (
-                            <>
-                              <div className="flex items-center gap-1.5">
-                                {/* The circle marks today, as it marks the O in the wordmark. */}
-                                <time
-                                  dateTime={date}
-                                  className={cn(
-                                    "flex size-10 items-center justify-center rounded-full border border-transparent text-2xl leading-8 font-medium",
-                                    !inMonth && "text-light-gray",
-                                    date === today && "border-current",
-                                  )}
-                                >
-                                  {formatDay(date, "d")}
-                                </time>
-                                {inMonth && count > 0 && (
-                                  <span
-                                    aria-hidden="true"
-                                    className="size-2 rounded-full bg-primary"
-                                  />
-                                )}
-                              </div>
-                              <div className="mt-3 flex min-h-7 items-center gap-1 text-xs uppercase sm:text-sm">
-                                {inMonth && (
-                                  <>
-                                    {count > 0 && (
-                                      <div className="flex h-5 min-w-5 items-center justify-center bg-secondary text-xs font-bold">
-                                        {count}
-                                      </div>
-                                    )}
-                                    <HoverText
-                                      text={`${count === 1 ? "event" : "events"}`}
-                                      className={cn(
-                                        "mt-0.5 font-montreal text-primary",
-                                        count === 0 && "text-light-gray",
-                                      )}
-                                    />
-                                  </>
-                                )}
-                              </div>
-                              <div className="mt-3 h-px bg-light-gray" />
-                            </>
-                          );
+                    <tr key={week[0]}>
+                      {week.map((date) => {
+                        if (date < query.range.from || date > query.range.to)
                           return (
                             <td
                               key={date}
-                              className="min-w-20 p-0 pb-4 align-top"
-                            >
-                              {inMonth ? (
-                                <Link
-                                  href={dayHref(date)}
-                                  scroll={false}
-                                  aria-current={
-                                    date === today ? "date" : undefined
-                                  }
-                                  aria-label={`${formatDay(date, "EEEE d MMMM yyyy")}, ${count} ${count === 1 ? "event" : "events"}: view day`}
-                                  className={cn(
-                                    "block px-2 pt-3 pb-2 transition-colors hover:text-primary focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary",
-                                  )}
-                                >
-                                  {content}
-                                </Link>
-                              ) : (
-                                <div
-                                  className="px-2 pt-3 pb-2"
-                                  aria-label={`${formatDay(date, "d MMMM yyyy")}, outside this month`}
-                                >
-                                  {content}
-                                </div>
-                              )}
-                            </td>
+                              className="border-t border-ink/12 p-0"
+                            />
                           );
-                        })}
-                      </tr>
-                    </Fragment>
+                        const dayEvents = byDay.get(date) ?? [];
+                        const daySeasons = seasonDays.get(date) ?? [];
+                        const count = dayEvents.length;
+                        // The circle marks today and the day a season opens.
+                        const marked = date === today || seasonStarts.has(date);
+                        return (
+                          <td
+                            key={date}
+                            className="border-t border-ink/85 p-0 align-top"
+                          >
+                            <Link
+                              href={dayHref(date)}
+                              scroll={false}
+                              aria-current={date === today ? "date" : undefined}
+                              aria-label={[
+                                formatDay(date, "EEEE d MMMM yyyy"),
+                                `${count} ${count === 1 ? "event" : "events"}`,
+                                ...daySeasons.map((season) => season.name),
+                              ].join(", ")}
+                              className="group/day flex min-h-30 flex-col items-start gap-2.5 pt-3 pb-4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-red sm:min-h-37.5"
+                            >
+                              <time
+                                dateTime={date}
+                                className={cn(
+                                  "flex size-12 items-center justify-center rounded-full border-[1.5px] font-courier text-lg tracking-cou transition-colors group-hover/day:border-red group-hover/day:bg-red group-hover/day:text-white group-focus-visible/day:border-red group-focus-visible/day:bg-red group-focus-visible/day:text-white sm:size-16 sm:text-[22px]",
+                                  marked
+                                    ? "border-red text-red"
+                                    : "border-transparent",
+                                )}
+                              >
+                                {formatDay(date, "d")}
+                              </time>
+                              {daySeasons.length > 0 && (
+                                <span className="flex flex-col gap-0.5 font-courier text-xs tracking-cou text-red uppercase">
+                                  {daySeasons.map((season) => (
+                                    <span key={season.id}>{season.name}</span>
+                                  ))}
+                                </span>
+                              )}
+                              <EventDots events={dayEvents} />
+                            </Link>
+                          </td>
+                        );
+                      })}
+                    </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+            <MonthKey />
           </>
         )}
       </SectionWrapper>
     </div>
+  );
+}
+
+const ring = "size-5.5 rounded-full border-[1.5px] border-red";
+const dot = "size-2 rounded-full";
+
+// Figma: Month grid key (332:2470).
+const KEY = [
+  { label: "Today", mark: <span className={ring} /> },
+  {
+    label: "Selected",
+    mark: <span className="size-5.5 rounded-full bg-red" />,
+  },
+  { label: "Public", mark: <span className={cn(dot, "bg-red")} /> },
+  { label: "Private", mark: <span className={cn(dot, "border border-red")} /> },
+  {
+    label: "Busy",
+    mark: (
+      <span className="flex gap-1">
+        {[0, 1, 2].map((index) => (
+          <span key={index} className={cn(dot, "bg-red")} />
+        ))}
+      </span>
+    ),
+  },
+  { label: "Significant · Labelled", mark: <span className={ring} /> },
+];
+
+function MonthKey() {
+  return (
+    <ul
+      aria-label="Calendar key"
+      className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-4 sm:mt-10"
+    >
+      {KEY.map((item) => (
+        <li
+          key={item.label}
+          className="flex items-center gap-2.5 font-courier text-sm tracking-cou uppercase"
+        >
+          <span aria-hidden="true">{item.mark}</span>
+          {item.label}
+        </li>
+      ))}
+    </ul>
   );
 }

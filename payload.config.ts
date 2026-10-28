@@ -2,7 +2,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import { postgresAdapter } from "@payloadcms/db-postgres";
-import { resendAdapter } from "@payloadcms/email-resend";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
 import sharp from "sharp";
@@ -20,12 +19,13 @@ import { users } from "@/payload/collections/users";
 import { venues } from "@/payload/collections/venues";
 import { emailSettings } from "@/payload/emails/email-settings";
 import { sendEventEmailTask } from "@/payload/emails/event-email-task";
+import { zeptomailAdapter } from "@/payload/emails/zeptomail-adapter";
+import { NotificationSettings } from "@/payload/globals/notification-settings";
 import { ReviewSettings } from "@/payload/globals/review-settings";
 import { reviewEventTask } from "@/payload/reviews/review-task";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
-const email = emailSettings();
 
 export default buildConfig({
   admin: {
@@ -51,7 +51,7 @@ export default buildConfig({
     eventReviews,
     emailNotifications,
   ],
-  globals: [ReviewSettings],
+  globals: [ReviewSettings, NotificationSettings],
   jobs: {
     tasks: [reviewEventTask, sendEventEmailTask],
     enableConcurrencyControl: true,
@@ -70,13 +70,7 @@ export default buildConfig({
     }),
   },
   editor: lexicalEditor(),
-  email: email
-    ? resendAdapter({
-        apiKey: email.apiKey,
-        defaultFromAddress: email.sender,
-        defaultFromName: email.senderName,
-      })
-    : undefined,
+  email: emailSettings() ? zeptomailAdapter() : undefined,
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),

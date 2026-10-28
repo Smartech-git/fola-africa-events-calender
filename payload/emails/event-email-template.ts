@@ -21,7 +21,7 @@ const label = (size = 12, color: string = theme.ink) =>
 const body = `font-family:${displayFont};font-size:16px;line-height:1.6;color:${theme.ink};word-wrap:break-word;overflow-wrap:anywhere;`;
 const STEPS = ["Submitted", "Approved", "Live"];
 
-function escapeHtml(value: string) {
+export function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, (character) => {
     const entities: Record<string, string> = {
       "&": "&amp;",

@@ -7,9 +7,16 @@ export const emailNotifications: CollectionConfig = {
   admin: {
     useAsTitle: "key",
     group: "Notifications",
-    defaultColumns: ["eventId", "kind", "status", "sentAt", "createdAt"],
+    defaultColumns: [
+      "eventId",
+      "kind",
+      "recipient",
+      "status",
+      "sentAt",
+      "createdAt",
+    ],
     description:
-      "Private delivery records for publication emails and historical submission receipts. Failed jobs can be retried from Jobs.",
+      "Private delivery records for publication emails, submission alerts to the team and historical submission receipts. Sent through ZeptoMail. A failure marked uncertain may have been delivered: check the ZeptoMail logs before sending again.",
   },
   access: {
     create: noAccess,
@@ -36,8 +43,17 @@ export const emailNotifications: CollectionConfig = {
       name: "kind",
       type: "select",
       required: true,
-      options: ["submitted", "published"],
+      options: ["submitted", "published", "team"],
       admin: { readOnly: true },
+    },
+    {
+      name: "recipient",
+      type: "email",
+      admin: {
+        readOnly: true,
+        description:
+          "Set for team alerts. Publication emails go to the submitter.",
+      },
     },
     {
       name: "status",
