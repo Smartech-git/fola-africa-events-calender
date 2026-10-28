@@ -67,6 +67,9 @@ export function RelationResolution({
         name={props.field.name}
         path={props.path}
         label={props.field.label}
+        // Approval needs a decision; the field validator enforces it.
+        required
+        description={props.field.admin?.description}
         options={props.field.options.map((option) =>
           typeof option === "string"
             ? { label: option, value: option }

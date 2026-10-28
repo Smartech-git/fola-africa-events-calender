@@ -13,8 +13,13 @@ import {
   DEFAULT_CITY_SLUG,
   DEFAULT_CITY_TIMEZONE,
 } from "@/constants/nav";
-import { cityDate, shiftDate } from "@/lib/events/event-list";
+import {
+  cityDate,
+  shiftDate,
+  type EventSearchParams,
+} from "@/lib/events/event-list";
 import { pageMetadata, siteDescription } from "@/lib/metadata";
+import { getSiteCity } from "@/lib/site-city";
 import { getEventList } from "@/requests/events/get-event-list";
 import { getCities } from "@/requests/get-cities";
 import { getUpcomingSeasons } from "@/requests/seasons/get-upcoming-seasons";
@@ -24,29 +29,34 @@ export const metadata = pageMetadata(SITE_NAME, siteDescription, "/");
 // "Today" and "this week" depend on the request time in the city.
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
-  const today = cityDate(new Date(), DEFAULT_CITY_TIMEZONE);
-  const weekStart = shiftDate(today, -parseISO(today).getDay());
+interface Props {
+  searchParams: Promise<EventSearchParams>;
+}
 
-  const [cities, weekEvents, seasons] = await Promise.all([
+export default async function Home({ searchParams }: Props) {
+  const [cities, seasons, requested] = await Promise.all([
     getCities({}),
-    getEventList({
-      city: DEFAULT_CITY_SLUG,
-      dateFrom: weekStart,
-      dateTo: shiftDate(weekStart, 6),
-    }),
     getUpcomingSeasons({ limit: 10 }),
+    searchParams.then(getSiteCity),
   ]);
+  const city = cities.data.find((item) => item.slug === requested) ?? {
+    slug: DEFAULT_CITY_SLUG,
+    name: DEFAULT_CITY_NAME,
+    timezone: DEFAULT_CITY_TIMEZONE,
+  };
+  const today = cityDate(new Date(), city.timezone);
+  const weekStart = shiftDate(today, -parseISO(today).getDay());
+  const weekEvents = await getEventList({
+    city: city.slug,
+    dateFrom: weekStart,
+    dateTo: shiftDate(weekStart, 6),
+  });
 
   return (
     <div className="relative -mt-sm-header flex min-h-dvh w-full flex-col items-center bg-primary-light sm:-mt-header">
-      <Hero header={<Header isLight />} />
+      <Hero header={<Header isLight />} city={city} cities={cities.data} />
       <ThisWeek
-        city={{
-          slug: DEFAULT_CITY_SLUG,
-          name: DEFAULT_CITY_NAME,
-          timezone: DEFAULT_CITY_TIMEZONE,
-        }}
+        city={city}
         weekStart={weekStart}
         today={today}
         events={weekEvents}

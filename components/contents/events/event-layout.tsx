@@ -8,7 +8,6 @@ import Button from "@/components/ui/button";
 import { EVENTS_LAYOUT, FILTER_KEYS } from "@/constants/filters";
 import { useRouteParam } from "@/hooks/use-route-param";
 import { calendarDateParams, type CalendarView } from "@/lib/events/event-week";
-import { cn } from "@/lib/utils";
 
 interface Props {
   view: CalendarView;

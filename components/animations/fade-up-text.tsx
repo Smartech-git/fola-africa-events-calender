@@ -150,6 +150,10 @@ export default function FadeUpText({
   // Callers can still opt into w-fit through className.
   return (
     <Tag
+      // SplitText rewrites the children, so new text needs a fresh element.
+      key={
+        typeof text === "string" || typeof text === "number" ? text : undefined
+      }
       id={id}
       ref={(element) => {
         textRef.current = element;

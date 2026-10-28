@@ -7,8 +7,10 @@ import { ArrowRight } from "lucide-react";
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
 import SectionWrapper from "@/components/layout/section-wrapper";
+import { FILTER_KEYS } from "@/constants/filters";
 import { DEFAULT_CITY_SLUG } from "@/constants/nav";
 import { useCalendarToday } from "@/hooks/use-calendar-today";
+import { useRouteParam } from "@/hooks/use-route-param";
 import { cn } from "@/lib/utils";
 import type { Cities as CitiesType, CitySummary } from "@/requests/get-cities";
 
@@ -60,7 +62,9 @@ export default function Cities({ cities, headingLevel = "h2" }: Props) {
 
 function CityRow({ city }: { city: CitySummary }) {
   const { totalEvents } = useCalendarToday({ city });
-  const current = city.slug === DEFAULT_CITY_SLUG;
+  const { getFilterValue } = useRouteParam();
+  const current =
+    city.slug === (getFilterValue(FILTER_KEYS.siteCity) ?? DEFAULT_CITY_SLUG);
 
   return (
     <li className="border-t border-white/90 last:border-b sm:last:border-b-0">

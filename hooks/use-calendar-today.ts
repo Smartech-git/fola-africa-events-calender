@@ -9,7 +9,9 @@ import type { CitySummary } from "@/requests/get-cities";
 import type { Events } from "@/requests/helpers/types";
 
 /** Today's date and event count for a city, in the city's own time zone. */
-export const useCalendarToday = ({ city }: { city?: CitySummary } = {}) => {
+export const useCalendarToday = ({
+  city,
+}: { city?: Pick<CitySummary, "slug" | "name" | "timezone"> } = {}) => {
   const timezone = city?.timezone ?? DEFAULT_CITY_TIMEZONE;
   const date = cityDate(new Date(), timezone);
   const params = new URLSearchParams({

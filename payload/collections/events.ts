@@ -21,6 +21,7 @@ import {
 } from "@/payload/event-hooks";
 import { slugField } from "@/payload/fields/slug-field";
 import {
+  approvalDecision,
   httpURL,
   normalizeWebURL,
   instagramURL,
@@ -200,6 +201,7 @@ export const events: CollectionConfig = {
       label: "Organiser decision",
       type: "select",
       access: { create: adminField, update: adminField },
+      validate: approvalDecision("organiser"),
       options: [
         { label: "Use the selected existing organiser", value: "use-existing" },
         { label: "Update an existing organiser…", value: "update-existing" },
@@ -210,6 +212,7 @@ export const events: CollectionConfig = {
       ],
       admin: {
         condition: (data) => Boolean(data.submittedOrganiser?.name),
+        description: "Required before approval or publication.",
         components: {
           Field: {
             path: "@/payload/components/relation-resolution#RelationResolution",
@@ -255,6 +258,7 @@ export const events: CollectionConfig = {
       label: "Venue decision",
       type: "select",
       access: { create: adminField, update: adminField },
+      validate: approvalDecision("venue"),
       options: [
         { label: "Use the selected existing venue", value: "use-existing" },
         { label: "Update an existing venue…", value: "update-existing" },
@@ -266,6 +270,7 @@ export const events: CollectionConfig = {
       ],
       admin: {
         condition: (data) => Boolean(data.submittedVenue?.name),
+        description: "Required before approval or publication.",
         components: {
           Field: {
             path: "@/payload/components/relation-resolution#RelationResolution",

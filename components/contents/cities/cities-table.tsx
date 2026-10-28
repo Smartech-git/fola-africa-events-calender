@@ -23,7 +23,21 @@ const COLUMNS = {
 
 const caps = "font-courier tracking-cou uppercase";
 
-export default function CitiesTable({ cities }: { cities: CityOverview[] }) {
+interface Props {
+  cities: CityOverview[];
+  currentCity?: string;
+}
+
+export default function CitiesTable({
+  cities,
+  currentCity = DEFAULT_CITY_SLUG,
+}: Props) {
+  // The visitor's city leads; the rest keep their order.
+  const ordered = [
+    ...cities.filter((city) => city.slug === currentCity),
+    ...cities.filter((city) => city.slug !== currentCity),
+  ];
+
   return (
     <SectionWrapper className="gap-0">
       <div
@@ -41,10 +55,15 @@ export default function CitiesTable({ cities }: { cities: CityOverview[] }) {
         <span className={COLUMNS.arrow} />
       </div>
 
-      {cities.length ? (
+      {ordered.length ? (
         <ul className="flex flex-col">
-          {cities.map((city, index) => (
-            <CityRow key={city.id} city={city} index={index} />
+          {ordered.map((city, index) => (
+            <CityRow
+              key={city.id}
+              city={city}
+              index={index}
+              current={city.slug === currentCity}
+            />
           ))}
         </ul>
       ) : (
@@ -57,8 +76,15 @@ export default function CitiesTable({ cities }: { cities: CityOverview[] }) {
   );
 }
 
-function CityRow({ city, index }: { city: CityOverview; index: number }) {
-  const current = city.slug === DEFAULT_CITY_SLUG;
+function CityRow({
+  city,
+  index,
+  current,
+}: {
+  city: CityOverview;
+  index: number;
+  current: boolean;
+}) {
   const season = city.nextSeason;
   const seasonDates = season ? formatSeasonDates(season, city.timezone) : null;
   const seasonDay = season?.startDate
@@ -78,7 +104,14 @@ function CityRow({ city, index }: { city: CityOverview; index: number }) {
           current ? "bg-red" : "text-ink hover:bg-cream",
         )}
       >
-        <span className={cn(caps, COLUMNS.number, "text-[22px] max-lg:hidden", current && "text-white")}>
+        <span
+          className={cn(
+            caps,
+            COLUMNS.number,
+            "text-[22px] max-lg:hidden",
+            current && "text-white",
+          )}
+        >
           {String(index + 1).padStart(2, "0")}
         </span>
 

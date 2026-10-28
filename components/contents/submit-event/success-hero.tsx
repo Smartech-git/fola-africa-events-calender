@@ -26,7 +26,7 @@ export default function SuccessHero() {
           as="h1"
           text="We’ve got it!"
           delay={0.1}
-          className="font-montreal text-7xl font-medium tracking-mono uppercase sm:text-9xl xl:text-[200px]"
+          className="font-montreal text-6xl font-medium tracking-mono uppercase md:text-7xl xl:text-9xl"
         />
         <FadeUpText
           text="Your Happening has been submitted for review."
@@ -43,7 +43,7 @@ export default function SuccessHero() {
           >
             <HoverText text="View my happenings" />
           </Button> */}
-          <Link href={NAV[0].link} className="w-full mt-8 sm:w-fit">
+          <Link href={NAV[0].link} className="mt-8 w-full sm:w-fit">
             <Button variant="outlineWhite" size="md" className="w-full">
               <HoverText text="Back to calendar" />
             </Button>

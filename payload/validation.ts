@@ -1,6 +1,34 @@
 import type { FieldHook } from "payload";
 
-import { LINK_REQUIRED_ACCESS, LINKED_ACCESS } from "@/payload/constants";
+import {
+  LINK_REQUIRED_ACCESS,
+  LINKED_ACCESS,
+  PUBLIC_STATUSES,
+} from "@/payload/constants";
+
+/**
+ * Approving or publishing a public submission needs a decision for each
+ * submitted organiser or venue. Saving it before approval does not.
+ */
+export const approvalDecision =
+  (relation: "organiser" | "venue") =>
+  (
+    value: unknown,
+    { data }: { data: Record<string, unknown> | undefined },
+  ): true | string => {
+    const submitted = data?.[
+      relation === "organiser" ? "submittedOrganiser" : "submittedVenue"
+    ] as { name?: string | null } | undefined;
+    const status = String(data?.status ?? "");
+    if (
+      value ||
+      data?.source !== "submission" ||
+      !submitted?.name ||
+      !["approved", ...PUBLIC_STATUSES].includes(status)
+    )
+      return true;
+    return `Choose a ${relation} decision before approval.`;
+  };
 
 export function httpURL(value: unknown): true | string {
   if (!value || webURL(value)) return true;

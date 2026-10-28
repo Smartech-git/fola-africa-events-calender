@@ -11,11 +11,12 @@ import Fade from "@/components/animations/fade";
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
 // import Logo from "@/components/header/logo";
+import CitySelect from "@/components/contents/home/city-select";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
-import { DEFAULT_CITY_SLUG, NAV } from "@/constants/nav";
 import { useCalendarToday } from "@/hooks/use-calendar-today";
 import { dayPath, formatDay } from "@/lib/events/event-list";
+import type { CitySummary } from "@/requests/get-cities";
 
 const EXPO_OUT = [0.16, 1, 0.3, 1] as const;
 
@@ -23,10 +24,12 @@ const label = "font-courier text-xs tracking-cou uppercase text-end sm:text-sm";
 
 interface Props {
   header?: ReactNode;
+  city: Pick<CitySummary, "slug" | "name" | "timezone">;
+  cities: CitySummary[];
 }
 
-export default function Hero({ header }: Props) {
-  const { totalEvents, cityName, date } = useCalendarToday();
+export default function Hero({ header, city, cities }: Props) {
+  const { totalEvents, cityName, date } = useCalendarToday({ city });
   const day = formatDay(date, "EEE dd MMM");
   const count =
     totalEvents === undefined
@@ -53,12 +56,19 @@ export default function Hero({ header }: Props) {
             delay={0.3}
             className="max-w-155 font-montreal text-lg text-cream sm:text-2xl"
           />
-
-          <Link href={NAV[0].link} className="lg:mt-4 mt-12 w-full sm:w-fit">
-            <Button variant="ink" size="md" className="w-full">
-              <HoverText text="See what’s happening" />
-            </Button>
-          </Link>
+          <div className="mt-12 flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:mt-4">
+            <Link
+              href={`/calendar/${encodeURIComponent(city.slug)}`}
+              className="w-full sm:w-fit"
+            >
+              <Button variant="ink" size="md" className="w-full">
+                <HoverText text="See what’s happening" />
+              </Button>
+            </Link>
+            {cities.length > 1 && (
+              <CitySelect cities={cities} value={city.slug} />
+            )}
+          </div>
         </SectionWrapper>
 
         <TodayMark
@@ -66,7 +76,7 @@ export default function Hero({ header }: Props) {
           key={count}
           digits={formatDay(date, "dd").split("")}
           caption={count ? `${count} in ${cityName}` : ""}
-          href={dayPath(DEFAULT_CITY_SLUG, date)}
+          href={dayPath(city.slug, date)}
           label={`See today’s happenings in ${cityName}, ${day}`}
         />
 
@@ -117,7 +127,7 @@ function TodayMark({
 
           className={label}
         />
-        <div className="relative lg:right-[-1.6vw] right-[-4.5vw] flex font-courier text-[32vw] leading-none lg:text-[18vw]">
+        <div className="relative right-[-4.5vw] flex font-courier text-[32vw] leading-none lg:right-[-1.6vw] lg:text-[18vw]">
           {digits.map((digit, index) => (
             <Fade
               key={index}
