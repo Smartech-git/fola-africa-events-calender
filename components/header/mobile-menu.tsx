@@ -11,7 +11,7 @@ import Fade from "@/components/animations/fade";
 import FadeUpText from "@/components/animations/fade-up-text";
 import Contact from "@/components/footer/contact";
 import Logo from "@/components/header/logo";
-import SearchEvent from "@/components/header/search-event";
+// import SearchEvent from "@/components/header/search-event";
 // import SignIn from "@/components/header/sign-in";
 import SubmitEvent from "@/components/header/submit-event";
 import LenisProvider from "@/components/providers/lenis-provider";
@@ -77,7 +77,7 @@ export default function MobileMenu({ className }: Props) {
             <Drawer.Header className="flex items-center justify-between gap-4 py-4">
               <Logo variant="white" className="w-50" />
               <div className="flex items-center gap-3">
-                <SearchEvent className="text-white" />
+                {/* <SearchEvent className="text-white" /> */}
                 <Button
                   variant="onWhite"
                   size="icon"
