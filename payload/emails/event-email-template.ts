@@ -38,9 +38,9 @@ export function escapeHtml(value: string) {
 function stepsRow(done: number) {
   const cells = STEPS.map((step, index) => {
     const reached = index < done;
-    return `<td valign="top" width="33%" style="padding:0 8px 0 0">
-      <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td align="center" valign="middle" width="40" height="40" style="width:40px;height:40px;border:1.5px solid ${theme.red};border-radius:50%;background:${reached ? theme.red : theme.white};${label(13, reached ? theme.white : theme.red)}">${String(index + 1).padStart(2, "0")}</td></tr></table>
-      <p style="${label(12, reached ? theme.red : theme.muted)}margin:10px 0 0">${step}</p>
+    return `<td align="center" valign="top" width="33%" style="padding:0 4px;text-align:center">
+      <table role="presentation" align="center" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto"><tr><td align="center" valign="middle" width="40" height="40" style="width:40px;height:40px;border:1.5px solid ${theme.red};border-radius:50%;background:${reached ? theme.red : theme.white};${label(13, reached ? theme.white : theme.red)}">${String(index + 1).padStart(2, "0")}</td></tr></table>
+      <p style="${label(12, reached ? theme.red : theme.muted)}margin:10px 0 0;text-align:center">${step}</p>
     </td>`;
   }).join("");
   return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;border-collapse:collapse;margin:0 0 28px"><tr>${cells}</tr></table>`;
@@ -70,6 +70,12 @@ export function eventEmailTemplate({
   );
   const fontUrl = new URL("/font/ppneuemontreal-medium.otf", website).href;
   const websiteUrl = escapeHtml(website.origin);
+  // Email clients do not render SVG, so the wordmark is a PNG (rendered at 4.5x).
+  const logoUrl = escapeHtml(
+    new URL("/assets/brand/wordmark-white.png", website).href,
+  );
+  const logo = (width: number) =>
+    `<a href="${websiteUrl}" style="display:inline-block;text-decoration:none"><img src="${logoUrl}" width="${width}" height="${Math.round((width * 81) / 1080)}" alt="${SITE_NAME}" style="display:block;width:${width}px;max-width:100%;height:auto;border:0;outline:none;text-decoration:none;font-family:${displayFont};font-size:18px;font-weight:500;text-transform:uppercase;color:${theme.white}"></a>`;
   const greeting = name ? `Hello ${name},` : "Hello,";
   const copy = published
     ? `${title} is now live on ${SITE_NAME}. You can view and share your listing.`
@@ -115,7 +121,7 @@ export function eventEmailTemplate({
 
           <!-- Red header, like the site's hero. -->
           <tr><td class="email-pad" bgcolor="${theme.red}" style="background:${theme.red};padding:28px 24px 36px">
-            <a href="${websiteUrl}" style="font-family:${displayFont};font-size:22px;line-height:1.1;font-weight:500;letter-spacing:-0.02em;text-transform:uppercase;color:${theme.white};text-decoration:none">${SITE_NAME}</a>
+            ${logo(240)}
             <p style="${label(12, theme.white)}margin:40px 0 14px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${theme.white};margin-right:8px;vertical-align:middle"></span>${kicker}</p>
             <h1 class="email-heading" style="font-family:${displayFont};font-size:48px;line-height:1;font-weight:500;letter-spacing:-0.04em;text-transform:uppercase;color:${theme.white};margin:0">${heading}</h1>
           </td></tr>
@@ -136,7 +142,7 @@ export function eventEmailTemplate({
 
           <!-- Ink footer, like the site's. -->
           <tr><td class="email-pad" bgcolor="${theme.ink}" style="background:${theme.ink};padding:28px 24px">
-            <a href="${websiteUrl}" style="font-family:${displayFont};font-size:18px;line-height:1.1;font-weight:500;letter-spacing:-0.02em;text-transform:uppercase;color:${theme.white};text-decoration:none">${SITE_NAME}</a>
+            ${logo(200)}
             <p style="${body}font-size:14px;color:${theme.cream};margin:8px 0 20px">Where Africa’s people, ideas and events meet</p>
             <p style="${label(11, "rgba(255,255,255,0.55)")}margin:0">FOLA Projects · <a href="${websiteUrl}" style="color:rgba(255,255,255,0.55);text-decoration:underline">${escapeHtml(website.hostname)}</a></p>
           </td></tr>
