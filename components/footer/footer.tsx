@@ -41,7 +41,7 @@ export default function Footer() {
   const { isPathActive } = useIsPathActive();
 
   return (
-    <footer className="mt-auto w-full bg-ink text-white">
+    <footer className="mt-auto w-full bg-ink pb-[env(safe-area-inset-bottom)] text-white">
       <SectionWrapper className="gap-12 sm:gap-16">
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div className="flex max-w-140 flex-col gap-5.5">

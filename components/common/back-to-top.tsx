@@ -20,7 +20,7 @@ export default function BackToTop() {
       {visible && (
         <motion.div
           key="back-to-top"
-          className="fixed right-4 bottom-4 z-70 sm:right-8 sm:bottom-8"
+          className="fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-70 sm:right-8 sm:bottom-[calc(2rem+env(safe-area-inset-bottom))]"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 12 }}

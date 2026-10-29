@@ -69,10 +69,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#000" },
-    { media: "(prefers-color-scheme: light)", color: "#000" },
-  ],
+  themeColor: "#B51C17",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -83,9 +81,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${montreal.variable} ${courierPrime.variable} scrollbar-thin h-dvh overflow-hidden relative font-courier scrollbar-thumb-red scrollbar-track-white`}
+      className={`${montreal.variable} ${courierPrime.variable} relative scrollbar-thin h-dvh overflow-hidden bg-red font-courier scrollbar-thumb-red scrollbar-track-white`}
     >
-      <body className="h-full relative w-full bg-white text-ink">
+      <body className="relative h-full w-full bg-white text-ink">
         <LenisProvider>
           <Header />
           {children}
