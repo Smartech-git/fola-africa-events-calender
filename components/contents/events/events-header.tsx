@@ -20,10 +20,10 @@ export default function EventsHeader({ data: { city } }: Props) {
         <DotField color="#B51C17" restOpacity={0.18} />
       </div>
       <SectionWrapper className="relative gap-2">
-        <div className="flex items-center gap-4 sm:gap-6">
+        <div className="flex gap-4 sm:gap-6">
           <span
             aria-hidden="true"
-            className="size-6 shrink-0 rounded-full bg-red sm:size-12"
+            className="size-6 shrink-0 rounded-full bg-red md:size-12"
           />
           <div className="flex gap-2 flex-col">
 

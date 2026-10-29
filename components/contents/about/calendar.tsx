@@ -23,14 +23,14 @@ export default function Calendar() {
         <div className="flex flex-1 flex-col gap-7">
           <FadeUpText
             text="Happenings of Africa is a shared calendar for the events shaping Africa’s cities"
-            className="font-montreal text-2xl font-medium tracking-mono sm:text-4xl"
+            className="font-montreal text-3xl font-medium tracking-mono sm:text-4xl"
           />
           {BODY.map((paragraph, index) => (
             <FadeUpText
               key={index}
               text={paragraph}
               delay={0.1 + index * 0.1}
-              className="font-montreal text-lg sm:text-xl"
+              className="font-montreal text-xl sm:text-xl"
             />
           ))}
         </div>
