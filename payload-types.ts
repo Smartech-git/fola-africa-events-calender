@@ -402,9 +402,12 @@ export interface Event {
    */
   publicContactEmail?: string | null;
   /**
-   * Choose an existing organiser after reviewing possible AI matches. Required before approval for manually entered events.
+   * Choose an existing organiser after reviewing possible AI matches, or create one here. Required before approval for manually entered events.
    */
   organiser?: (number | null) | Organiser;
+  /**
+   * Choose a venue in this city, or create one here.
+   */
   venue?: (number | null) | Venue;
   /**
    * Private submitted details. No organiser record is created until administrator approval. Editing these details requires reapproval.

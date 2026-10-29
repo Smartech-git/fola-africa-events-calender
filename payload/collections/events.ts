@@ -158,8 +158,7 @@ export const events: CollectionConfig = {
       filterOptions: { isDemo: { not_equals: true } },
       admin: {
         description:
-          "Choose an existing organiser after reviewing possible AI matches. Required before approval for manually entered events.",
-        allowCreate: false,
+          "Choose an existing organiser after reviewing possible AI matches, or create one here. Required before approval for manually entered events.",
       },
     },
     {
@@ -172,7 +171,9 @@ export const events: CollectionConfig = {
           { isDemo: { not_equals: true } },
         ],
       }),
-      admin: { allowCreate: false },
+      admin: {
+        description: "Choose a venue in this city, or create one here.",
+      },
     },
     {
       name: "submittedOrganiser",
