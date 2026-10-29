@@ -27,7 +27,7 @@ export default function InTheDiary({ seasons }: { seasons: UpcomingSeason[] }) {
       className="w-full bg-cream text-ink"
     >
       <SectionWrapper className="gap-10 lg:flex-row lg:gap-20">
-        <div className="flex flex-col gap-6 text-red lg:w-95 lg:shrink-0">
+        <div className="flex flex-col gap-6 text-red lg:w-110 lg:shrink-0">
           <FadeUpText
             as="h2"
             id="in-the-diary-heading"
@@ -59,7 +59,7 @@ export default function InTheDiary({ seasons }: { seasons: UpcomingSeason[] }) {
                       {firstDay}
                     </DateCircle>
                     <span className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:gap-7">
-                      <span className="font-courier text-sm sm:w-47.5 sm:shrink-0 sm:text-lg">
+                      <span className="font-courier uppercase text-sm sm:w-47.5 sm:shrink-0 sm:text-lg">
                         {dates}
                       </span>
                       <span className="font-montreal text-xl font-medium tracking-mono uppercase transition-colors group-hover/season:text-red sm:flex-1 sm:text-[26px]">
@@ -78,7 +78,7 @@ export default function InTheDiary({ seasons }: { seasons: UpcomingSeason[] }) {
           </ul>
         ) : (
           <p className="flex-1 border-t border-red pt-5 font-courier text-sm tracking-cou uppercase">
-            Nothing in the diary yet.
+            Nothing in the diary yet
           </p>
         )}
       </SectionWrapper>

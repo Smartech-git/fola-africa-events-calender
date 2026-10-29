@@ -93,14 +93,14 @@ function CityRow({
   const { today, thisWeek } = city.counts;
 
   return (
-    <li className={cn(!current && "border-t border-ink/25")}>
+    <li className={cn(!current && "border-t last:border-b border-ink")}>
       <Link
         href={`/calendar/${encodeURIComponent(city.slug)}`}
         aria-label={`${city.name}: ${today} today, ${thisWeek} this week${
           season ? `. Next in the diary: ${season.name}` : ""
         }`}
         className={cn(
-          "group/city flex flex-wrap items-center gap-x-8 gap-y-3 px-3.5 py-5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red lg:flex-nowrap lg:px-6 lg:py-7",
+          "group/city flex flex-wrap items-center gap-x-8 gap-y-3 px-2 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red lg:flex-nowrap lg:px-6 lg:py-7",
           current ? "bg-red" : "text-ink hover:bg-cream",
         )}
       >
@@ -120,14 +120,14 @@ function CityRow({
             <span
               aria-hidden="true"
               className={cn(
-                "size-5.5 shrink-0 rounded-full lg:size-9",
+                "size-4 shrink-0 rounded-full lg:size-8",
                 current ? "bg-white" : "bg-red",
               )}
             />
             <HoverText
               text={city.name}
               className={cn(
-                "font-montreal text-4xl font-medium tracking-mono uppercase lg:text-5xl",
+                "font-montreal text-3xl font-medium tracking-mono uppercase lg:text-4xl",
                 current && "text-white",
               )}
             />

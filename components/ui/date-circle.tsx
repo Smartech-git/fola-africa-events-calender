@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const circle = cva(
-  "inline-flex shrink-0 items-center justify-center rounded-full border-[1.5px] font-courier leading-[1.2] tracking-mono uppercase",
+  "inline-flex shrink-0 sm:pt-1 pt-0.5 items-center justify-center rounded-full border-[1.5px] font-courier leading-[1.2] tracking-mono uppercase",
   {
     variants: {
       variant: {

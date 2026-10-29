@@ -7,7 +7,6 @@ export const chipVariants = cva(
   {
     variants: {
       variant: {
-        /** Chip / Default */
         default:
           "border-ink bg-transparent text-ink hover:border-red hover:text-red",
         /** Chip / Active */

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 import FadeUpText from "@/components/animations/fade-up-text";
+import HoverText from "@/components/animations/hover-text";
 import SurTitle from "@/components/common/sur-title";
 import Button from "@/components/ui/button";
 import DateCircle from "@/components/ui/date-circle";
@@ -59,7 +60,7 @@ export default function EventAbout({ event, timezone }: Props) {
                 variant="flat"
                 endContent={<ArrowUpRight size={16} aria-hidden="true" />}
               >
-                {displayDomain(organiserSite)}
+                <HoverText text={displayDomain(organiserSite) ?? ""} />
               </Button>
             </Link>
           )}
@@ -83,7 +84,7 @@ export default function EventAbout({ event, timezone }: Props) {
                     variant="flat"
                     endContent={<ArrowUpRight size={16} aria-hidden="true" />}
                   >
-                    {link.label}
+                    <HoverText text={link.label} />
                   </Button>
                 </Link>
               </li>

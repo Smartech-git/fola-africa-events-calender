@@ -27,7 +27,7 @@ const button = cva(
         light: "text-black",
       },
       size: {
-        icon: "size-9",
+        icon: "size-[32px] sm:size-[38px]",
         xs: "h-[28px] px-3 text-xs",
         sm: "h-[38px] px-5",
         md: "h-[48px] px-7",

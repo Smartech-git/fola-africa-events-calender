@@ -16,13 +16,11 @@ import { socials } from "@/constants/socials";
 import { useIsPathActive } from "@/hooks/use-is-path-active";
 import { cn } from "@/lib/utils";
 
-const instagram = socials.find((social) => social.name === "Instagram");
-
 const linkClass =
   "font-montreal sm:text-lg text-lg tracking-cou text-mono normal-case hover:text-cream";
 
 const captionClass =
-  "font-courier text-sm tracking-cou text-white/60 uppercase";
+  "font-courier text-sm tracking-cou text-white/60  uppercase";
 
 function FooterColumn({
   title,
@@ -47,11 +45,10 @@ export default function Footer() {
       <SectionWrapper className="gap-12 sm:gap-16">
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div className="flex max-w-140 flex-col gap-5.5">
-            {/* <Logo variant="white" className="w-75 sm:w-115" /> */}
             <FadeUpText
               as="p"
               className="tracking-mon font-montreal text-2xl sm:text-[40px]"
-              text="Where Africa’s people, ideas and events meet."
+              text="Where Africa’s people, ideas and events meet"
             />
           </div>
           <Link href="/submit-event" className="w-full sm:w-fit">
@@ -104,21 +101,54 @@ export default function Footer() {
             </li>
           </FooterColumn>
           <FooterColumn title="Follow">
-            {instagram && (
-              <li>
+            {socials.map((item) => (
+              <li key={item.name}>
                 <Link
-                  href={instagram.link}
+                  href={item.link}
                   target="_blank"
                   rel="noreferrer"
                   aria-label="Instagram (opens in a new tab)"
                   className="w-fit"
                 >
                   <Button variant="flat" size="fit" className={linkClass}>
-                    <HoverText text="Instagram" />
+                    <HoverText text={item.name} />
                   </Button>
                 </Link>
               </li>
-            )}
+            ))}
+          </FooterColumn>
+          <FooterColumn title="Legal">
+            {NAV.filter((item) => item.isLegal).map((item) => {
+              const active = isPathActive(item.pathId);
+              return (
+                <li key={item.pathId}>
+                  <Link
+                    href={item.link}
+                    aria-current={active ? "page" : undefined}
+                    className="w-fit"
+                  >
+                    <Button
+                      variant="flat"
+                      size="fit"
+                      className={linkClass}
+                      startContent={
+                        <span
+                          aria-hidden="true"
+                          className={cn(
+                            "size-2 shrink-0 rounded-full bg-current",
+                            active
+                              ? "animate-fade animate-duration-500"
+                              : "hidden",
+                          )}
+                        />
+                      }
+                    >
+                      <HoverText text={item.title} />
+                    </Button>
+                  </Link>
+                </li>
+              );
+            })}
           </FooterColumn>
         </nav>
 
@@ -126,10 +156,13 @@ export default function Footer() {
           <Logo type="symbol" />
         </div>
 
-        <div className="flex flex-col justify-between gap-1 border-t border-white/25 pt-5 font-courier text-xs tracking-cou text-white/60 uppercase sm:flex-row">
-          <p>FOLA Projects</p>
+        <div className="flex flex-col justify-between gap-x-12 gap-4 border-t border-white/25 pt-5 font-courier text-xs tracking-cou text-white/60 uppercase sm:flex-row">
           <p>
-            © {new Date().getFullYear()} {SITE_NAME}
+            {SITE_NAME}™ and the Happenings symbol are trademarks of FOLA PR
+            Ltd
+          </p>
+          <p className="shrink-0">
+            © {new Date().getFullYear()} FOLA. All rights reserved.
           </p>
         </div>
       </SectionWrapper>

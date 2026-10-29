@@ -19,7 +19,6 @@ export default function EventHeader({ event, timezone }: Props) {
       <SectionWrapper className="gap-6 md:gap-8 lg:flex-row lg:items-start lg:gap-14 xl:gap-20">
         <div className="flex flex-col gap-5">
           <SurTitle content={`${event.city?.name} / ${industryLabel(event)}`} />
-
           <div className="flex w-full items-center gap-4">
             <EventDateMark
               date={cityDate(event.startAt, timezone)}
@@ -37,7 +36,7 @@ export default function EventHeader({ event, timezone }: Props) {
               as="h1"
               id="event-title"
               text={event.title}
-              className="font-montreal text-5xl font-medium tracking-mono wrap-break-word uppercase sm:text-7xl xl:text-8xl"
+              className="font-montreal text-5xl font-medium tracking-mono wrap-break-word uppercase md:text-7xl"
             />
           </div>
           <EventDetailFacts event={event} timezone={timezone} />

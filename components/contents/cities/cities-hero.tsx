@@ -12,9 +12,13 @@ export default function CitiesHero() {
   );
 
   return (
-    <div className="relative z-60 flex w-full flex-col bg-cream text-ink">
+    <div className="relative z-60 flex w-full flex-col overflow-hidden bg-cream text-ink">
       <Header className="bg-cream" />
-      <section aria-labelledby="cities-heading">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute top-24.5 left-[76%] size-[70vw] rounded-full border border-red md:top-28.5 md:size-[36vw]"
+      />
+      <section aria-labelledby="cities-heading" className="relative">
         <SectionWrapper className="gap-4">
           <SurTitle dot content={`Cities · ${today}`} />
           <FadeUpText
@@ -23,11 +27,6 @@ export default function CitiesHero() {
             text="What’s happening?"
             delay={0.1}
             className="font-montreal text-5xl font-medium tracking-mono text-red uppercase sm:text-6xl lg:text-7xl xl:text-[120px]"
-          />
-          <FadeUpText
-            text="Choose a city."
-            delay={0.2}
-            className="font-montreal text-xl font-medium tracking-mono sm:text-[32px]"
           />
         </SectionWrapper>
       </section>

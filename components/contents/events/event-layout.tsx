@@ -20,7 +20,7 @@ export default function EventLayout({ view, date, today, children }: Props) {
   const { handleParamSet } = useRouteParam();
 
   return (
-    <SectionWrapper className="flex-row flex-wrap items-center justify-between gap-x-4 gap-y-2 py-2 sm:py-4">
+    <SectionWrapper className="flex-row flex-wrap items-center justify-between border-b border-ink/20 lg:mb-6 mb-4 gap-x-4 gap-y-2 py-3 md:py-4">
       <div
         role="group"
         aria-label="Calendar view"

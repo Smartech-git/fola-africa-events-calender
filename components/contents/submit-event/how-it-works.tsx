@@ -10,11 +10,11 @@ export default function HowItWorks() {
       aria-labelledby="how-it-works"
       className="w-full bg-cream text-ink"
     >
-      <SectionWrapper className="gap-10 sm:gap-14">
+      <SectionWrapper className="gap-8 sm:gap-10">
         <SurTitle as="h2" id="how-it-works" content="How it works" />
         <FadeUpText
-          text="Nothing publishes automatically."
-          className="font-montreal text-4xl font-medium tracking-mono sm:text-[72px]"
+          text="Nothing publishes automatically"
+          className="font-montreal text-5xl font-medium tracking-mono sm:text-7xl"
         />
         <ReviewSteps done={1} />
       </SectionWrapper>

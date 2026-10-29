@@ -97,12 +97,12 @@ export default function EventMonth({
       </EventLayout>
       <SectionWrapper
         aria-label={`${cityName} monthly events`}
-        className="min-w-0 pt-4 sm:pt-4"
+        className="min-w-0 pt-0 md:pt-0"
       >
         <header className="mb-4 space-y-2 sm:mb-8">
           <h2>
             <FadeUpText
-              className="font-courier text-3xl uppercase sm:text-4xl"
+              className="font-montreal text-xl font-medium tracking-mono md:text-3xl"
               text={formatDay(query.range.from, "MMMM yyyy")}
             />
           </h2>
@@ -128,9 +128,8 @@ export default function EventMonth({
               role="region"
               aria-label="Monthly event calendar"
               tabIndex={0}
-              className="w-full min-w-0 overflow-x-auto overscroll-x-contain pb-4 focus-visible:outline-2 focus-visible:outline-red"
+              className="w-full min-w-0 scrollbar-thin overflow-x-auto pb-4 focus-visible:outline-2 focus-visible:outline-red"
             >
-              {/* Figma: Month grid (332:2304). */}
               <table className="w-full min-w-200 table-fixed border-collapse text-left">
                 <caption className="sr-only">
                   {cityName} events for{" "}
@@ -143,7 +142,7 @@ export default function EventMonth({
                         <th
                           scope="col"
                           key={day}
-                          className="pb-2.5 font-courier text-sm font-normal tracking-cou text-red uppercase"
+                          className="pb-2.5 font-courier text-sm font-medium tracking-cou text-red uppercase sm:text-base"
                         >
                           {day}
                         </th>
@@ -185,7 +184,7 @@ export default function EventMonth({
                               <time
                                 dateTime={date}
                                 className={cn(
-                                  "flex size-12 items-center justify-center rounded-full border-[1.5px] font-courier text-lg tracking-cou transition-colors group-hover/day:border-red group-hover/day:bg-red group-hover/day:text-white group-focus-visible/day:border-red group-focus-visible/day:bg-red group-focus-visible/day:text-white sm:size-16 sm:text-[22px]",
+                                  "flex size-12 items-center justify-center rounded-full border-[1.5px] pt-0.5 font-courier text-lg tracking-cou transition-colors group-hover/day:border-red group-hover/day:bg-red group-hover/day:text-white group-focus-visible/day:border-red group-focus-visible/day:bg-red group-focus-visible/day:text-white sm:size-16 sm:pt-1 sm:text-xl",
                                   marked
                                     ? "border-red text-red"
                                     : "border-transparent",
@@ -230,8 +229,8 @@ export default function EventMonth({
   );
 }
 
-const ring = "block size-5.5 rounded-full border-[1.5px] border-red";
-const dot = "block size-2 rounded-full";
+const ring = "block size-5.5 rounded-full mb-0.5 border-[1.5px] border-red";
+const dot = "block size-2 mb-0.5 rounded-full";
 
 const KEY = [
   { label: "Today", mark: <span className={ring} /> },

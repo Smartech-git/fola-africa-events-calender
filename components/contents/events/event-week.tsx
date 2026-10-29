@@ -5,19 +5,28 @@ import { useRef } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
+import { ArrowRight } from "lucide-react";
+
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
 import EventDateNavigation from "@/components/contents/events/event-date-navigation";
 import EventLayout from "@/components/contents/events/event-layout";
 import NothingHereCard from "@/components/contents/events/nothing-here-card";
 import NothingMatchesCard from "@/components/contents/events/nothing-matches-card";
-import SeasonBand from "@/components/contents/events/season-band";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
+import DateCircle from "@/components/ui/date-circle";
 import { useEventCalendar } from "@/hooks/use-event-calendar";
 import { useRouteParam } from "@/hooks/use-route-param";
 import { activeFilterLabels } from "@/lib/events/active-filters";
 import {
+  accessLabel,
+  categoryLabel,
+  isPrivateEvent,
+} from "@/lib/events/event-details";
+import {
+  cityDate,
+  eventPath,
   formatDay,
   formatTime,
   groupEventsByDay,
@@ -28,12 +37,19 @@ import {
   getWeekQuery,
   weekHeading,
 } from "@/lib/events/event-week";
-import { getSeasonDays, getSeasonBands } from "@/lib/events/season-calendar";
+import { formatSeasonDates } from "@/lib/events/season-dates";
 import { cn } from "@/lib/utils";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
 import type { SeasonSummary } from "@/requests/helpers/types";
 
+/** Events shown per day before the rest fold into "+ N more". */
+const MAX_EVENTS = 4;
+
+const happenings = (count: number) =>
+  `${count} ${count === 1 ? "happening" : "happenings"}`;
+
 interface Props {
+  city: string;
   cityName: string;
   timezone: string;
   today: string;
@@ -44,7 +60,9 @@ interface Props {
   invalidFilters?: boolean;
 }
 
+// Figma: City Calendar · Week (487:2348).
 export default function EventWeek({
+  city,
   cityName,
   timezone,
   today,
@@ -79,8 +97,7 @@ export default function EventWeek({
     shiftDate(query.range.from, index),
   );
   const heading = weekHeading(query.range.from, query.range.to);
-  const seasonDays = getSeasonDays(seasons, timezone, query.range);
-  const seasonBands = getSeasonBands(days, seasonDays);
+  const bands = weekSeasons(seasons, timezone, days);
   const dayHref = (date: string) => {
     const params = new URLSearchParams(searchParams.toString());
     for (const [key, value] of Object.entries(
@@ -91,8 +108,6 @@ export default function EventWeek({
     }
     return `${pathname}?${params}`;
   };
-  const time = (event: PublicEvent) =>
-    event.allDay ? "All day" : formatTime(event.startAt, timezone);
 
   return (
     <div ref={container} className="min-w-0 scroll-mt-header">
@@ -106,14 +121,13 @@ export default function EventWeek({
       </EventLayout>
       <SectionWrapper
         aria-label={`${cityName} weekly events`}
-        className="pt-4 sm:pt-4"
+        className="pt-0 md:pt-0"
       >
-        <header className="mb-4 space-y-2 sm:mb-8">
+        <header className="mb-4 sm:mb-8">
           <FadeUpText
-            className="font-courier text-3xl uppercase sm:text-4xl"
+            className="font-montreal text-xl font-medium tracking-mono md:text-3xl"
             text={heading.title}
           />
-          <p className="text-xs uppercase">{heading.year}</p>
         </header>
         {error ? (
           <div role="alert" className="space-y-3 py-8">
@@ -132,91 +146,102 @@ export default function EventWeek({
           </div>
         ) : (
           <>
-            <p className="mb-4 w-fit bg-secondary px-2 py-0.5 text-xxs uppercase sm:text-xs">
-              Select a day or event to open the day's full listing.
-            </p>
             <div
               role="region"
               aria-label="Sunday to Saturday event calendar"
               tabIndex={0}
-              className="w-full overflow-x-auto overscroll-x-contain pb-4 focus-visible:outline-2 focus-visible:outline-primary"
+              className="w-full overflow-x-auto scrollbar-thin  pb-4 focus-visible:outline-2 focus-visible:outline-red"
             >
-              <div className="grid max-w-full min-w-250 grid-cols-7 gap-3">
-                {seasonDays.size > 0 &&
-                  seasonBands.map((band) => (
-                    <div
-                      key={`season-${band.date}`}
-                      className="min-w-0"
-                      style={{ gridColumn: `span ${band.span}` }}
-                    >
-                      <SeasonBand seasons={band.seasons} date={band.date} />
-                    </div>
-                  ))}
-                {days.map((date) => (
-                  <section
-                    key={date}
-                    aria-labelledby={`week-day-${date}`}
-                    className="min-w-0"
-                  >
-                    <Link
-                      href={dayHref(date)}
-                      scroll={false}
-                      aria-label={`View events on ${formatDay(date, "EEEE d MMMM yyyy")}`}
-                      aria-current={date === today ? "date" : undefined}
-                      className="block border-b border-light-gray pb-2 transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-primary"
-                    >
-                      <h3
-                        id={`week-day-${date}`}
-                        className="mb-2 text-xs font-medium uppercase"
-                      >
-                        <HoverText text={formatDay(date, "EEE")} />
-                      </h3>
-                      <div className="flex items-center gap-1.5">
-                        <time
-                          dateTime={date}
-                          className={cn(
-                            "-ml-2 flex size-11 items-center justify-center rounded-full border border-transparent text-2xl leading-8 font-medium",
-                            date === today && "border-current",
-                          )}
-                        >
-                          {formatDay(date, "dd")}
-                        </time>
-                        {(grouped.get(date)?.length ?? 0) > 0 && (
-                          <span
-                            aria-hidden="true"
-                            className="size-2 rounded-full bg-primary"
-                          />
-                        )}
-                      </div>
-                    </Link>
-                    {(grouped.get(date) ?? []).map((event) => (
-                      <Link
-                        key={event.id}
-                        href={dayHref(date)}
-                        scroll={false}
-                        className="block pt-6 pb-2 text-left transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-primary"
-                      >
-                        <HoverText
-                          text={event.title}
-                          className="font-montreal text-lg font-medium wrap-break-word text-primary uppercase sm:text-xl"
-                        />
-                        <p className="mt-2 text-xs uppercase">{time(event)}</p>
-                        {(event.status === "cancelled" ||
-                          event.status === "postponed") && (
-                          <p className="mt-1 text-xs uppercase">
-                            {event.status}
-                          </p>
-                        )}
-                        <div className="mt-2 h-px bg-light-gray" />
-                      </Link>
+              <div className="flex min-w-250 flex-col gap-4">
+                {bands.length > 0 && (
+                  <div className="grid grid-cols-7 gap-y-1">
+                    {bands.map((band) => (
+                      <SeasonRow
+                        key={band.season.id}
+                        {...band}
+                        timezone={timezone}
+                      />
                     ))}
-                    {!grouped.has(date) && (
-                      <p className="py-6 text-xs uppercase">No events</p>
-                    )}
-                  </section>
-                ))}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-7 min-w-300 border-t-[1.5px] border-ink">
+                  {days.map((date, index) => {
+                    const dayEvents = grouped.get(date) ?? [];
+                    const isToday = date === today;
+                    const hidden = dayEvents.length - MAX_EVENTS;
+                    return (
+                      <section
+                        key={date}
+                        aria-labelledby={`week-day-${date}`}
+                        className={cn(
+                          "flex flex-col px-3 pt-4 pb-6",
+                          index > 0 && "border-l border-ink/15",
+                          isToday && "bg-cream",
+                        )}
+                      >
+                        <Link
+                          href={dayHref(date)}
+                          scroll={false}
+                          aria-label={`${formatDay(date, "EEEE d MMMM yyyy")}${isToday ? ", today" : ""}: ${happenings(dayEvents.length)}`}
+                          aria-current={isToday ? "date" : undefined}
+                          className="group/day flex items-center gap-2.5 pb-3.5 focus-visible:outline-2 focus-visible:outline-red"
+                        >
+                          <DateCircle
+                            className={cn(
+                              "size-12 text-[22px] transition-colors",
+                              isToday
+                                ? "group-hover/day:bg-red group-hover/day:text-white"
+                                : "border-transparent text-ink group-hover/day:border-red group-hover/day:text-red",
+                            )}
+                          >
+                            <time dateTime={date}>{formatDay(date, "d")}</time>
+                          </DateCircle>
+                          <span className="flex min-w-0 flex-col gap-0.5 font-courier tracking-cou uppercase">
+                            <span
+                              id={`week-day-${date}`}
+                              className={cn(
+                                "text-xs",
+                                isToday ? "text-red" : "text-ink",
+                              )}
+                            >
+                              {formatDay(date, "EEE")}
+                              {isToday && " · Today"}
+                            </span>
+                            <span className="text-xxs text-ink/60">
+                              {happenings(dayEvents.length)}
+                            </span>
+                          </span>
+                        </Link>
+
+                        {dayEvents.slice(0, MAX_EVENTS).map((event) => (
+                          <WeekEvent
+                            key={event.id}
+                            event={event}
+                            city={city}
+                            timezone={timezone}
+                          />
+                        ))}
+
+                        {hidden > 0 && (
+                          <Link
+                            href={dayHref(date)}
+                            scroll={false}
+                            className="flex items-center gap-1.5 border-t border-ink/20 pt-3 font-courier text-xs tracking-cou text-red uppercase transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-red"
+                          >
+                            + {hidden} more
+                            <ArrowRight size={14} aria-hidden="true" />
+                          </Link>
+                        )}
+                      </section>
+                    );
+                  })}
+                </div>
               </div>
             </div>
+
+            <WeekKey />
+
             {!events.length && !pending && (
               <div className="pt-8">
                 {activeFilterLabels(searchParams, { includeDates: false })
@@ -231,5 +256,147 @@ export default function EventWeek({
         )}
       </SectionWrapper>
     </div>
+  );
+}
+
+function WeekEvent({
+  event,
+  city,
+  timezone,
+}: {
+  event: PublicEvent;
+  city: string;
+  timezone: string;
+}) {
+  const status =
+    event.status === "cancelled"
+      ? "Cancelled"
+      : event.status === "postponed"
+        ? "Postponed"
+        : null;
+
+  return (
+    <Link
+      href={eventPath(event, city)}
+      className="group/event flex flex-col gap-1 border-t border-ink/20 py-3 focus-visible:outline-2 focus-visible:outline-red"
+    >
+      <span className="flex items-center gap-1.5 font-courier text-xs tracking-cou text-red uppercase">
+        <span
+          aria-hidden="true"
+          className={cn(
+            "size-1.75 shrink-0 mb-0.5 rounded-full",
+            isPrivateEvent(event) ? "border border-red" : "bg-red",
+          )}
+        />
+        {event.allDay ? "All day" : formatTime(event.startAt, timezone)}
+      </span>
+      <HoverText
+        text={event.title}
+        trigger="a"
+        className="font-montreal text-[15px] font-medium tracking-mono wrap-break-word uppercase"
+      />
+      <span className="font-courier text-[11px] text-ink/75">
+        {categoryLabel(event)}
+      </span>
+      <span className="font-courier text-[11px] text-ink">
+        {accessLabel(event)}
+      </span>
+      {status && (
+        <span className="font-courier text-[11px] tracking-cou text-red uppercase">
+          {status}
+        </span>
+      )}
+    </Link>
+  );
+}
+
+interface WeekSeason {
+  season: SeasonSummary;
+  start: number;
+  end: number;
+  continues: boolean;
+}
+
+function weekSeasons(
+  seasons: SeasonSummary[],
+  timezone: string,
+  days: string[],
+): WeekSeason[] {
+  return seasons.flatMap((season) => {
+    if (!season.startDate || !season.endDate) return [];
+    const from = cityDate(season.startDate, timezone);
+    const to = cityDate(season.endDate, timezone);
+    if (to < days[0] || from > days[6]) return [];
+    return [
+      {
+        season,
+        start: from <= days[0] ? 1 : days.indexOf(from) + 1,
+        end: to >= days[6] ? 7 : days.indexOf(to) + 1,
+        continues: to > days[6],
+      },
+    ];
+  });
+}
+
+function SeasonRow({
+  season,
+  start,
+  end,
+  continues,
+  timezone,
+}: WeekSeason & { timezone: string }) {
+  const dates = formatSeasonDates(season, timezone);
+  return (
+    <Link
+      href={`/seasons/${encodeURIComponent(season.slug)}`}
+      style={{ gridColumn: `${start} / ${end + 1}` }}
+      className="flex min-w-0 items-center gap-3 border-t-2 border-red bg-cream py-2 pr-4 pl-3 font-courier tracking-cou text-red uppercase transition-colors hover:bg-blush focus-visible:outline-2 focus-visible:outline-red"
+    >
+      <DateCircle className="size-8 text-xs">
+        {formatDay(cityDate(season.startDate!, timezone), "dd")}
+      </DateCircle>
+      <span className="min-w-0 truncate text-xs">
+        In the diary · {season.name}
+        {dates && ` · ${dates}`}
+      </span>
+      {continues && (
+        <span className="ml-auto flex shrink-0 items-center gap-1 text-[11px]">
+          Continues
+          <ArrowRight size={12} aria-hidden="true" />
+        </span>
+      )}
+    </Link>
+  );
+}
+
+function WeekKey() {
+  const item = "flex items-center gap-2";
+  return (
+    <ul
+      aria-label="Calendar key"
+      className="flex flex-wrap items-center gap-x-7 gap-y-3 pt-4 font-courier text-xs tracking-cou uppercase"
+    >
+      <li className={item}>
+        <span
+          aria-hidden="true"
+          className="mb-0.5 block size-2 rounded-full bg-red"
+        />
+        Public
+      </li>
+      <li className={item}>
+        <span
+          aria-hidden="true"
+          className="mb-0.5 block size-2 rounded-full border border-red"
+        />
+        Private or invitation only
+      </li>
+      <li className={item}>
+        <span
+          aria-hidden="true"
+          className="mb-0.5 block size-4.5 rounded-full border-[1.5px] border-red"
+        />
+        Today
+      </li>
+    </ul>
   );
 }

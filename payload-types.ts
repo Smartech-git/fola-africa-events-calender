@@ -430,6 +430,9 @@ export interface Event {
     website?: string | null;
     contactEmail?: string | null;
   };
+  /**
+   * Required before approval or publication.
+   */
   organiserResolution?: ('use-existing' | 'update-existing' | 'create-new') | null;
   organiserUpdate?:
     | {
@@ -449,6 +452,9 @@ export interface Event {
     address?: string | null;
     mapUrl?: string | null;
   };
+  /**
+   * Required before approval or publication.
+   */
   venueResolution?: ('use-existing' | 'update-existing' | 'create-new' | 'omit') | null;
   venueUpdate?:
     | {

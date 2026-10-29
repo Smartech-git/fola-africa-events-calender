@@ -35,7 +35,7 @@ export default function Cities({ cities, headingLevel = "h2" }: Props) {
             className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-6xl xl:text-7xl"
           />
           <FadeUpText
-            text="Choose a city."
+            text="Choose a city"
             delay={0.15}
             className="w-fit font-montreal text-lg text-cream sm:text-2xl"
           />
@@ -88,7 +88,7 @@ function CityRow({ city }: { city: CitySummary }) {
         />
         <HoverText
           text={city.name}
-          className="font-montreal text-3xl font-medium tracking-mono uppercase sm:text-5xl xl:text-[64px]"
+          className="font-montreal text-3xl font-medium tracking-mono uppercase sm:text-5xl"
         />
         <span className="ml-auto flex shrink-0 items-center gap-4 sm:gap-6">
           {totalEvents !== undefined && (

@@ -255,9 +255,9 @@ function EventSubmissionForm({
       <div id="submit-event-heading" className="relative w-full">
         <SectionWrapper>
           <div className="relative space-y-4 uppercase">
-            <HeaderTitle as="h1" text="Put it on Happenings." />
+            <HeaderTitle as="h1" text="Put it on Happenings" />
             <p className="text-sm uppercase">
-              Planning something? Tell us what’s happening.
+              Planning something? Tell us what’s happening
             </p>
             <p className="max-w-150 text-xs leading-5 uppercase">
               From summits, conferences and launches to exhibitions, screenings,

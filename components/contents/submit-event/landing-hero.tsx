@@ -18,7 +18,7 @@ export default function LandingHero() {
           as="h1"
           text="Put it on Happenings."
           delay={0.1}
-          className="font-montreal text-6xl font-medium tracking-mono uppercase md:text-7xl xl:text-9xl"
+          className="font-montreal text-6xl font-medium tracking-mono uppercase md:text-7xl xl:text-8xl"
         />
 
         <div className="flex flex-col gap-8 lg:flex-row lg:gap-20">
@@ -29,6 +29,11 @@ export default function LandingHero() {
               delay={0.3}
               className="text-cream"
             />
+            <Link href="/submit-event/form" className="w-full mt-8 sm:w-fit">
+              <Button variant="onWhite" size="md" className="w-full">
+                <HoverText text="Get started" />
+              </Button>
+            </Link>
           </div>
 
           <div className="flex flex-1 flex-col gap-5">
@@ -41,11 +46,6 @@ export default function LandingHero() {
               Public, ticketed, RSVP, invitation only or private.
             </p>
             <div className="mt-8 flex flex-col gap-4 pt-3 sm:flex-row sm:items-center">
-              <Link href="/submit-event/form" className="w-full sm:w-fit">
-                <Button variant="onWhite" size="md" className="w-full">
-                  <HoverText text="Get started" />
-                </Button>
-              </Link>
               <p className="font-montreal text-base text-cream">
                 Every submission is reviewed before appearing on the calendar.
               </p>

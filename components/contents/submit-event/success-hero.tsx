@@ -26,10 +26,10 @@ export default function SuccessHero() {
           as="h1"
           text="We’ve got it!"
           delay={0.1}
-          className="font-montreal text-6xl font-medium tracking-mono uppercase md:text-7xl xl:text-9xl"
+          className="font-montreal text-6xl font-medium tracking-mono uppercase md:text-7xl xl:text-8xl"
         />
         <FadeUpText
-          text="Your Happening has been submitted for review."
+          text="Your Happening has been submitted for review"
           delay={0.25}
           className="font-montreal text-3xl font-medium tracking-mono sm:text-5xl"
         />

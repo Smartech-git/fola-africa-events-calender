@@ -62,7 +62,7 @@ export function eventEmailTemplate({
   url?: string;
 }): EmailMessage {
   const published = kind === "published";
-  const heading = published ? "It’s live." : "We’ve got it.";
+  const heading = published ? "It’s live" : "We’ve got it";
   const kicker = published ? "On the calendar" : "Submitted for review";
   const status = published ? "Live on Happenings" : "Awaiting review";
   const website = new URL(
@@ -85,7 +85,7 @@ export function eventEmailTemplate({
     from: `${SITE_NAME} <${sender}>`,
     to: recipient,
     subject,
-    text: `${greeting}\n\n${copy}${published && url ? `\n\nView your Happening: ${url}` : ""}\n\n${SITE_NAME}\nWhere Africa’s people, ideas and events meet.`,
+    text: `${greeting}\n\n${copy}${published && url ? `\n\nView your Happening: ${url}` : ""}\n\n${SITE_NAME}\nWhere Africa’s people, ideas and events meet`,
     html: `<!doctype html>
 <html lang="en">
   <head>
@@ -137,7 +137,7 @@ export function eventEmailTemplate({
           <!-- Ink footer, like the site's. -->
           <tr><td class="email-pad" bgcolor="${theme.ink}" style="background:${theme.ink};padding:28px 24px">
             <a href="${websiteUrl}" style="font-family:${displayFont};font-size:18px;line-height:1.1;font-weight:500;letter-spacing:-0.02em;text-transform:uppercase;color:${theme.white};text-decoration:none">${SITE_NAME}</a>
-            <p style="${body}font-size:14px;color:${theme.cream};margin:8px 0 20px">Where Africa’s people, ideas and events meet.</p>
+            <p style="${body}font-size:14px;color:${theme.cream};margin:8px 0 20px">Where Africa’s people, ideas and events meet</p>
             <p style="${label(11, "rgba(255,255,255,0.55)")}margin:0">FOLA Projects · <a href="${websiteUrl}" style="color:rgba(255,255,255,0.55);text-decoration:underline">${escapeHtml(website.hostname)}</a></p>
           </td></tr>
 

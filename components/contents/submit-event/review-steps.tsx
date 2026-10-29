@@ -40,9 +40,15 @@ export default function ReviewSteps({ done = 1 }: Props) {
               {!last && (
                 <span
                   aria-hidden="true"
-                  className="h-[1.5px] flex-1 bg-red max-md:hidden"
+                  className="h-[1.5px] flex-1 bg-red hidden md:flex"
                 />
               )}
+              <FadeUpText
+                as="h3"
+                text={step.title}
+                delay={index * 0.1}
+                className="ml-4 md:hidden font-montreal text-4xl font-medium tracking-cou text-red sm:text-5xl"
+              />
             </div>
 
             <div className="flex flex-col gap-2 sm:pr-6">
@@ -50,12 +56,12 @@ export default function ReviewSteps({ done = 1 }: Props) {
                 as="h3"
                 text={step.title}
                 delay={index * 0.1}
-                className="text-4xl font-montreal font-medium tracking-cou text-red uppercase sm:text-5xl"
+                className="font-montreal text-4xl font-medium tracking-cou text-red max-md:hidden sm:text-5xl"
               />
               <FadeUpText
                 text={step.description}
                 delay={0.1 + index * 0.1}
-                className="font-montreal text-xl sm:text-2xl"
+                className="font-montreal text-2xl sm:text-2xl"
               />
             </div>
           </li>

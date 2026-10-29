@@ -100,7 +100,7 @@ export default function Mark() {
           className="text-white"
         />
         <FadeUpText
-          text="The O becomes the circle. The circle finds the date."
+          text="The O becomes the circle. The circle finds the date"
           className="font-montreal text-3xl font-medium tracking-mono sm:text-[56px]"
         />
 
@@ -149,7 +149,7 @@ export default function Mark() {
             className="text-white"
           />
           <FadeUpText
-            text="Make what is happening easier to see."
+            text="Make what is happening easier to see"
             className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-6xl xl:text-7xl"
           />
         </div>

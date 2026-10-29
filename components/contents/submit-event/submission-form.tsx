@@ -170,7 +170,6 @@ export default function SubmissionForm({ cities }: SubmissionOptions) {
   const chooseAccess = (value: string) => {
     setValue("access", value as SubmitEventValues["access"], validate);
     if (PRIVATE_ACCESS.includes(value)) setValue("actionUrl", "", validate);
-    // Held dates must stay Private.
     if (visibility === "held-date" && value !== "private")
       setValue("visibility", "public", validate);
   };

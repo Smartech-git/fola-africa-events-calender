@@ -23,11 +23,8 @@ export default function EventSameDay({ city, timezone, date, events }: Props) {
       className="w-full bg-white text-ink"
     >
       <SectionWrapper>
-        <div className="flex items-center gap-2 border-b-[1.5px] border-ink pb-4.5 sm:gap-4">
-          <DateCircle
-            variant="filled"
-            className="max-sm:size-10 max-sm:text-base"
-          >
+        <div className="flex items-center gap-2 border-b border-ink pb-4.5 sm:gap-4">
+          <DateCircle variant="filled" size="sm" className="max-sm:text-base">
             {formatDay(date, "dd")}
           </DateCircle>
           <h2

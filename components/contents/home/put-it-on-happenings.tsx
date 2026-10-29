@@ -16,7 +16,7 @@ export default function PutItOnHappenings() {
         <FadeUpText
           as="h2"
           id="put-it-on-heading"
-          text="Put it on Happenings."
+          text="Put it on Happenings"
           className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-6xl xl:text-7xl"
         />
         <FadeUpText

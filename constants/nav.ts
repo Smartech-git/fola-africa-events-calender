@@ -3,6 +3,7 @@ export type Nav = {
   link: string;
   pathId: string;
   isFooter?: boolean;
+  isLegal?: boolean
 };
 
 export const DEFAULT_CITY_SLUG = "lagos";
@@ -30,5 +31,19 @@ export const NAV: Nav[] = [
     link: "/submit-event",
     pathId: "submit-event",
     isFooter: true,
+  },
+  {
+    title: "Privacy policy",
+    link: "/privacy-policy",
+    pathId: "privacy-policy",
+    isFooter: true,
+    isLegal: true
+  },
+  {
+    title: "Terms of use",
+    link: "/terms-of-use",
+    pathId: "terms-of-use",
+    isFooter: true,
+    isLegal: true
   },
 ];

@@ -61,7 +61,7 @@ export default function PrivateEventListings({ event, timezone }: Props) {
         <FadeUpText
           as="h2"
           id="listing-modes-heading"
-          text="Organisers decide how a private happening appears."
+          text="Organisers decide how a private happening appears"
           className="font-montreal text-3xl font-medium tracking-mono sm:text-5xl"
         />
         <ul className="grid gap-6 md:grid-cols-3">

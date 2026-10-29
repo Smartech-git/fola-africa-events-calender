@@ -4,7 +4,6 @@ import { useSearchParams } from "next/navigation";
 
 import HoverText from "@/components/animations/hover-text";
 import Button from "@/components/ui/button";
-import { chipVariants } from "@/components/ui/chip-variants";
 import { FILTER_KEYS } from "@/constants/filters";
 import { useRouteParam } from "@/hooks/use-route-param";
 import { activeFilterLabels } from "@/lib/events/active-filters";
@@ -42,10 +41,7 @@ export default function NothingMatchesCard({
             {filters.map((filter) => (
               <li
                 key={filter}
-                className={cn(
-                  chipVariants({ variant: "active" }),
-                  "cursor-default",
-                )}
+                className="rounded-full bg-ink px-3 py-2 font-courier text-xs tracking-cou whitespace-nowrap text-white uppercase"
               >
                 {filter}
               </li>
@@ -54,7 +50,7 @@ export default function NothingMatchesCard({
         </>
       )}
       <Heading className="font-montreal text-5xl leading-none font-medium tracking-mono text-red uppercase sm:text-7xl lg:text-[80px]">
-        Nothing matches yet.
+        Nothing matches yet
       </Heading>
       <p className="font-montreal text-lg sm:text-2xl">
         Try another date or filter.

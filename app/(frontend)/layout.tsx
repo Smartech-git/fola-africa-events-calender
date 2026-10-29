@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import type { Metadata, Viewport } from "next";
 
 import "@/app/styles/globals.css";
+import BackToTop from "@/components/common/back-to-top";
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import LenisProvider from "@/components/providers/lenis-provider";
@@ -82,14 +83,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${montreal.variable} ${courierPrime.variable} scrollbar-thin h-full bg-red font-courier scrollbar-thumb-primary scrollbar-track-primary-light max-sm:scrollbar-none`}
+      className={`${montreal.variable} ${courierPrime.variable} scrollbar-thin h-full bg-red font-courier scrollbar-thumb-red scrollbar-track-white`}
     >
-      <body className="w-full bg-primary-light text-ink">
+      <body className="w-full bg-white text-ink">
         <LenisProvider>
           <Header />
           {children}
           <Footer />
           <Toast />
+          <BackToTop />
         </LenisProvider>
       </body>
     </html>

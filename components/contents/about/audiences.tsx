@@ -16,11 +16,11 @@ export default function Audiences() {
       />
       <SectionWrapper className="gap-12">
         <FadeUpText
-          text="The public sees what it can attend."
+          text="The public sees what it can attend"
           className={`${display} md:max-w-[70%] text-white`}
         />
         <FadeUpText
-          text="The industry sees what it needs to plan around."
+          text="The industry sees what it needs to plan around"
           delay={0.15}
           className={`${display} md:max-w-[70%] self-end text-end text-cream`}
         />

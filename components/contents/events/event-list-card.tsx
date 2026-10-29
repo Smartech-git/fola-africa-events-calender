@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import FadeUpText from "@/components/animations/fade-up-text";
+import HoverText from "@/components/animations/hover-text";
 import PixelBlast from "@/components/animations/pixel-blast";
 import { EventAttendanceAction } from "@/components/contents/events/event-actions";
 import { eventAnchor, eventPath, formatTime } from "@/lib/events/event-list";
@@ -24,8 +24,6 @@ interface Props {
 
 const info = "font-courier text-[15px] sm:text-lg";
 
-// Figma: Event Row / Desktop and Mobile (325:1770, 325:1782). The order never
-// changes: time, name, type · industry, access, venue, action.
 export default function EventListCard({ event, city, timezone, date }: Props) {
   const router = useRouter();
   const cardRef = useRef<HTMLElement>(null);
@@ -33,7 +31,6 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
   const path = eventPath(event, city);
   const anchor = eventAnchor(event, date);
 
-  // Times only, as in the design; the day heading already gives the date.
   const time = event.allDay
     ? "All day"
     : [event.startAt, event.endAt]
@@ -91,7 +88,7 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
     >
       <p
         className={cn(
-          "relative z-10 font-courier text-sm tracking-cou text-red uppercase lg:w-1/6 lg:shrink-0 lg:text-base lg:tracking-normal lg:text-ink lg:normal-case xl:text-lg",
+          "relative z-10 font-courier text-sm tracking-cou text-red uppercase lg:w-1/6 lg:shrink-0 lg:text-base lg:text-ink xl:text-base",
         )}
       >
         <time dateTime={event.startAt}>{time}</time>
@@ -102,10 +99,8 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
           href={path}
           className="w-fit focus-visible:outline-2 focus-visible:outline-red"
         >
-          <FadeUpText
-            as="h3"
-            id={anchor + "-title"}
-            delay={0.2}
+          <HoverText
+            trigger="article"
             className="font-montreal text-xl font-medium tracking-mono wrap-break-word uppercase sm:text-[26px]"
             text={event.title}
           />

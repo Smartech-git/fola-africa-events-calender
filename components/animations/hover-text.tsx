@@ -17,6 +17,7 @@ interface HoverTextProps {
   y?: number;
   ease?: string;
   endContent?: ReactNode;
+  trigger?: string;
 }
 
 export default function HoverText({
@@ -27,6 +28,7 @@ export default function HoverText({
   y = 0,
   ease = "power3.out",
   endContent,
+  trigger: triggerSelector = "a, button, [role='button'], [data-hover-text]",
 }: HoverTextProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -37,11 +39,8 @@ export default function HoverText({
     const element = textRef.current;
     if (!container || !element) return;
 
-    // Use the nearest control or explicitly marked hover group as the trigger.
     const trigger =
-      container.closest<HTMLElement>(
-        "a, button, [role='button'], [data-hover-text]",
-      ) ?? container;
+      container.closest<HTMLElement>(triggerSelector) ?? container;
     const media = gsap.matchMedia();
 
     media.add("(prefers-reduced-motion: no-preference)", () => {
@@ -129,14 +128,18 @@ export default function HoverText({
     });
 
     return () => media.revert();
-  }, [text, className, duration, stagger, y, ease]);
+  }, [text, className, duration, stagger, y, ease, triggerSelector]);
 
   return (
     <div
       ref={containerRef}
       className="flex w-fit max-w-full items-center gap-1 md:gap-2"
     >
-      <div ref={textRef} className={cn("min-w-0", className)}>
+
+      <div
+        ref={textRef}
+        className={cn("min-w-0 pt-0.5", className)}
+      >
         {text.split(/\r\n|\r|\n/).map((line, index) => (
           <Fragment key={index}>
             {index > 0 && <br />}

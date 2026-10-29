@@ -13,12 +13,12 @@ export default function Hero() {
           <SurTitle dot content="About Happenings" className="text-white" />
           <FadeUpText
             as="h1"
-            text="People, places, industries and moments, in one shared view."
+            text="People, places, industries and moments, in one shared view"
             delay={0.1}
             className="w-full max-w-450 font-montreal text-5xl font-medium tracking-mono lg:text-7xl xl:text-8xl"
           />
         </div>
-        <div className="lg:aspect-square h-80 w-full shrink-0 self-end lg:w-72">
+        <div className="lg:aspect-square lg:h-70 h-40 w-full shrink-0 self-end lg:w-72">
           <DotField />
         </div>
       </SectionWrapper>

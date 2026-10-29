@@ -52,7 +52,7 @@ export default function Hero({ header, city, cities }: Props) {
             className="font-montreal text-5xl leading-tight font-medium tracking-mono uppercase md:text-7xl 4k:text-8xl"
           />
           <FadeUpText
-            text="One calendar for what is happening across Africa’s cities."
+            text="One calendar for what is happening across Africa’s cities"
             delay={0.3}
             className="max-w-155 font-montreal text-lg text-cream sm:text-2xl"
           />

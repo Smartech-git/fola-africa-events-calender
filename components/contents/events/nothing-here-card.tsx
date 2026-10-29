@@ -27,7 +27,7 @@ export default function NothingHereCard({
         <p className="font-courier text-sm tracking-cou uppercase">{label}</p>
       )}
       <Heading className="font-montreal text-5xl leading-none font-medium tracking-mono uppercase sm:text-7xl lg:text-[80px]">
-        Nothing here yet.
+        Nothing here yet
       </Heading>
       <p className="font-montreal text-lg sm:text-2xl">
         Know something we don’t?

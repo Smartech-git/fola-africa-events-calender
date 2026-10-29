@@ -171,7 +171,7 @@ export default function MobileMenu({ className }: Props) {
                   {/* <SignIn variant="outlineWhite" size="md" className="w-full" /> */}
                 </div>
 
-                <div className="flex items-start justify-between gap-4 px-4 pt-12 pb-6 font-courier text-xs tracking-cou uppercase">
+                <div className="flex flex-col gap-5 px-4 pt-12 pb-6 font-courier text-xs tracking-cou uppercase">
                   <div className="flex items-center gap-2">
                     {instagram && (
                       <>
@@ -188,7 +188,39 @@ export default function MobileMenu({ className }: Props) {
                     )}
                     <Contact className="text-xs" />
                   </div>
-                  <p className="text-white/60">FOLA Projects</p>
+
+                  <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-white/25 pt-5">
+                    <nav aria-label="Legal">
+                      <ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                        {NAV.filter((item) => item.isLegal).map((item) => {
+                          const active = isPathActive(item.pathId);
+                          return (
+                            <li key={item.pathId}>
+                              <Link
+                                href={item.link}
+                                aria-current={active ? "page" : undefined}
+                                className="group/legal flex items-center gap-2 transition-colors hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                              >
+                                <span
+                                  aria-hidden="true"
+                                  className={cn(
+                                    "mb-0.5 size-2 shrink-0 rounded-full border border-current transition-colors",
+                                    active
+                                      ? "bg-current"
+                                      : "group-hover/legal:bg-current",
+                                  )}
+                                />
+                                {item.title}
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </nav>
+                    <p className="text-white/60">
+                      © {new Date().getFullYear()} FOLA
+                    </p>
+                  </div>
                 </div>
               </LenisProvider>
             </Drawer.Body>

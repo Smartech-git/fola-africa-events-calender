@@ -47,24 +47,24 @@ export default function EventDateNavigation({
     <div
       role="group"
       aria-label="Date navigation"
-      className="flex flex-wrap gap-4 sm:gap-8"
+      className="flex flex-wrap gap-2 sm:gap-4"
     >
       <Button
-        variant="flat"
-        size="fit"
-        className="border-b-2 text-red border-b-transparent text-xs"
+        variant="bordered"
+        size="xs"
+        className="rounded-full border-red pl-2 max-sm:pr-0 text-red"
         aria-label={`Previous ${unit}`}
-        startContent={<ChevronLeft size={16} aria-hidden="true" />}
+        startContent={<ChevronLeft size={14} aria-hidden="true" />}
         onPress={() => navigate(shift(-1))}
       >
         <HoverText text="Previous" className="max-sm:hidden" />
       </Button>
       <Button
-        variant="flat"
-        size="fit"
-        className="border-b-2 border-b-transparent text-xs text-red"
+        variant="bordered"
+        size="xs"
+        className="rounded-full border-red max-sm:pl-0 pr-2 text-xs text-red"
         aria-label={`Next ${unit}`}
-        endContent={<ChevronRight size={16} aria-hidden="true" />}
+        endContent={<ChevronRight size={14} aria-hidden="true" />}
         onPress={() => navigate(shift(1))}
       >
         <HoverText text="Next" className="max-sm:hidden" />

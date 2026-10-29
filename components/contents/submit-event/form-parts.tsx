@@ -6,7 +6,9 @@ import Link from "next/link";
 
 import { Upload } from "lucide-react";
 
+import DotField from "@/components/animations/dot-field";
 import FadeUpText from "@/components/animations/fade-up-text";
+import HoverText from "@/components/animations/hover-text";
 import SurTitle from "@/components/common/sur-title";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import DateCircle from "@/components/ui/date-circle";
@@ -171,7 +173,6 @@ export function UploadBox({
   );
 }
 
-/** The form section currently in view, shared by the desktop list and mobile bar. */
 export function useActiveSection() {
   const [active, setActive] = useState<FormSectionId>(FORM_SECTIONS[0].id);
 
@@ -181,7 +182,6 @@ export function useActiveSection() {
         const visible = entries.find((entry) => entry.isIntersecting);
         if (visible) setActive(visible.target.id as FormSectionId);
       },
-      // A section counts as current while it crosses the upper middle of the screen.
       { rootMargin: "-35% 0px -60% 0px" },
     );
     for (const { id } of FORM_SECTIONS) {
@@ -194,7 +194,6 @@ export function useActiveSection() {
   return active;
 }
 
-/** Desktop: sticky list of sections; the circle fills for the section in view. */
 export function SectionNav({ active }: { active: FormSectionId }) {
   return (
     <nav
@@ -221,14 +220,13 @@ export function SectionNav({ active }: { active: FormSectionId }) {
                 >
                   {number(index)}
                 </DateCircle>
-                <span
+                <HoverText
                   className={cn(
                     "font-courier text-sm tracking-cou uppercase",
                     current ? "text-red" : "text-ink",
                   )}
-                >
-                  {section.title}
-                </span>
+                  text={section.title}
+                />
               </Link>
             </li>
           );
@@ -244,19 +242,18 @@ export function SectionProgress({ active }: { active: FormSectionId }) {
   return (
     <nav
       aria-label="Form sections"
-      className="sticky top-sm-header z-40 flex w-full items-center justify-between border-b-[1.5px] border-ink bg-white px-pg-sm py-4 sm:top-header sm:px-pg lg:hidden"
+      className="sticky top-sm-header z-40 flex w-full items-center justify-between border-b border-ink bg-white px-pg-sm py-4 sm:top-header sm:px-pg lg:hidden"
     >
       <ol className="flex items-center">
         {FORM_SECTIONS.map((section, sectionIndex) => {
           const current = section.id === active;
           return (
             <li key={section.id}>
-              {/* Padding gives each small dot a usable tap target. */}
               <Link
                 href={`#${section.id}`}
                 aria-label={`Section ${sectionIndex + 1}: ${section.title}`}
                 aria-current={current ? "step" : undefined}
-                className="flex p-[3px] focus-visible:outline-2 focus-visible:outline-red"
+                className="flex p-0.75 focus-visible:outline-2 focus-visible:outline-red"
               >
                 <span
                   aria-hidden="true"
@@ -286,17 +283,24 @@ export function FormHeader({ header }: { header: ReactNode }) {
       {header}
       <SectionWrapper className="gap-4">
         <SurTitle dot content="Submit a happening" className="text-white" />
-        <FadeUpText
-          as="h1"
-          text="Tell us what’s happening."
-          delay={0.1}
-          className="font-montreal text-5xl font-medium tracking-mono sm:text-[80px]"
-        />
-        <FadeUpText
-          text="Every submission is reviewed before appearing on the calendar. Listings are reviewed within two working days."
-          delay={0.2}
-          className="max-w-190 font-montreal text-lg text-cream sm:text-2xl"
-        />
+        <div className="flex items-start justify-between gap-10">
+          <div className="flex min-w-0 flex-1 flex-col gap-4">
+            <FadeUpText
+              as="h1"
+              text="Tell us what’s happening"
+              delay={0.1}
+              className="font-montreal text-5xl font-medium tracking-mono sm:text-[80px]"
+            />
+            <FadeUpText
+              text="Every submission is reviewed before appearing on the calendar. Listings are reviewed within two working days."
+              delay={0.2}
+              className="max-w-190 font-montreal text-lg text-cream sm:text-2xl"
+            />
+          </div>
+          <div className="h-40 w-[22vw] shrink-0 max-md:hidden lg:w-[18vw]">
+            <DotField />
+          </div>
+        </div>
       </SectionWrapper>
     </div>
   );

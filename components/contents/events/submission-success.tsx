@@ -49,11 +49,11 @@ export default function SubmissionSuccess({
               <SectionWrapper className="items-start py-8">
                 <LabelTitle title="Submitted" />
 
-                <HeaderTitle className="mt-4" text="We’ve got it." />
+                <HeaderTitle className="mt-4" text="We’ve got it" />
                 <FadeUpText
                   className="text-xs uppercase"
                   delay={0.3}
-                  text="Your Happening has been submitted for review."
+                  text="Your Happening has been submitted for review"
                 />
                 <FadeUpText
                   delay={0.6}

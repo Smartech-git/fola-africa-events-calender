@@ -119,7 +119,7 @@ export default function ThisWeek({ city, weekStart, today, events }: Props) {
           </ol>
         </div>
 
-        <div className="flex items-start justify-between gap-4 border-b-[1.5px] border-ink pb-3.5 font-courier text-sm tracking-cou uppercase">
+        <div className="flex items-start justify-between gap-4 border-b border-ink pb-3.5 font-courier text-sm tracking-cou uppercase">
           <p aria-live="polite" className="text-red">
             {dayLabel} · {happenings(selectedEvents.length)}
           </p>
