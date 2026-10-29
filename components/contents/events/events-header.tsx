@@ -16,7 +16,7 @@ export default function EventsHeader({ data: { city } }: Props) {
         aria-hidden="true"
         className="pointer-events-none absolute top-24.5 md:right-[70%] max-md:left-[65%] size-[70vw] rounded-full border border-red md:top-28.5 md:size-[36vw]"
       />
-      <div className="pointer-events-none absolute right-pg-sm bottom-10 h-40 w-[30vw] max-md:hidden sm:right-pg lg:w-[26vw] 2xl:right-pg-2xl 4k:right-pg-4k">
+      <div className="pointer-events-none absolute right-pg-sm bottom-10 lg:h-40 h-28 w-[30vw] max-md:hidden sm:right-pg lg:w-[26vw] 2xl:right-pg-2xl 4k:right-pg-4k">
         <DotField color="#B51C17" restOpacity={0.18} />
       </div>
       <SectionWrapper className="relative gap-2">
