@@ -23,7 +23,7 @@ export default function EventsHeader({ data: { city } }: Props) {
         <div className="flex gap-4 sm:gap-6">
           <span
             aria-hidden="true"
-            className="size-6 shrink-0 rounded-full bg-red md:size-12"
+            className="size-6 shrink-0 md:mt-4 mt-3 rounded-full bg-red md:size-12"
           />
           <div className="flex gap-2 flex-col">
 
