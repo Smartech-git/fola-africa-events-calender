@@ -42,9 +42,12 @@ export const deleteEventReviews: CollectionBeforeDeleteHook = async ({
 
 export const validateEvent: CollectionBeforeChangeHook = async ({
   data,
-  originalDoc,
+  originalDoc: previous,
+  operation,
   req,
 }) => {
+  
+  const originalDoc = operation === "update" ? previous : undefined;
   const event = { ...originalDoc, ...data };
   for (const key of ["submittedOrganiser", "submittedVenue"]) {
     if (data[key] && typeof data[key] === "object")

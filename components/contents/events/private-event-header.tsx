@@ -1,4 +1,5 @@
 import FadeUpText from "@/components/animations/fade-up-text";
+import HoverText from "@/components/animations/hover-text";
 import SurTitle from "@/components/common/sur-title";
 import EventDateMark from "@/components/contents/events/event-date-mark";
 import EventDetailFacts from "@/components/contents/events/event-detail-facts";
@@ -60,12 +61,13 @@ export default function PrivateEventHeader({ event, timezone }: Props) {
             </p>
           )}
           <div className="flex w-full flex-col items-start gap-5 border border-cream px-6 pt-7 pb-8 sm:px-8">
-            <p className="font-montreal text-lg sm:text-[22px]">
+            <p className="font-montreal text-lg sm:text-2xl">
               Venue, guest list and details are visible to invited guests. Sign
               in with the email your invitation was sent to.
             </p>
-            {/* Sign-in for invited guests is not built yet. */}
-            <Button variant="onWhite">Sign in to view</Button>
+            <Button variant="onWhite">
+              <HoverText text="Sign in to view" />{" "}
+            </Button>
           </div>
           {limited && (
             <p className="font-courier text-[15px] text-cream/70">

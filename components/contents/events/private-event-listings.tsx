@@ -16,8 +16,6 @@ interface Props {
   timezone: string;
 }
 
-// Figma: Private Event — Desktop, "What should Happenings show?" (334:2556).
-// Each card previews this happening as that listing would show it.
 export default function PrivateEventListings({ event, timezone }: Props) {
   const date = formatDay(cityDate(event.startAt, timezone), "EEE dd MMM");
   const time = timeRange(event, timezone, false);
@@ -62,7 +60,7 @@ export default function PrivateEventListings({ event, timezone }: Props) {
           as="h2"
           id="listing-modes-heading"
           text="Organisers decide how a private happening appears"
-          className="font-montreal text-3xl font-medium tracking-mono sm:text-5xl"
+          className="font-montreal text-3xl font-medium tracking-mono md:text-5xl"
         />
         <ul className="grid gap-6 md:grid-cols-3">
           {VISIBILITY_OPTIONS.map((option) => {

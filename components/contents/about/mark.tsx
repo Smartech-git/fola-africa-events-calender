@@ -101,7 +101,7 @@ export default function Mark() {
         />
         <FadeUpText
           text="The O becomes the circle. The circle finds the date"
-          className="font-montreal text-3xl font-medium tracking-mono sm:text-[56px]"
+          className="font-montreal text-3xl font-medium tracking-mono md:text-5xl"
         />
 
         <ul className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">

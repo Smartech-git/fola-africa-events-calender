@@ -44,10 +44,10 @@ export default function Footer() {
     <footer className="mt-auto w-full bg-ink pb-[env(safe-area-inset-bottom)] text-white">
       <SectionWrapper className="gap-12 sm:gap-16">
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
-          <div className="flex max-w-140 flex-col gap-5.5">
+          <div className="flex max-w-160 flex-col gap-5.5">
             <FadeUpText
               as="p"
-              className="tracking-mon font-montreal text-2xl sm:text-[40px]"
+              className="tracking-mon font-montreal text-2xl md:text-5xl"
               text="Where Africa’s people, ideas and events meet"
             />
           </div>
