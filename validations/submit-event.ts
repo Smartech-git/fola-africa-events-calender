@@ -13,6 +13,7 @@ import {
   VISIBILITY_OPTIONS,
 } from "@/payload/constants";
 import {
+  actionURL,
   instagramProfile,
   shortDescription,
   webURL,
@@ -31,6 +32,16 @@ const url = z
     "Enter a web address such as example.com or https://example.com.",
   )
   .transform((value) => (value ? webURL(value)! : ""));
+// Accepts a web address or an email address; emails are saved as mailto: links.
+const actionLink = z
+  .string()
+  .trim()
+  .max(2000)
+  .refine(
+    (value) => !value || Boolean(actionURL(value)),
+    "Enter a web address such as example.com, or an email address.",
+  )
+  .transform((value) => (value ? actionURL(value)! : ""));
 const optionalEmail = z.union([
   z.literal(""),
   z.string().trim().email("Enter a valid email address.").max(254),
@@ -77,7 +88,7 @@ export const submitEventSchema = z
     ]),
     access: choice<Event["access"]>(ACCESS_OPTIONS),
     visibility: choice<Event["visibility"]>(VISIBILITY_OPTIONS),
-    actionUrl: url,
+    actionUrl: actionLink,
     eventWebsite: url,
     instagram,
     publicContactEmail: optionalEmail,

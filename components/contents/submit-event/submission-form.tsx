@@ -427,8 +427,9 @@ export default function SubmissionForm({ cities }: SubmissionOptions) {
                 </Note>
               ) : (
                 text("actionUrl", ACTION_LINKS[access] ?? "Registration link", {
-                  type: "url",
                   required: LINK_REQUIRED_ACCESS.includes(access),
+                  placeholder: "example.com or tickets@example.com",
+                  description: "A link, or an email address for bookings.",
                 })
               )}
               {text(

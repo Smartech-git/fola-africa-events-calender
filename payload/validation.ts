@@ -65,6 +65,31 @@ export function webURL(value: unknown): string | undefined {
 export const normalizeWebURL: FieldHook = ({ value }) =>
   typeof value === "string" && value.trim() ? (webURL(value) ?? value) : value;
 
+const EMAIL = /^[^\s@<>()[\]\\,;:"?]+@[^\s@<>()[\]\\,;:"?]+\.[a-z]{2,}$/i;
+
+/**
+ * Turn an action link into a URL: an email address (with or without mailto:)
+ * becomes a mailto: link, anything else goes through webURL. Undefined when
+ * invalid.
+ */
+export function actionURL(value: unknown): string | undefined {
+  const input = String(value ?? "").trim();
+  const email = input.replace(/^mailto:/i, "");
+  if (EMAIL.test(email)) return `mailto:${email}`;
+  return webURL(input);
+}
+
+export function actionLink(value: unknown): true | string {
+  if (!value || actionURL(value)) return true;
+  return "Enter a web address such as example.com, or an email address such as tickets@example.com.";
+}
+
+/** Field hook: store emails as mailto: links and bare domains as HTTPS URLs. */
+export const normalizeActionURL: FieldHook = ({ value }) =>
+  typeof value === "string" && value.trim()
+    ? (actionURL(value) ?? value)
+    : value;
+
 export function shortDescription(value: unknown): true | string {
   return !value || String(value).trim().split(/\s+/u).length <= 60
     ? true
@@ -127,7 +152,7 @@ export function eventProblems(event: Record<string, any>): string[] {
     errors.push("Held dates must use Private access.");
   if (event.secondaryIndustry && event.secondaryIndustry === event.industry)
     errors.push("Secondary industry must differ from the primary industry.");
-  const urlResult = httpURL(event.actionUrl);
+  const urlResult = actionLink(event.actionUrl);
   if (urlResult !== true) errors.push(urlResult);
   const descriptionResult = shortDescription(event.description);
   if (descriptionResult !== true) errors.push(descriptionResult);

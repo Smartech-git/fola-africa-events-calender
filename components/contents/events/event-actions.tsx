@@ -16,8 +16,9 @@ import {
   shareLink,
 } from "@/lib/events/event-actions";
 import { googleCalendarUrl } from "@/lib/events/event-calendar";
-import { eventSharePath, externalUrl } from "@/lib/events/event-list";
+import { eventSharePath } from "@/lib/events/event-list";
 import { cn } from "@/lib/utils";
+import { actionURL } from "@/payload/validation";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
 
 export function EventExternalAction({
@@ -33,15 +34,19 @@ export function EventExternalAction({
   size?: ButtonProps["size"];
   className?: string;
 }) {
-  const href = externalUrl(url);
+  // Action links may be web addresses or emails saved as mailto: links.
+  const href = actionURL(url);
   if (!href) return null;
+  const email = href.startsWith("mailto:");
   return (
     <Button
       variant={variant}
       size={size}
       className={className}
-      onPress={() => openExternal(href)}
-      aria-label={`${label} (opens in a new tab)`}
+      onPress={() =>
+        email ? window.location.assign(href) : openExternal(href)
+      }
+      aria-label={`${label} (${email ? "opens your email app" : "opens in a new tab"})`}
       endContent={<ArrowUpRight size={16} aria-hidden="true" />}
     >
       <HoverText text={label} />

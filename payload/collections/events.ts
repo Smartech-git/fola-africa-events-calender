@@ -21,8 +21,10 @@ import {
 } from "@/payload/event-hooks";
 import { slugField } from "@/payload/fields/slug-field";
 import {
+  actionLink,
   approvalDecision,
   httpURL,
+  normalizeActionURL,
   normalizeWebURL,
   instagramURL,
   shortDescription,
@@ -123,11 +125,11 @@ export const events: CollectionConfig = {
     {
       name: "actionUrl",
       type: "text",
-      validate: httpURL,
-      hooks: { beforeValidate: [normalizeWebURL] },
+      validate: actionLink,
+      hooks: { beforeValidate: [normalizeActionURL] },
       admin: {
         description:
-          "Ticket, registration or RSVP link. Required for Tickets and RSVP required.",
+          "Ticket, registration or RSVP link, or an email address (saved as a mailto: link). Required for Tickets and RSVP required.",
       },
     },
     {

@@ -386,7 +386,7 @@ export interface Event {
   access: 'free' | 'tickets' | 'rsvp' | 'invitation-only' | 'private' | 'industry-only';
   visibility: 'public' | 'industry' | 'held-date';
   /**
-   * Ticket, registration or RSVP link. Required for Tickets and RSVP required.
+   * Ticket, registration or RSVP link, or an email address (saved as a mailto: link). Required for Tickets and RSVP required.
    */
   actionUrl?: string | null;
   /**
