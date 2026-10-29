@@ -9,7 +9,6 @@ import { LoaderCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-// Figma: Components — HOA / Button. Square corners, Courier Prime caps.
 const button = cva(
   "group relative flex w-fit flex-none cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-none font-courier text-sm  leading-none font-normal tracking-cou text-nowrap whitespace-nowrap uppercase transition-colors outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-offset-2 data-[focus-visible=true]:outline-red data-[pressed=true]:scale-[0.97]",
   {
