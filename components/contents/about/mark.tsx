@@ -130,7 +130,7 @@ export default function Mark() {
               key={index}
               text={paragraph}
               delay={index * 0.1}
-              className="font-montreal text-2xl sm:text-2xl"
+              className="font-montreal text-xl sm:text-2xl"
             />
           ))}
         </div>
