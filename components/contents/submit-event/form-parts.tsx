@@ -99,7 +99,7 @@ export function ChoiceCard({
   return (
     <label
       className={cn(
-        "flex cursor-pointer gap-3.5 border px-4.5 py-4 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-red",
+        "flex cursor-pointer gap-3.5 border px-4.5 py-4 transition-colors has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-red",
         checked
           ? "border-2 border-red bg-cream px-4.25 py-3.75"
           : "border-ink/35 hover:border-ink",
