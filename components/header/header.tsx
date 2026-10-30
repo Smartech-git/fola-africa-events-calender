@@ -2,7 +2,7 @@ import HeaderNav from "@/components/header/header-nav";
 import Logo from "@/components/header/logo";
 import MobileMenu from "@/components/header/mobile-menu";
 // import SearchEvent from "@/components/header/search-event";
-// import SignIn from "@/components/header/sign-in";
+import SignIn from "@/components/header/sign-in";
 import SubmitEvent from "@/components/header/submit-event";
 import { cn } from "@/lib/utils";
 
@@ -28,7 +28,7 @@ export default function Header({ className, isLight = false }: Props) {
           className="max-lg:hidden"
           variant={isLight ? "onWhite" : "solid"}
         />
-        {/* <SignIn className="max-lg:hidden" /> */}
+        <SignIn className="max-lg:hidden" />
         <MobileMenu className="lg:hidden" />
       </div>
     </header>

@@ -29,6 +29,7 @@ function duplicateSubmission(): SubmitEventResult {
 
 export async function createEventSubmission(
   input: unknown,
+  { memberId }: { memberId?: number } = {},
 ): Promise<SubmitEventResult> {
   const parsed = submitEventSchema.safeParse(input);
   if (!parsed.success)
@@ -246,6 +247,7 @@ export async function createEventSubmission(
             role: data.submitterRole || undefined,
             relationship: data.relationship,
           },
+          member: memberId,
           source: "submission",
           status: "submitted",
           verified: false,

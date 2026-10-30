@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    members: Member;
     cities: City;
     organisers: Organiser;
     venues: Venue;
@@ -83,6 +84,9 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
+    members: {
+      happenings: 'events';
+    };
     seasons: {
       events: 'events';
     };
@@ -93,6 +97,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    members: MembersSelect<false> | MembersSelect<true>;
     cities: CitiesSelect<false> | CitiesSelect<true>;
     organisers: OrganisersSelect<false> | OrganisersSelect<true>;
     venues: VenuesSelect<false> | VenuesSelect<true>;
@@ -203,6 +208,80 @@ export interface Media {
   focalY?: number | null;
 }
 /**
+ * Public Happenings accounts. Members sign in with a one-time email link and cannot open the admin. Contact details are private.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "members".
+ */
+export interface Member {
+  id: number;
+  /**
+   * Members sign in with this address. Change it only when the member asks.
+   */
+  email: string;
+  /**
+   * Suspended members are signed out everywhere and cannot sign in.
+   */
+  status: 'active' | 'suspended';
+  fullName: string;
+  phone?: string | null;
+  organisation?: string | null;
+  role?: string | null;
+  industry?:
+    | (
+        | 'business'
+        | 'technology'
+        | 'fashion'
+        | 'art'
+        | 'music'
+        | 'design'
+        | 'film-television'
+        | 'food-drink'
+        | 'beauty'
+        | 'sport'
+      )
+    | null;
+  city?: (number | null) | City;
+  country?: string | null;
+  describes?:
+    | (
+        | 'brand'
+        | 'company'
+        | 'agency'
+        | 'promoter'
+        | 'gallery'
+        | 'institution'
+        | 'foundation'
+        | 'media'
+        | 'venue'
+        | 'individual'
+        | 'other'
+      )
+    | null;
+  marketingConsent?: boolean | null;
+  termsAcceptedAt?: string | null;
+  marketingConsentAt?: string | null;
+  /**
+   * Set the first time the member signs in from their email.
+   */
+  emailVerifiedAt?: string | null;
+  lastSignInAt?: string | null;
+  loginTokenHash?: string | null;
+  loginTokenIssuedAt?: string | null;
+  loginTokenExpiresAt?: string | null;
+  sessionVersion?: number | null;
+  /**
+   * Happenings this member submitted.
+   */
+  happenings?: {
+    docs?: (number | Event)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Add cities and update their names, countries and local time zones. The seeded cities are starter data.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -224,97 +303,6 @@ export interface City {
    * Automatically suggested from the timezone; you can edit it.
    */
   timezoneLabel: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "organisers".
- */
-export interface Organiser {
-  id: number;
-  name: string;
-  /**
-   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
-   */
-  slug: string;
-  type:
-    | 'brand'
-    | 'company'
-    | 'agency'
-    | 'promoter'
-    | 'gallery'
-    | 'institution'
-    | 'foundation'
-    | 'media'
-    | 'venue'
-    | 'individual'
-    | 'label'
-    | 'other';
-  website?: string | null;
-  /**
-   * Internal only. Never included in public event responses.
-   */
-  contact?: {
-    name?: string | null;
-    email?: string | null;
-    phone?: string | null;
-  };
-  isDemo?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "venues".
- */
-export interface Venue {
-  id: number;
-  name: string;
-  /**
-   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
-   */
-  slug: string;
-  city: number | City;
-  area?: string | null;
-  address?: string | null;
-  mapUrl?: string | null;
-  isDemo?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "seasons".
- */
-export interface Season {
-  id: number;
-  name: string;
-  /**
-   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
-   */
-  slug: string;
-  city: number | City;
-  startDate?: string | null;
-  endDate?: string | null;
-  description?: string | null;
-  status: 'provisional' | 'final';
-  /**
-   * Internal aliases; never use as product labels.
-   */
-  searchAliases?:
-    | {
-        alias: string;
-        id?: string | null;
-      }[]
-    | null;
-  isPublished?: boolean | null;
-  isDemo?: boolean | null;
-  events?: {
-    docs?: (number | Event)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -484,6 +472,10 @@ export interface Event {
   source: 'fola' | 'submission' | 'csv' | 'demo';
   sourceUrl?: string | null;
   /**
+   * The Happenings account that submitted this event.
+   */
+  member?: (number | null) | Member;
+  /**
    * Private contact details. Never exposed on the public calendar.
    */
   submittedBy?: {
@@ -497,6 +489,97 @@ export interface Event {
   isDemo?: boolean | null;
   reviews?: {
     docs?: (number | EventReview)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organisers".
+ */
+export interface Organiser {
+  id: number;
+  name: string;
+  /**
+   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
+   */
+  slug: string;
+  type:
+    | 'brand'
+    | 'company'
+    | 'agency'
+    | 'promoter'
+    | 'gallery'
+    | 'institution'
+    | 'foundation'
+    | 'media'
+    | 'venue'
+    | 'individual'
+    | 'label'
+    | 'other';
+  website?: string | null;
+  /**
+   * Internal only. Never included in public event responses.
+   */
+  contact?: {
+    name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+  };
+  isDemo?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "venues".
+ */
+export interface Venue {
+  id: number;
+  name: string;
+  /**
+   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
+   */
+  slug: string;
+  city: number | City;
+  area?: string | null;
+  address?: string | null;
+  mapUrl?: string | null;
+  isDemo?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seasons".
+ */
+export interface Season {
+  id: number;
+  name: string;
+  /**
+   * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
+   */
+  slug: string;
+  city: number | City;
+  startDate?: string | null;
+  endDate?: string | null;
+  description?: string | null;
+  status: 'provisional' | 'final';
+  /**
+   * Internal aliases; never use as product labels.
+   */
+  searchAliases?:
+    | {
+        alias: string;
+        id?: string | null;
+      }[]
+    | null;
+  isPublished?: boolean | null;
+  isDemo?: boolean | null;
+  events?: {
+    docs?: (number | Event)[];
     hasNextPage?: boolean;
     totalDocs?: number;
   };
@@ -721,6 +804,10 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
+        relationTo: 'members';
+        value: number | Member;
+      } | null)
+    | ({
         relationTo: 'cities';
         value: number | City;
       } | null)
@@ -831,6 +918,34 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "members_select".
+ */
+export interface MembersSelect<T extends boolean = true> {
+  email?: T;
+  status?: T;
+  fullName?: T;
+  phone?: T;
+  organisation?: T;
+  role?: T;
+  industry?: T;
+  city?: T;
+  country?: T;
+  describes?: T;
+  marketingConsent?: T;
+  termsAcceptedAt?: T;
+  marketingConsentAt?: T;
+  emailVerifiedAt?: T;
+  lastSignInAt?: T;
+  loginTokenHash?: T;
+  loginTokenIssuedAt?: T;
+  loginTokenExpiresAt?: T;
+  sessionVersion?: T;
+  happenings?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -958,6 +1073,7 @@ export interface EventsSelect<T extends boolean = true> {
   publishedAt?: T;
   source?: T;
   sourceUrl?: T;
+  member?: T;
   submittedBy?:
     | T
     | {

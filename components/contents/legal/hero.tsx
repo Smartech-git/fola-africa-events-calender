@@ -25,7 +25,7 @@ export default function Hero({ title, date }: Props) {
             as="h1"
             text={title}
             delay={0.1}
-            className="w-full font-montreal text-5xl font-medium tracking-mono lg:text-7xl xl:text-8xl"
+            className="w-full font-montreal text-5xl font-medium tracking-mono sm:text-6xl lg:text-7xl xl:text-8xl"
           />
         </div>
         <div className="h-40 w-full shrink-0 self-end max-md:hidden lg:h-30 lg:w-72">

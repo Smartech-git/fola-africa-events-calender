@@ -7,6 +7,7 @@ import * as migration_20261005_200240_staged_submission_relations from "./202610
 import * as migration_20261005_221554_selective_relation_updates from "./20261005_221554_selective_relation_updates";
 import * as migration_20261022_155651_happenings_vocabulary from "./20261022_155651_happenings_vocabulary";
 import * as migration_20261028_005048_team_submission_alerts from "./20261028_005048_team_submission_alerts";
+import * as migration_20261029_225600_member_accounts from "./20261029_225600_member_accounts";
 
 export const migrations = [
   {
@@ -53,5 +54,10 @@ export const migrations = [
     up: migration_20261028_005048_team_submission_alerts.up,
     down: migration_20261028_005048_team_submission_alerts.down,
     name: "20261028_005048_team_submission_alerts",
+  },
+  {
+    up: migration_20261029_225600_member_accounts.up,
+    down: migration_20261029_225600_member_accounts.down,
+    name: "20261029_225600_member_accounts",
   },
 ];

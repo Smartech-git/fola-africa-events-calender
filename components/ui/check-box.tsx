@@ -12,7 +12,8 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     <HeroUICheckbox
       ref={ref}
       radius="none"
-      icon={<Check strokeWidth={2} />}
+      // A function, so HeroUI's state props (isSelected…) never reach the <svg>.
+      icon={({ className }) => <Check strokeWidth={2} className={className} />}
       {...props}
       classNames={{
         ...classNames,

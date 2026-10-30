@@ -13,6 +13,7 @@ import { emailNotifications } from "@/payload/collections/email-notifications";
 import { eventReviews } from "@/payload/collections/event-reviews";
 import { events } from "@/payload/collections/events";
 import { media } from "@/payload/collections/media";
+import { members } from "@/payload/collections/members";
 import { organisers } from "@/payload/collections/organisers";
 import { seasons } from "@/payload/collections/seasons";
 import { users } from "@/payload/collections/users";
@@ -43,6 +44,7 @@ export default buildConfig({
   collections: [
     users,
     media,
+    members,
     cities,
     organisers,
     venues,

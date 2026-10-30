@@ -136,6 +136,11 @@ export const ORGANISER_TYPES = [
   { label: "Other", value: "other" },
 ];
 
+/** "What best describes you?" on a Happenings account: organiser types without Label. */
+export const MEMBER_TYPES = ORGANISER_TYPES.filter(
+  (type) => type.value !== "label",
+);
+
 export const SUBMITTER_RELATIONSHIPS = [
   { label: "Organiser", value: "organiser" },
   { label: "Company or Brand", value: "company" },

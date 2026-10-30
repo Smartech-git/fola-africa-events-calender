@@ -52,7 +52,7 @@ export function FormSection({
           as="h2"
           id={`${id}-title`}
           text={title}
-          className="font-montreal text-3xl font-medium tracking-mono uppercase sm:text-[44px]"
+          className="font-montreal text-2xl font-medium tracking-mono uppercase sm:text-4xl"
         />
       </div>
       {intro && <p className="font-montreal text-base sm:text-lg">{intro}</p>}

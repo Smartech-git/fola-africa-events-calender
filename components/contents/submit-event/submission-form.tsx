@@ -79,7 +79,19 @@ const hhmm = (time: Time) => time.toString().slice(0, 5);
 const ampm = (time: Time) =>
   `${time.hour % 12 || 12}:${String(time.minute).padStart(2, "0")} ${time.hour < 12 ? "AM" : "PM"}`;
 
-export default function SubmissionForm({ cities }: SubmissionOptions) {
+interface Props extends SubmissionOptions {
+  /** About You from the signed-in member's profile. */
+  account?: Pick<
+    SubmitEventValues,
+    | "submitterName"
+    | "submitterEmail"
+    | "submitterPhone"
+    | "submitterOrganisation"
+    | "submitterRole"
+  >;
+}
+
+export default function SubmissionForm({ cities, account }: Props) {
   const router = useRouter();
   const {
     register,
@@ -87,7 +99,10 @@ export default function SubmissionForm({ cities }: SubmissionOptions) {
     handleSubmit,
     setValue,
     formState: { errors, isSubmitting, isSubmitted },
-  } = useReactHookForm(submitEventSchema, submitEventDefaults);
+  } = useReactHookForm(submitEventSchema, {
+    ...submitEventDefaults,
+    ...account,
+  });
   const [state, action, isPending] = useActionState<
     SubmitEventActionState,
     SubmitEventValues
@@ -452,7 +467,7 @@ export default function SubmissionForm({ cities }: SubmissionOptions) {
 
           {/* <FormSection
           id="show-us"
-          intro="Please upload your event artwork or graphic and, where relevant, the invitation."
+          intro="Please upload your event artwork or graphic and, where relevant, the invitation"
         >
           <div className="flex flex-col gap-5 sm:flex-row">
             <UploadBox
@@ -508,6 +523,12 @@ export default function SubmissionForm({ cities }: SubmissionOptions) {
                 SUBMITTER_RELATIONSHIPS,
               )}
             </FieldRow>
+            {account && (
+              <Note>
+                Filled in from your Happenings profile. Changes here apply to
+                this submission only.
+              </Note>
+            )}
             <Note>
               Your account and contact information are used to verify and manage
               your submission. They will not appear publicly unless you choose
@@ -517,7 +538,7 @@ export default function SubmissionForm({ cities }: SubmissionOptions) {
 
           <FormSection
             id="what-to-show"
-            intro="For private and invitation only events, choose what can appear on the calendar."
+            intro="For private and invitation only events, choose what can appear on the calendar"
           >
             <div
               role="radiogroup"

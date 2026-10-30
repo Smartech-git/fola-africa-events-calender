@@ -1,55 +1,70 @@
-"use server";
+import { createHash } from "crypto";
 
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest, NextResponse } from "next/server";
 
 import { JWTPayload, SignJWT, jwtVerify } from "jose";
 
-export interface Cookie {
-  accessToken?: string;
-  tempToken?: string;
-  role?: string;
-  email?: string;
+import {
+  SESSION_COOKIE,
+  SESSION_DAYS,
+  SIGNED_IN_COOKIE,
+} from "@/constants/account";
+
+const DAY = 24 * 60 * 60 * 1000;
+// Rolling sessions are re-signed at most once a day, not on every request.
+const REFRESH_AFTER = DAY;
+
+export interface Cookies<T> extends JWTPayload {
+  cookie: T;
 }
-export interface Cookies extends JWTPayload {
-  cookie: Cookie;
+
+function secretKey() {
+  const secret = process.env.COOKIES_SECRET_KEY || process.env.PAYLOAD_SECRET;
+  if (!secret)
+    throw new Error("COOKIES_SECRET_KEY or PAYLOAD_SECRET is required.");
+  // A key of its own, so these cookies never verify as Payload tokens.
+  return createHash("sha256").update(`hoa-cookies:${secret}`).digest();
 }
 
-const KEY = "medex-admin-panel-token";
-const SECRET_KEY = new TextEncoder().encode(process.env.COOKIES_SECRET_KEY);
+const sessionExpiry = () => new Date(Date.now() + SESSION_DAYS * DAY);
 
-const getExpirationTime = () => {
-  const BASE_TIME = 60 * 60 * 24 * 1000;
-  return BASE_TIME * 3;
-};
+const cookieOptions = (expires: Date, httpOnly = true) => ({
+  httpOnly,
+  secure: process.env.NODE_ENV === "production",
+  // Lax: sent when following a link to the site, never on cross-site posts.
+  sameSite: "lax" as const,
+  expires,
+  path: "/",
+});
 
-export async function encrypt(payload: JWTPayload) {
-  return await new SignJWT(payload)
+export async function encrypt<T>(cookie: T, expires: Date) {
+  return await new SignJWT({ cookie })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime(payload.expires as Date | string | number)
-    .sign(SECRET_KEY);
+    .setExpirationTime(expires)
+    .sign(secretKey());
 }
 
-export async function decrypt(input: string): Promise<Cookies | null> {
+/** The cookie's contents, or null when it is missing, expired or tampered with. */
+export async function decrypt<T>(input: string): Promise<Cookies<T> | null> {
   try {
-    const { payload } = await jwtVerify(input, SECRET_KEY, {
+    const { payload } = await jwtVerify(input, secretKey(), {
       algorithms: ["HS256"],
     });
-    return payload as Cookies;
-  } catch (error) {
-    console.error("Error decrypting cookie:", error);
+    return payload as Cookies<T>;
+  } catch {
     return null;
   }
 }
 
-export const getCookies = async <T = Cookies>(
-  Key?: string,
-): Promise<T | null> => {
+export const getCookies = async <T>(
+  key = SESSION_COOKIE,
+): Promise<Cookies<T> | null> => {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get(Key ?? KEY)?.value;
-  if (!accessToken) return null;
-  return (await decrypt(accessToken)) as T;
+  const token = cookieStore.get(key)?.value;
+  if (!token) return null;
+  return await decrypt<T>(token);
 };
 
 type CreateCookies<T> = {
@@ -58,43 +73,50 @@ type CreateCookies<T> = {
   expiresAt?: Date | number;
 };
 
+/** Call from a server action or route handler. */
 export const createCookies = async <T>({
   cookie,
-  key = KEY,
+  key = SESSION_COOKIE,
   expiresAt,
 }: CreateCookies<T>) => {
-  const expires = new Date(expiresAt ?? Date.now() + getExpirationTime());
-  const token = await encrypt({ cookie, expires });
+  const expires = new Date(expiresAt ?? sessionExpiry());
   const cookieStore = await cookies();
-  cookieStore.set(key, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    expires: expires,
-    path: "/",
-  });
+  cookieStore.set(key, await encrypt(cookie, expires), cookieOptions(expires));
+  if (key === SESSION_COOKIE)
+    cookieStore.set(SIGNED_IN_COOKIE, "1", cookieOptions(expires, false));
 };
 
-export async function updateCookies(request: NextRequest) {
-  const session = request.cookies.get(KEY)?.value;
-  if (!session) return;
-  const parsed = await decrypt(session);
-  const updatedParsed = {
-    ...parsed,
-    expires: new Date(Date.now() + getExpirationTime()),
-  };
-  const res = NextResponse.next();
-  res.cookies.set({
-    name: KEY,
-    value: await encrypt(updatedParsed),
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-    expires: updatedParsed.expires,
-  });
-  return res;
+
+export async function updateCookies(
+  request: NextRequest,
+  response: NextResponse,
+) {
+  const token = request.cookies.get(SESSION_COOKIE)?.value;
+  if (!token) {
+    if (request.cookies.has(SIGNED_IN_COOKIE))
+      response.cookies.delete(SIGNED_IN_COOKIE);
+    return response;
+  }
+  const parsed = await decrypt(token);
+  if (!parsed) {
+    response.cookies.delete(SESSION_COOKIE);
+    response.cookies.delete(SIGNED_IN_COOKIE);
+    return response;
+  }
+  if (parsed.iat && Date.now() - parsed.iat * 1000 < REFRESH_AFTER)
+    return response;
+  const expires = sessionExpiry();
+  response.cookies.set(
+    SESSION_COOKIE,
+    await encrypt(parsed.cookie, expires),
+    cookieOptions(expires),
+  );
+  response.cookies.set(SIGNED_IN_COOKIE, "1", cookieOptions(expires, false));
+  return response;
 }
 
-export const clearCookies = async (): Promise<void> => {
+export const clearCookies = async (key = SESSION_COOKIE): Promise<void> => {
   const cookieStore = await cookies();
-  cookieStore.delete(KEY);
+  cookieStore.delete(key);
+  if (key === SESSION_COOKIE) cookieStore.delete(SIGNED_IN_COOKIE);
 };

@@ -16,7 +16,7 @@ export default function LandingHero() {
         <SurTitle dot content="Submit a happening" className="text-white" />
         <FadeUpText
           as="h1"
-          text="Put it on Happenings."
+          text="Put it on Happenings"
           delay={0.1}
           className="font-montreal text-6xl font-medium tracking-mono uppercase md:text-7xl xl:text-8xl"
         />
@@ -25,7 +25,7 @@ export default function LandingHero() {
           <div className="flex flex-col gap-1 font-montreal text-3xl font-medium tracking-mono sm:text-5xl lg:w-130 lg:shrink-0">
             <FadeUpText text="Planning something?" delay={0.2} />
             <FadeUpText
-              text="Tell us what’s happening."
+              text="Tell us what’s happening"
               delay={0.3}
               className="text-cream"
             />

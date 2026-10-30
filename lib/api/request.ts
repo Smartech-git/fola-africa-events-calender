@@ -24,7 +24,7 @@ export const request: FetchFunction = async ({ endpoint = "", options }) => {
   };
 
   if (useAuth) {
-    const authData = await getCookies();
+    const authData = await getCookies<{ accessToken?: string }>();
     if (authData?.cookie.accessToken) {
       headers.Authorization = `Bearer ${authData.cookie.accessToken}`;
     }

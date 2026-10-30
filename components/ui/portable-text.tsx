@@ -54,7 +54,7 @@ const options: HTMLReactParserOptions = {
         return (
           <h2
             id={id}
-            className="mt-6 scroll-mt-32 border-t-[1.5px] border-ink pt-8 font-montreal text-2xl font-medium tracking-mono sm:mt-10 sm:text-[32px]"
+            className="mt-6 scroll-mt-32 border-t-[1.5px] border-ink pt-8 font-montreal text-2xl font-medium tracking-mono sm:mt-10 sm:text-3xl"
           >
             {children()}
           </h2>

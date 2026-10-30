@@ -371,6 +371,19 @@ export const events: CollectionConfig = {
       hooks: { beforeValidate: [normalizeWebURL] },
     },
     {
+      name: "member",
+      label: "Submitted by member",
+      type: "relationship",
+      relationTo: "members",
+      index: true,
+      access: { create: () => false, update: () => false },
+      admin: {
+        position: "sidebar",
+        readOnly: true,
+        description: "The Happenings account that submitted this event.",
+      },
+    },
+    {
       name: "submittedBy",
       type: "group",
       admin: {

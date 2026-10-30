@@ -7,22 +7,24 @@ import { usePathname } from "next/navigation";
 
 import { ArrowRight, Menu, X } from "lucide-react";
 
+import { signOut } from "@/actions/member-auth";
 import Fade from "@/components/animations/fade";
 import FadeUpText from "@/components/animations/fade-up-text";
 import Contact from "@/components/footer/contact";
 import Logo from "@/components/header/logo";
 // import SearchEvent from "@/components/header/search-event";
-// import SignIn from "@/components/header/sign-in";
+import SignIn from "@/components/header/sign-in";
 import SubmitEvent from "@/components/header/submit-event";
 import LenisProvider from "@/components/providers/lenis-provider";
 import Button from "@/components/ui/button";
 import Drawer from "@/components/ui/drawer";
 import { DEFAULT_CITY_SLUG, NAV, type Nav } from "@/constants/nav";
 import { socials } from "@/constants/socials";
+import { useAccount } from "@/hooks/use-account";
 import { useAPI } from "@/hooks/use-api";
 import { useCalendarToday } from "@/hooks/use-calendar-today";
 import { useIsPathActive } from "@/hooks/use-is-path-active";
-import { cn } from "@/lib/utils";
+import { cn, initials } from "@/lib/utils";
 import type { Cities, CitySummary } from "@/requests/get-cities";
 
 const instagram = socials.find((social) => social.name === "Instagram");
@@ -38,6 +40,7 @@ export default function MobileMenu({ className }: Props) {
   const cities = data?.data ?? [];
   const pathname = usePathname();
   const { isPathActive } = useIsPathActive();
+  const { signedIn, account } = useAccount();
 
   const [openedOn, setOpenedOn] = useState<string | null>(null);
   const isOpen = openedOn === pathname;
@@ -77,7 +80,6 @@ export default function MobileMenu({ className }: Props) {
             <Drawer.Header className="flex items-center justify-between gap-4 py-4">
               <Logo variant="white" className="w-50" />
               <div className="flex items-center gap-3">
-                {/* <SearchEvent className="text-white" /> */}
                 <Button
                   variant="onWhite"
                   size="icon"
@@ -167,8 +169,25 @@ export default function MobileMenu({ className }: Props) {
                 </nav>
 
                 <div className="flex flex-col gap-2.5 border-t border-white/25 px-4 pt-5">
-                  <SubmitEvent variant="ink" size="md" className="w-full" />
-                  {/* <SignIn variant="outlineWhite" size="md" className="w-full" /> */}
+                  <SubmitEvent
+                    variant={signedIn ? "onWhite" : "ink"}
+                    size="md"
+                    className="w-full"
+                  />
+                  {signedIn ? (
+                    <AccountLinks
+                      name={account?.name}
+                      organisation={account?.organisation}
+                      pending={account?.pending}
+                      onNavigate={onClose}
+                    />
+                  ) : (
+                    <SignIn
+                      variant="outlineWhite"
+                      size="md"
+                      className="w-full"
+                    />
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-5 px-4 pt-12 pb-6 font-courier text-xs tracking-cou uppercase">
@@ -228,6 +247,80 @@ export default function MobileMenu({ className }: Props) {
         )}
       </Drawer.Content>
     </Drawer.Root>
+  );
+}
+
+// Figma: Mobile Menu — Signed In. Profile comes first, as in the account tabs.
+function AccountLinks({
+  name,
+  organisation,
+  pending,
+  onNavigate,
+}: {
+  name?: string;
+  organisation?: string | null;
+  pending?: number;
+  onNavigate: () => void;
+}) {
+  const link =
+    "transition-colors hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
+
+  return (
+    <div className="flex flex-col gap-4 pt-4">
+      {name && (
+        <div className="flex items-center gap-3">
+          <span
+            aria-hidden="true"
+            className="flex size-10 shrink-0 items-center justify-center rounded-full border border-white font-courier text-xs tracking-cou"
+          >
+            {initials(name)}
+          </span>
+          <span className="flex min-w-0 flex-col">
+            <span className="truncate font-montreal text-lg">{name}</span>
+            {organisation && (
+              <span className="truncate font-courier text-xs tracking-cou text-cream uppercase">
+                {organisation}
+              </span>
+            )}
+          </span>
+        </div>
+      )}
+      <div className="flex flex-col gap-1.5">
+        <nav aria-label="Account">
+          <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 font-courier text-sm tracking-cou uppercase">
+            <li>
+              <Link href="/account" onClick={onNavigate} className={link}>
+                Profile
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/account/happenings"
+                onClick={onNavigate}
+                className={link}
+              >
+                My happenings
+              </Link>
+            </li>
+            <li>
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className={cn("cursor-pointer uppercase", link)}
+                >
+                  Sign out
+                </button>
+              </form>
+            </li>
+          </ul>
+        </nav>
+        {pending ? (
+          <span className="font-courier text-[11px] tracking-cou text-cream uppercase">
+            {pending} pending review
+          </span>
+        ) : null}
+      </div>
+    </div>
   );
 }
 

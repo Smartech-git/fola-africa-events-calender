@@ -1,5 +1,6 @@
 "use server";
 
+import { getMember } from "@/lib/auth/member-session";
 import {
   createEventSubmission,
   type SubmitEventResult,
@@ -15,7 +16,9 @@ export async function submitEvent(
   if (data === null) return { success: false, status: 0 };
 
   try {
-    const result = await createEventSubmission(data);
+    // Signed-in members see the submission under My Happenings.
+    const member = await getMember();
+    const result = await createEventSubmission(data, { memberId: member?.id });
 
     if (result.success) return result;
 
