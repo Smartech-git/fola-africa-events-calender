@@ -29,7 +29,7 @@ export default function LandingHero() {
               delay={0.3}
               className="text-cream"
             />
-            <Link href="/submit-event/form" className="w-full mt-8 sm:w-fit">
+            <Link href="/submit-event/form" className="mt-8 w-full sm:w-fit">
               <Button variant="onWhite" size="md" className="w-full">
                 <HoverText text="Get started" />
               </Button>
@@ -45,11 +45,7 @@ export default function LandingHero() {
             <p className="font-courier text-sm tracking-cou uppercase">
               Public, ticketed, RSVP, invitation only or private.
             </p>
-            <div className="mt-8 flex flex-col gap-4 pt-3 sm:flex-row sm:items-center">
-              <p className="font-montreal text-base text-cream">
-                Every submission is reviewed before appearing on the calendar.
-              </p>
-            </div>
+           
           </div>
         </div>
 

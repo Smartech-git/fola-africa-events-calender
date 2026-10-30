@@ -14,7 +14,7 @@ export default function HowItWorks() {
         <SurTitle as="h2" id="how-it-works" content="How it works" />
         <FadeUpText
           text="Nothing publishes automatically"
-          className="font-montreal text-5xl font-medium tracking-mono sm:text-7xl"
+          className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-6xl xl:text-7xl"
         />
         <ReviewSteps done={1} />
       </SectionWrapper>

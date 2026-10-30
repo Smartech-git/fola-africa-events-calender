@@ -8,7 +8,6 @@ import { safeNextPath } from "@/validations/member-account";
 export const metadata: Metadata = {
   title: "Continue to Happenings",
   robots: { index: false, follow: false },
-  // The URL carries the one-time token; never send it on to another site.
   referrer: "no-referrer",
 };
 

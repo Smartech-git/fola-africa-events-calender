@@ -24,7 +24,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         ),
         icon: cn("text-white", classNames?.icon),
         label: cn(
-          "w-full font-courier text-xs leading-5 font-normal tracking-mono text-ink uppercase",
+          "w-full [&_a]:relative [&_a]:z-10 font-courier text-xs leading-5 font-normal tracking-mono text-ink uppercase",
           classNames?.label,
         ),
       }}

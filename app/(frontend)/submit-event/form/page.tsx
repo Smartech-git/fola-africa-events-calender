@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 import { FormHeader } from "@/components/contents/submit-event/form-parts";
 import SubmissionForm from "@/components/contents/submit-event/submission-form";
 import Header from "@/components/header/header";
@@ -23,17 +25,20 @@ export default async function Page() {
   } catch {
     options = null;
   }
-  // Signed-in members have About You filled in from their profile.
+  // Submitting needs a Happenings account. Without one, create it (or sign in
+  // from its tabs) and come straight back to the form.
   const member = await getMember().catch(() => null);
-  const account = member
-    ? {
-        submitterName: member.fullName,
-        submitterEmail: member.email,
-        submitterPhone: member.phone ?? "",
-        submitterOrganisation: member.organisation ?? "",
-        submitterRole: member.role ?? "",
-      }
-    : undefined;
+  if (!member)
+    redirect(
+      `/create-account?${new URLSearchParams({ next: "/submit-event/form" })}`,
+    );
+  const account = {
+    submitterName: member.fullName,
+    submitterEmail: member.email,
+    submitterPhone: member.phone ?? "",
+    submitterOrganisation: member.organisation ?? "",
+    submitterRole: member.role ?? "",
+  };
 
   return (
     <div className="relative -mt-sm-header flex w-full flex-col sm:-mt-header">

@@ -37,17 +37,25 @@ export default function ReviewSteps({ done = 1 }: Props) {
               <DateCircle variant={index < done ? "filled" : "outline"}>
                 {String(index + 1).padStart(2, "0")}
               </DateCircle>
-              {!last && (
-                <span
-                  aria-hidden="true"
-                  className="h-[1.5px] flex-1 bg-red hidden md:flex"
-                />
+              <span
+                aria-hidden="true"
+                className="h-px flex-1 bg-red hidden md:flex"
+              />
+              {/* Desktop: the rule ends in an empty circle at the far end. */}
+              {last && (
+                <span aria-hidden="true" className="hidden md:contents">
+                  <DateCircle
+                    variant={done >= REVIEW_STEPS.length ? "filled" : "outline"}
+                  >
+                    {null}
+                  </DateCircle>
+                </span>
               )}
               <FadeUpText
                 as="h3"
                 text={step.title}
                 delay={index * 0.1}
-                className="ml-4 md:hidden font-montreal text-4xl font-medium tracking-cou text-red sm:text-5xl"
+                className="ml-4 md:hidden font-montreal text-3xl font-medium tracking-cou text-red sm:text-4xl"
               />
             </div>
 
@@ -56,7 +64,7 @@ export default function ReviewSteps({ done = 1 }: Props) {
                 as="h3"
                 text={step.title}
                 delay={index * 0.1}
-                className="font-montreal text-4xl font-medium tracking-cou text-red max-md:hidden sm:text-5xl"
+                className="font-montreal text-3xl font-medium tracking-cou text-red max-md:hidden sm:text-4xl"
               />
               <FadeUpText
                 text={step.description}

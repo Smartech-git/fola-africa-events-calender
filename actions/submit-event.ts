@@ -16,9 +16,15 @@ export async function submitEvent(
   if (data === null) return { success: false, status: 0 };
 
   try {
-    // Signed-in members see the submission under My Happenings.
+    // Only signed-in members can submit; it appears under My Happenings.
     const member = await getMember();
-    const result = await createEventSubmission(data, { memberId: member?.id });
+    if (!member)
+      return {
+        success: false,
+        status: 401,
+        error: "Sign in or create an account to submit a happening.",
+      };
+    const result = await createEventSubmission(data, { memberId: member.id });
 
     if (result.success) return result;
 

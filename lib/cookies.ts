@@ -87,6 +87,13 @@ export const createCookies = async <T>({
 };
 
 
+export async function hasMemberSession(request: NextRequest) {
+  const token = request.cookies.get(SESSION_COOKIE)?.value;
+  if (!token) return false;
+  const parsed = await decrypt<{ memberId?: unknown }>(token);
+  return typeof parsed?.cookie?.memberId === "number";
+}
+
 export async function updateCookies(
   request: NextRequest,
   response: NextResponse,

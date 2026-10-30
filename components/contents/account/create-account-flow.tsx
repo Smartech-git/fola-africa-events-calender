@@ -24,6 +24,7 @@ import {
 import Button from "@/components/ui/button";
 import Checkbox from "@/components/ui/check-box";
 import Input from "@/components/ui/input";
+import { ACCOUNT_BENEFITS } from "@/constants/account";
 import useReactHookForm from "@/hooks/use-react-form";
 import {
   createAccountSchema,
@@ -34,12 +35,13 @@ import {
 
 const idle: MemberActionState = { status: "idle" };
 
-const BENEFITS = [
-  "Submit a happening",
-  "Your details prefilled every time",
-  "View your submissions",
-  "See whether each is pending, approved or live",
-];
+// A new tab keeps the half-filled form.
+const legalLink = {
+  target: "_blank",
+  rel: "noopener noreferrer",
+  className: "hover:underline max-sm:text-red mx-0.5 text-red font-courier uppercase",
+} as const;
+
 
 interface Props {
   cities: CityOption[];
@@ -98,7 +100,7 @@ export default function CreateAccountFlow({ cities, next }: Props) {
       wide
       asideContent={
         <ul className="flex max-w-125 flex-col border-t border-white/30">
-          {BENEFITS.map((benefit) => (
+          {ACCOUNT_BENEFITS.map((benefit) => (
             <li
               key={benefit}
               className="flex items-center gap-3 border-b border-white/30 py-3.5 font-courier text-sm tracking-cou uppercase"
@@ -142,7 +144,7 @@ export default function CreateAccountFlow({ cities, next }: Props) {
           }
         />
 
-        <div className="flex flex-col gap-2 border-t border-ink/20 pt-5">
+        <div className="flex flex-col gap-1 border-t border-ink/20 pt-5">
           <Controller
             control={control}
             name="terms"
@@ -163,11 +165,11 @@ export default function CreateAccountFlow({ cities, next }: Props) {
                   </span>
                   <span className="font-montreal text-base normal-case">
                     I agree to the{" "}
-                    <Link href="/terms-of-use" className="underline">
+                    <Link href="/terms-of-use" {...legalLink}>
                       Terms
                     </Link>{" "}
                     and{" "}
-                    <Link href="/privacy-policy" className="underline">
+                    <Link href="/privacy-policy" {...legalLink}>
                       Privacy Policy
                     </Link>
                     . My details are used to operate my account and verify my
@@ -193,6 +195,7 @@ export default function CreateAccountFlow({ cities, next }: Props) {
                 onValueChange={field.onChange}
                 onBlur={field.onBlur}
                 isDisabled={isPending}
+                className="mt-4"
               >
                 <span className="flex flex-col gap-1">
                   <span className="text-ink/70">Optional · Marketing</span>
