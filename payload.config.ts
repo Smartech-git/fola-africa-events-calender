@@ -23,6 +23,7 @@ import { sendEventEmailTask } from "@/payload/emails/event-email-task";
 import { zeptomailAdapter } from "@/payload/emails/zeptomail-adapter";
 import { NotificationSettings } from "@/payload/globals/notification-settings";
 import { ReviewSettings } from "@/payload/globals/review-settings";
+import { syncBrevoContactTask } from "@/payload/members/brevo-task";
 import { reviewEventTask } from "@/payload/reviews/review-task";
 
 const filename = fileURLToPath(import.meta.url);
@@ -34,7 +35,9 @@ export default buildConfig({
     user: users.slug,
     components: {
       // Show/hide toggle on every admin password field.
-      providers: ["@/payload/components/password-toggle#PasswordToggleProvider"],
+      providers: [
+        "@/payload/components/password-toggle#PasswordToggleProvider",
+      ],
       beforeNavLinks: [
         "@/payload/components/review-count-badge#ReviewCountBadge",
       ],
@@ -57,7 +60,7 @@ export default buildConfig({
   ],
   globals: [ReviewSettings, NotificationSettings],
   jobs: {
-    tasks: [reviewEventTask, sendEventEmailTask],
+    tasks: [reviewEventTask, sendEventEmailTask, syncBrevoContactTask],
     enableConcurrencyControl: true,
     access: {
       run: ({ req }) => roleOf(req.user) === "admin",

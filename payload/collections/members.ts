@@ -2,6 +2,14 @@ import type { CollectionConfig, FieldAccess } from "payload";
 
 import { adminField, isAdmin, isStaff } from "@/payload/access";
 import { INDUSTRIES, MEMBER_TYPES } from "@/payload/constants";
+import {
+  BREVO_EXPORT_PATH,
+  brevoExportHandler,
+} from "@/payload/members/brevo-export";
+import {
+  queueBrevoRemoval,
+  queueBrevoSync,
+} from "@/payload/members/brevo-task";
 
 // Sign-in secrets are only read and written by trusted server code.
 const noFieldAccess: FieldAccess = () => false;
@@ -35,12 +43,26 @@ export const members: CollectionConfig = {
     ],
     description:
       "Public Happenings accounts. Members sign in with a one-time email link and cannot open the admin. Contact details are private.",
+    components: {
+      beforeListTable: [
+        "@/payload/components/members-metrics#MembersMetrics",
+        "@/payload/components/members-brevo-export#MembersBrevoExport",
+      ],
+    },
   },
+  endpoints: [
+    { path: BREVO_EXPORT_PATH, method: "get", handler: brevoExportHandler },
+  ],
   access: {
     create: isAdmin,
     read: isStaff,
     update: isAdmin,
     delete: isAdmin,
+  },
+  // Members who agreed to marketing are kept in step with the Brevo list.
+  hooks: {
+    afterChange: [queueBrevoSync],
+    afterDelete: [queueBrevoRemoval],
   },
   fields: [
     {

@@ -1,6 +1,7 @@
 {
   "crons": [
     { "path": "/api/cron/event-reviews", "schedule": "0 4 * * *" },
-    { "path": "/api/cron/event-emails", "schedule": "0 5 * * *" }
+    { "path": "/api/cron/event-emails", "schedule": "0 5 * * *" },
+    { "path": "/api/cron/brevo-sync", "schedule": "0 6 * * *" }
   ]
 }

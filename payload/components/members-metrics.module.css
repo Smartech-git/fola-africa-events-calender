@@ -1,0 +1,37 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 20px;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 6px;
+  background: var(--theme-elevation-50);
+  color: var(--theme-text);
+}
+
+.card dt {
+  color: var(--theme-elevation-800);
+  font-size: 13px;
+}
+
+.card dd {
+  margin: 0;
+}
+
+.value {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.note {
+  color: var(--theme-elevation-500);
+  font-size: 12px;
+}

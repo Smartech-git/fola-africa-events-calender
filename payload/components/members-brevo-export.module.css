@@ -1,0 +1,32 @@
+.panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 6px;
+  background: var(--theme-elevation-50);
+  color: var(--theme-text);
+}
+
+.text {
+  flex: 1 1 420px;
+}
+
+.text h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.text p {
+  margin: 0;
+  color: var(--theme-elevation-800);
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}

@@ -132,6 +132,7 @@ export interface Config {
     tasks: {
       'review-event': TaskReviewEvent;
       'send-event-email': TaskSendEventEmail;
+      'sync-brevo-contact': TaskSyncBrevoContact;
       inline: {
         input: unknown;
         output: unknown;
@@ -744,7 +745,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'review-event' | 'send-event-email';
+        taskSlug: 'inline' | 'review-event' | 'send-event-email' | 'sync-brevo-contact';
         taskID: string;
         input?:
           | {
@@ -777,7 +778,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'review-event' | 'send-event-email') | null;
+  taskSlug?: ('inline' | 'review-event' | 'send-event-email' | 'sync-brevo-contact') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -1296,6 +1297,20 @@ export interface TaskSendEventEmail {
     notificationId: number;
   };
   output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSync-brevo-contact".
+ */
+export interface TaskSyncBrevoContact {
+  input: {
+    memberId: number;
+    email: string;
+    previousEmail?: string | null;
+  };
+  output: {
+    result: string;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
