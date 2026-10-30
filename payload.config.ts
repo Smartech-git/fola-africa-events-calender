@@ -33,6 +33,8 @@ export default buildConfig({
     meta: { titleSuffix: `| ${SITE_NAME}` },
     user: users.slug,
     components: {
+      // Show/hide toggle on every admin password field.
+      providers: ["@/payload/components/password-toggle#PasswordToggleProvider"],
       beforeNavLinks: [
         "@/payload/components/review-count-badge#ReviewCountBadge",
       ],

@@ -37,7 +37,7 @@ export default function AccountSidebar({ member, counts }: Props) {
             {initials(member.fullName)}
           </span>
           <span className="flex min-w-0 flex-col gap-1">
-            <span className="font-montreal text-2xl font-medium break-words">
+            <span className="font-montreal text-2xl font-medium wrap-break-word">
               {member.fullName}
             </span>
             {title && (
