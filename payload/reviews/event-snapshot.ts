@@ -19,6 +19,7 @@ export const editorialFields = [
   "venue",
   "seasons",
   "description",
+  "artwork",
   "submittedOrganiser",
   "submittedVenue",
 ] as const;
@@ -48,7 +49,7 @@ export function eventSnapshot(
             )
           : null;
       }
-      if (["city", "organiser", "venue"].includes(key))
+      if (["city", "organiser", "venue", "artwork"].includes(key))
         value = relationID(value) ?? null;
       if (key === "seasons")
         value = Array.isArray(value) ? value.map(relationID).sort() : [];

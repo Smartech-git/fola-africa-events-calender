@@ -12,6 +12,7 @@ import { ReviewSuggestedListing as ReviewSuggestedListing_dc331a26ac0d395b7d62f5
 import { ReviewRecommendation as ReviewRecommendation_dc331a26ac0d395b7d62f53008418258 } from '@/payload/components/review-fields'
 import { ReviewCountBadge as ReviewCountBadge_0bbe7fb3019a9603cfbf92a523ebc4b6 } from '@/payload/components/review-count-badge'
 import { PasswordToggleProvider as PasswordToggleProvider_55f26ef67f976a5abbda60a8fd9fbfa8 } from '@/payload/components/password-toggle'
+import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e } from '@payloadcms/storage-vercel-blob/client'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -30,5 +31,6 @@ export const importMap = {
   "@/payload/components/review-fields#ReviewRecommendation": ReviewRecommendation_dc331a26ac0d395b7d62f53008418258,
   "@/payload/components/review-count-badge#ReviewCountBadge": ReviewCountBadge_0bbe7fb3019a9603cfbf92a523ebc4b6,
   "@/payload/components/password-toggle#PasswordToggleProvider": PasswordToggleProvider_55f26ef67f976a5abbda60a8fd9fbfa8,
+  "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

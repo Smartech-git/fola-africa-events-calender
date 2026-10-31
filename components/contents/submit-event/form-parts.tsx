@@ -19,7 +19,7 @@ export const FORM_SECTIONS = [
   { id: "who-can-attend", title: "Who can attend?" },
   { id: "where", title: "Where is it happening?" },
   { id: "links", title: "Links and information" },
-  // { id: "show-us", title: "Show us the Happening" },
+  { id: "show-us", title: "Show us the Happening" },
   { id: "about-you", title: "About you" },
   { id: "what-to-show", title: "What should Happenings show?" },
 ] as const;

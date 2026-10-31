@@ -128,7 +128,7 @@ const Drawer = {
 
     return (
       <HeroDrawerBody
-        className={cn("scrollbar-none px-pg-sm sm:px-pg", className)}
+        className={cn("scrollbar-thin scrollbar-track-transparent overflow-y-auto! px-pg-sm sm:px-pg", className)}
         {...rest}
       />
     );

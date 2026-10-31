@@ -12,19 +12,18 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     <HeroUICheckbox
       ref={ref}
       radius="none"
-      // A function, so HeroUI's state props (isSelected…) never reach the <svg>.
       icon={({ className }) => <Check strokeWidth={2} className={className} />}
       {...props}
       classNames={{
         ...classNames,
-        base: cn("max-w-full items-start gap-3 py-2", classNames?.base),
+        base: cn("max-w-full items-start gap-2 py-2", classNames?.base),
         wrapper: cn(
-          "mt-0.5 shrink-0 rounded-none bg-white before:rounded-none before:border before:border-ink after:rounded-none after:bg-red group-data-[invalid=true]:before:border-red group-data-[focus-visible=true]:ring-red",
+          "shrink-0 w-4! h-4! rounded-none bg-white before:rounded-none before:border before:border-ink after:rounded-none after:bg-red group-data-[invalid=true]:before:border-red group-data-[focus-visible=true]:ring-red",
           classNames?.wrapper,
         ),
-        icon: cn("text-white", classNames?.icon),
+        icon: cn("text-white ", classNames?.icon),
         label: cn(
-          "w-full [&_a]:relative [&_a]:z-10 font-courier text-xs leading-5 font-normal tracking-mono text-ink uppercase",
+          "w-full mt-0.5 [&_a]:relative [&_a]:z-10 font-courier text-xs leading-5 font-normal tracking-mono text-ink uppercase",
           classNames?.label,
         ),
       }}

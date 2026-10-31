@@ -78,6 +78,10 @@ export default function SignInFlow({
           sentAt={sent.at}
           isResending={isPending}
           error={error}
+          createAccountHref={`/create-account?${new URLSearchParams({
+            email: sent.email,
+            ...(next && { next }),
+          })}`}
           onResend={() => send({ email: sent.email, next })}
           onChangeEmail={() => {
             setError(undefined);

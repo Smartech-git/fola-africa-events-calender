@@ -17,15 +17,12 @@ interface Props {
   email: string;
 }
 
-// Figma: 26 — Continue to Happenings. The link never signs in on load: email
-// scanners open links automatically and would use up the one-time token.
 export default function ContinueSignIn({ token, next, email }: Props) {
   const [state, action, isPending] = useActionState<
     MemberActionState,
     FormData
   >(completeSignIn, { status: "idle" });
 
-  // Used or expired since the page loaded, for example in another tab.
   if (state.status === "error")
     return <SignInFlow variant="expired" next={next} defaultEmail={email} />;
 

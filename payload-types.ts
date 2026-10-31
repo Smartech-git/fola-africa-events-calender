@@ -84,6 +84,9 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
+    media: {
+      events: 'events';
+    };
     members: {
       happenings: 'events';
     };
@@ -190,12 +193,24 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Event artwork: JPG, PNG or WebP, up to 5 MB. Member uploads that are never attached to a submission are deleted after a day.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: number;
+  /**
+   * Describe the image for people who cannot see it, e.g. “Poster for the 2027 Markets Outlook”.
+   */
   alt: string;
+  uploadedBy?: (number | null) | Member;
+  events?: {
+    docs?: (number | Event)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -207,6 +222,32 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    detail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * Public Happenings accounts. Members sign in with a one-time email link and cannot open the admin. Contact details are private.
@@ -459,6 +500,14 @@ export interface Event {
     | null;
   seasons?: (number | Season)[] | null;
   description?: string | null;
+  /**
+   * Shown on the event page for Full listings only, never in list views. Replacing it on a live listing needs approval again.
+   */
+  artwork?: (number | null) | Media;
+  /**
+   * When the submitter confirmed they have the right to share the artwork.
+   */
+  artworkRightsConfirmedAt?: string | null;
   status: 'submitted' | 'approved' | 'published' | 'cancelled' | 'postponed';
   /**
    * Mark only after direct organiser confirmation. Demo data is never verified.
@@ -908,6 +957,9 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  uploadedBy?: T;
+  events?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -919,6 +971,40 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        detail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        og?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1064,6 +1150,8 @@ export interface EventsSelect<T extends boolean = true> {
   venueUpdate?: T;
   seasons?: T;
   description?: T;
+  artwork?: T;
+  artworkRightsConfirmedAt?: T;
   status?: T;
   verified?: T;
   organiserConfirmed?: T;

@@ -1,4 +1,5 @@
 import type { toPublicEvent } from "@/payload/public-event";
+import type { querySearch } from "@/payload/queries/calendar-query";
 import type { City, Event, Season } from "@/types/payload-types";
 
 export type RequestOptions = {
@@ -23,6 +24,7 @@ export interface CalendarPage<T> {
 
 export type PublicEvent = NonNullable<ReturnType<typeof toPublicEvent>>;
 export type Events = CalendarPage<PublicEvent>;
+export type SearchResults = Awaited<ReturnType<typeof querySearch>>;
 
 export interface EventFilterOptions {
   search?: string;

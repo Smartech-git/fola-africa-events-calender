@@ -1,9 +1,10 @@
 import HeaderNav from "@/components/header/header-nav";
 import Logo from "@/components/header/logo";
 import MobileMenu from "@/components/header/mobile-menu";
-// import SearchEvent from "@/components/header/search-event";
+import SearchEvent from "@/components/header/search-event";
 import SignIn from "@/components/header/sign-in";
 import SubmitEvent from "@/components/header/submit-event";
+import { getSiteCity } from "@/lib/site-city";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -11,7 +12,9 @@ interface Props {
   isLight?: boolean;
 }
 
-export default function Header({ className, isLight = false }: Props) {
+export default async function Header({ className, isLight = false }: Props) {
+  // The remembered choice; the header cannot read the page's siteCity param.
+  const siteCity = await getSiteCity({});
   return (
     <header
       className={cn(
@@ -23,8 +26,9 @@ export default function Header({ className, isLight = false }: Props) {
       <Logo variant={isLight ? "white" : "red"} />
       <div className="flex items-center gap-2 lg:gap-6">
         <HeaderNav className="flex items-center max-lg:hidden" />
-        {/* <SearchEvent /> */}
+        <SearchEvent siteCity={siteCity} />
         <SubmitEvent
+          size="sm"
           className="max-lg:hidden"
           variant={isLight ? "onWhite" : "solid"}
         />

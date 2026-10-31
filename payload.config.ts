@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 
@@ -90,5 +91,22 @@ export default buildConfig({
     },
   }),
   sharp,
-  plugins: [],
+  plugins: [
+    // Uploads live in Vercel Blob; Vercel deletes local files on every deploy.
+    vercelBlobStorage({
+      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+      // Keeps the schema the same with or without a token.
+      alwaysInsertFields: true,
+      // No addRandomSuffix: the adapter records the suffix on the original only,
+      // so the resized copies would 404. Payload keeps file names unique, and
+      // member uploads get random names in /api/submission-uploads.
+      // Staff uploads in the admin go straight to Blob, past the 4.5 MB limit.
+      clientUploads: true,
+      collections: {
+        // Pages link to the Blob CDN directly instead of through Payload.
+        media: { prefix: "media", disablePayloadAccessControl: true },
+      },
+    }),
+  ],
 });

@@ -3,7 +3,33 @@ import {
   LINKED_ACCESS,
   PUBLIC_STATUSES,
 } from "@/payload/constants";
-import type { Event } from "@/payload-types";
+import type { Event, Media } from "@/payload-types";
+
+type ImageSize = { url: string; width: number; height: number };
+
+/** The artwork sizes a page may show. Never the stored original. */
+function publicArtwork(artwork: Event["artwork"]) {
+  if (!artwork || typeof artwork !== "object") return undefined;
+  const size = (name: keyof NonNullable<Media["sizes"]>): ImageSize | null => {
+    const entry = artwork.sizes?.[name];
+    return entry?.url && entry.width && entry.height
+      ? { url: entry.url, width: entry.width, height: entry.height }
+      : null;
+  };
+  // Small images are not upscaled, so a size can be missing; fall back to the file.
+  const original =
+    artwork.url && artwork.width && artwork.height
+      ? { url: artwork.url, width: artwork.width, height: artwork.height }
+      : null;
+  const detail = size("detail") ?? original;
+  if (!detail) return undefined;
+  return {
+    alt: artwork.alt,
+    detail,
+    card: size("card") ?? detail,
+    og: size("og"),
+  };
+}
 
 /** The only projection that should be used for public pages, exports or API responses. */
 export function toPublicEvent(event: Event) {
@@ -66,6 +92,8 @@ export function toPublicEvent(event: Event) {
         ? event.actionUrl
         : undefined,
     description: publicDetails ? event.description : undefined,
+    // Artwork belongs to Full listings only, like the organiser and venue.
+    artwork: publicDetails ? publicArtwork(event.artwork) : undefined,
     website: publicDetails ? event.website : undefined,
     instagram: publicDetails ? event.instagram : undefined,
     publicContactEmail: publicDetails ? event.publicContactEmail : undefined,

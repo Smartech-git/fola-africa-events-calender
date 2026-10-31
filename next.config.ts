@@ -16,6 +16,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "cdn.shopify.com",
       },
+      // Event artwork in Vercel Blob.
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
     ],
   },
 };

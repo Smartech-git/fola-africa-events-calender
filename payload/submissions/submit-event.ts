@@ -4,6 +4,10 @@ import { parseDateTime, toZoned } from "@internationalized/date";
 
 import { formatSlug } from "@/payload/fields/format-slug";
 import { getCalendarPayload } from "@/payload/queries/calendar-query";
+import {
+  artworkInUse,
+  checkSubmittedArtwork,
+} from "@/payload/submissions/artwork";
 import { instagramProfile } from "@/payload/validation";
 import {
   submitEventSchema,
@@ -94,6 +98,16 @@ export async function createEventSubmission(
           success: false,
           status: 400,
           fieldErrors: { seasons: ["Choose available seasons for this city."] },
+        };
+    }
+    const artworkId = data.artwork ? Number(data.artwork) : undefined;
+    if (artworkId) {
+      const problem = await checkSubmittedArtwork(payload, artworkId, memberId);
+      if (problem)
+        return {
+          success: false,
+          status: 400,
+          fieldErrors: { artwork: [problem] },
         };
     }
     const titleSlug = formatSlug(data.title);
@@ -200,6 +214,20 @@ export async function createEventSubmission(
         await payload.db.rollbackTransaction(transactionID);
         return duplicateSubmission();
       }
+      // Two submissions racing for the same upload: only the first keeps it.
+      if (
+        artworkId &&
+        (await artworkInUse(payload, artworkId, transactionID))
+      ) {
+        await payload.db.rollbackTransaction(transactionID);
+        return {
+          success: false,
+          status: 409,
+          fieldErrors: {
+            artwork: ["This artwork is already on another submission."],
+          },
+        };
+      }
       await payload.create({
         collection: "events",
         req,
@@ -239,6 +267,10 @@ export async function createEventSubmission(
             : undefined,
           seasons: data.seasons.map(Number),
           description: data.description,
+          artwork: artworkId,
+          artworkRightsConfirmedAt: artworkId
+            ? new Date().toISOString()
+            : undefined,
           submittedBy: {
             name: data.submitterName,
             email: data.submitterEmail.toLowerCase(),
@@ -255,6 +287,16 @@ export async function createEventSubmission(
           isDemo: false,
         },
       });
+      if (artworkId)
+        await payload.update({
+          collection: "media",
+          id: artworkId,
+          req,
+          depth: 0,
+          overrideAccess: true,
+          // Reviewers can refine it; this beats a generic description.
+          data: { alt: `Artwork for ${data.title}` },
+        });
       await payload.db.commitTransaction(transactionID);
     } catch (error) {
       await payload.db.rollbackTransaction(transactionID);

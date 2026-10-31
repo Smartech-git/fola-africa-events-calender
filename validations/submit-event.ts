@@ -113,6 +113,9 @@ export const submitEventSchema = z
         "Use no more than 60 words.",
       ),
     seasons: z.array(id).max(20),
+    // A media ID from /api/submission-uploads, or "" for none.
+    artwork: z.union([z.literal(""), id]),
+    artworkRights: z.boolean(),
     submitterName: requiredText,
     submitterEmail: z
       .string()
@@ -167,6 +170,11 @@ export const submitEventSchema = z
       (data.venueArea || data.venueAddress || data.venueMapUrl)
     )
       issue("venueName", "Add a venue name for these venue details.");
+    if (data.artwork && !data.artworkRights)
+      issue(
+        "artworkRights",
+        "Confirm that you have the right to share this artwork.",
+      );
   });
 
 export type SubmitEventValues = z.infer<typeof submitEventSchema>;
@@ -196,6 +204,8 @@ export const submitEventDefaults: Partial<SubmitEventValues> = {
   venueMapUrl: "",
   description: "",
   seasons: [],
+  artwork: "",
+  artworkRights: false,
   submitterName: "",
   submitterEmail: "",
   submitterPhone: "",

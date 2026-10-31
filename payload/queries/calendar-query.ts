@@ -5,6 +5,7 @@ import {
   type Where,
 } from "payload";
 
+import { ALL_CITIES } from "@/constants/filters";
 import {
   ACCESS_OPTIONS,
   INDUSTRIES,
@@ -176,8 +177,10 @@ export function searchTerm(params: URLSearchParams) {
 async function searchFilter(
   payload: Payload,
   term: string,
-  city: City,
+  city?: City,
 ): Promise<Where> {
+  // Without a city, venues and seasons match in every city.
+  const inCity: Where[] = city ? [{ city: { equals: city.id } }] : [];
   const relationIds = async (
     collection: "organisers" | "venues" | "seasons",
     where: Where[],
@@ -195,9 +198,9 @@ async function searchFilter(
   };
   const [organisers, venues, seasons] = await Promise.all([
     relationIds("organisers", []),
-    relationIds("venues", [{ city: { equals: city.id } }]),
+    relationIds("venues", inCity),
     relationIds("seasons", [
-      { city: { equals: city.id } },
+      ...inCity,
       { isPublished: { equals: true } },
       { isDemo: { not_equals: true } },
     ]),
@@ -243,6 +246,32 @@ function publicEventFilters(city: City): Where[] {
     { publishedAt: { exists: true } },
     { approvedBy: { exists: true } },
   ];
+}
+
+function industryFilter(industry: string[]): Where {
+  return {
+    or: [
+      { industry: { in: industry } },
+      { secondaryIndustry: { in: industry } },
+    ],
+  };
+}
+
+/** Held dates show as Private, whatever access was stored. */
+function accessFilter(access: string[]): Where {
+  return {
+    or: [
+      {
+        and: [
+          { visibility: { not_equals: "held-date" } },
+          { access: { in: access } },
+        ],
+      },
+      ...(access.includes("private")
+        ? [{ visibility: { equals: "held-date" } }]
+        : []),
+    ],
+  };
 }
 
 /** Events that overlap [start, end), including ones ending exactly at start. */
@@ -303,27 +332,8 @@ async function queryEvents(
   const { start, end } = dateRange(params, city.timezone);
   const search = searchTerm(params);
   const filters: Where[] = [...scope, ...publicEventFilters(city)];
-  if (industry.length)
-    filters.push({
-      or: [
-        { industry: { in: industry } },
-        { secondaryIndustry: { in: industry } },
-      ],
-    });
-  if (access.length)
-    filters.push({
-      or: [
-        {
-          and: [
-            { visibility: { not_equals: "held-date" } },
-            { access: { in: access } },
-          ],
-        },
-        ...(access.includes("private")
-          ? [{ visibility: { equals: "held-date" } }]
-          : []),
-      ],
-    });
+  if (industry.length) filters.push(industryFilter(industry));
+  if (access.length) filters.push(accessFilter(access));
   if (search) filters.push(await searchFilter(payload, search, city));
   filters.push(...overlapFilters(start, end));
 
@@ -385,6 +395,122 @@ export async function queryEventsHeader(
       timezoneLabel: city.timezoneLabel,
     },
     seasons,
+  };
+}
+
+const SEARCH_EVENT_LIMIT = 6;
+
+const citySummary = (city: City) => ({
+  name: city.name,
+  slug: city.slug,
+  timezone: city.timezone,
+});
+
+/**
+ * The header search: upcoming happenings that match the term, plus the
+ * industries and access types whose names match, with their upcoming counts per
+ * city. `city=all` searches every city, each from its own today; the response's
+ * `city` is then null.
+ */
+export async function querySearch(payload: Payload, params: URLSearchParams) {
+  const term = searchTerm(params);
+  if (!term) throw new CalendarQueryError("search is required.");
+  const city =
+    params.get("city")?.trim() === ALL_CITIES
+      ? undefined
+      : await findCity(payload, params);
+  const cities = city
+    ? [city]
+    : (
+        await payload.find({
+          collection: "cities",
+          pagination: false,
+          sort: "name",
+          depth: 0,
+          overrideAccess: false,
+        })
+      ).docs;
+  // Each city's upcoming happenings start at midnight in its own time zone.
+  const upcoming: Where = cities.length
+    ? {
+        or: cities.map((item) => ({
+          and: [
+            ...publicEventFilters(item),
+            ...overlapFilters(dayBoundary(cityToday(item), item.timezone)),
+          ],
+        })),
+      }
+    : { id: { exists: false } };
+
+  /** Upcoming matches per city, most first. Only city IDs leave the query. */
+  const countByCity = async (filter: Where) => {
+    const { docs } = await payload.find({
+      collection: "events",
+      where: { and: [upcoming, filter] },
+      pagination: false,
+      depth: 0,
+      select: { city: true },
+      overrideAccess: true,
+    });
+    const counts = new Map<number, number>();
+    for (const doc of docs)
+      if (typeof doc.city === "number")
+        counts.set(doc.city, (counts.get(doc.city) ?? 0) + 1);
+    return cities
+      .flatMap((item) => {
+        const count = counts.get(item.id);
+        return count ? [{ city: citySummary(item), upcoming: count }] : [];
+      })
+      .sort((a, b) => b.upcoming - a.upcoming);
+  };
+  const lower = term.toLowerCase();
+  const withCounts = (
+    options: { label: string; value: string }[],
+    filter: (values: string[]) => Where,
+  ) =>
+    Promise.all(
+      options
+        .filter(
+          ({ label, value }) =>
+            label.toLowerCase().includes(lower) || value.includes(lower),
+        )
+        .map(async ({ label, value }) =>
+          (await countByCity(filter([value]))).map((row) => ({
+            label,
+            value,
+            ...row,
+          })),
+        ),
+    ).then((rows) => rows.flat());
+
+  const match = await searchFilter(payload, term, city);
+  const [events, byCity, industries, access] = await Promise.all([
+    payload.find({
+      collection: "events",
+      where: { and: [upcoming, match] },
+      limit: SEARCH_EVENT_LIMIT,
+      sort: ["startAt", "id"],
+      depth: 1,
+      // Raw collection access stays staff-only; only the public projection leaves this route.
+      overrideAccess: true,
+    }),
+    countByCity(match),
+    withCounts(INDUSTRIES, industryFilter),
+    withCounts(ACCESS_OPTIONS, accessFilter),
+  ]);
+
+  return {
+    city: city ? citySummary(city) : null,
+    events: {
+      data: events.docs.flatMap((event) => {
+        const projected = toPublicEvent(event);
+        return projected ? [projected] : [];
+      }),
+      totalDocs: events.totalDocs,
+      byCity,
+    },
+    industries,
+    access,
   };
 }
 

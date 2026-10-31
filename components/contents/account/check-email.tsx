@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import Link from "next/link";
+
 import { ArrowRight } from "lucide-react";
 
 import HoverText from "@/components/animations/hover-text";
@@ -29,6 +31,8 @@ interface Props {
   sentAt: number;
   isResending?: boolean;
   error?: string;
+  /** Sign-in only: the address may have no account, so offer to create one. */
+  createAccountHref?: string;
   onResend: () => void;
   onChangeEmail: () => void;
 }
@@ -38,6 +42,7 @@ export default function CheckEmail({
   sentAt,
   isResending,
   error,
+  createAccountHref,
   onResend,
   onChangeEmail,
 }: Props) {
@@ -91,7 +96,7 @@ export default function CheckEmail({
         <Button
           type="button"
           variant="bordered"
-          size="md"
+          size="sm"
           disabled={locked || isResending}
           isLoading={isResending}
           onPress={onResend}
@@ -113,16 +118,30 @@ export default function CheckEmail({
         </AuthNote>
       )}
 
-      <Button
-        type="button"
-        variant="flat"
-        size="fit"
-        onPress={onChangeEmail}
-        className="text-red"
-        endContent={<ArrowRight size={14} aria-hidden="true" />}
-      >
-        <HoverText text="Use a different email" />
-      </Button>
+      <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+        <Button
+          type="button"
+          variant="flat"
+          size="fit"
+          onPress={onChangeEmail}
+          className="text-red"
+          endContent={<ArrowRight size={14} aria-hidden="true" />}
+        >
+          <HoverText text="Use a different email" />
+        </Button>
+        {createAccountHref && (
+          <Link href={createAccountHref}>
+            <Button
+              variant="flat"
+              size="fit"
+              className="text-red"
+              endContent={<ArrowRight size={14} aria-hidden="true" />}
+            >
+              <HoverText text="No account yet? Create one" />
+            </Button>
+          </Link>
+        )}
+      </div>
 
       <p className="font-montreal text-sm text-ink/70">
         Nothing there? Check your spam or promotions folder, and add{" "}

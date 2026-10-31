@@ -9,7 +9,10 @@ import type { Payload } from "payload";
 import { LINK_MINUTES, RESEND_SECONDS } from "@/constants/account";
 import { emailSettings, emailSiteUrl } from "@/payload/emails/email-settings";
 import { sendZeptoMail, zeptoAddress } from "@/payload/emails/send-event-email";
-import { signInEmailTemplate } from "@/payload/emails/sign-in-email-template";
+import {
+  noAccountEmailTemplate,
+  signInEmailTemplate,
+} from "@/payload/emails/sign-in-email-template";
 import { getCalendarPayload } from "@/payload/queries/calendar-query";
 import type { Member } from "@/payload-types";
 import {
@@ -108,16 +111,59 @@ function issueLinkLater(
 }
 
 /**
- * Emails a sign-in link when the address has an active account. Callers show
- * the same message either way, so the form never reveals who has an account.
+ * Emails a sign-in link when the address has an active account, and a link to
+ * create one when it has none. Callers show the same message either way, so
+ * the form never reveals who has an account.
  */
 export async function sendSignInLink(email: string, next?: string) {
   // Fail for everyone alike when sending is not set up, before any lookup.
   mailSettings();
   const payload = await getCalendarPayload();
   const member = await findMember(payload, email);
-  if (!member || member.status !== "active" || recentlySent(member)) return;
+  if (!member) return noAccountNoticeLater(payload, email, next);
+  if (member.status !== "active" || recentlySent(member)) return;
   issueLinkLater(payload, member, next, !member.emailVerifiedAt);
+}
+
+/** One no-account email per address in this window, however often it is asked. */
+const NOTICE_MINUTES = 30;
+
+/**
+ * Emails an address with no account a link to create one. Sent after the
+ * response, like a sign-in link, so the reply takes the same time. The last
+ * send is kept in Payload's key-value store under a hash, never the address.
+ */
+function noAccountNoticeLater(
+  payload: Payload,
+  email: string,
+  next: string | undefined,
+) {
+  const address = email.trim().toLowerCase();
+  const key = `no-account-notice:${hashToken(address)}`;
+  after(async () => {
+    try {
+      const last = await payload.kv.get<{ at: number }>(key);
+      if (last && Date.now() - last.at < NOTICE_MINUTES * 60_000) return;
+      const settings = mailSettings();
+      const url = new URL("/create-account", emailSiteUrl());
+      url.searchParams.set("email", address);
+      const safeNext = safeNextPath(next);
+      if (safeNext) url.searchParams.set("next", safeNext);
+      const message = noAccountEmailTemplate({ url: url.href });
+      const now = Date.now();
+      await sendZeptoMail({
+        from: { address: settings.sender, name: settings.senderName },
+        to: [{ email_address: zeptoAddress(address) }],
+        subject: message.subject,
+        htmlbody: message.html,
+        textbody: message.text,
+        client_reference: `fola/no-account/${now}`,
+      });
+      await payload.kv.set(key, { at: now });
+    } catch (error) {
+      console.error("No-account email failed", error);
+    }
+  });
 }
 
 function profileData(values: ProfileValues) {

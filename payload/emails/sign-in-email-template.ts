@@ -27,6 +27,62 @@ export function signInEmailTemplate({
   minutes: number;
   newAccount: boolean;
 }) {
+  return accountEmail({
+    subject: newAccount
+      ? `Confirm your email for ${SITE_NAME}`
+      : `Your sign-in link for ${SITE_NAME}`,
+    kicker: newAccount ? "Welcome to Happenings" : "One link. No password",
+    heading: newAccount ? "Confirm your email" : "Sign in",
+    greeting: name ? `Hello ${name},` : "Hello,",
+    copy: newAccount
+      ? `Welcome to ${SITE_NAME}. Press the button below to confirm your email and sign in.`
+      : `Press the button below to sign in to ${SITE_NAME}.`,
+    action: "Sign in",
+    url,
+    noteLabel: `Works once · ${minutes} minutes`,
+    note: `This link works once and expires in ${minutes} minutes. If you didn’t ask for it, you can ignore this email; nothing happens until the link is used.`,
+  });
+}
+
+/**
+ * Sent when someone asks to sign in with an address that has no account. Only
+ * the inbox owner sees it, so the sign-in form still reveals nothing.
+ */
+export function noAccountEmailTemplate({ url }: { url: string }) {
+  return accountEmail({
+    subject: `Create your ${SITE_NAME} account`,
+    kicker: "No account yet",
+    heading: "Create an account",
+    greeting: "Hello,",
+    copy: `Someone, hopefully you, asked to sign in to ${SITE_NAME} with this email address, but it doesn’t have an account yet. Create one in a minute; we will email you a link to confirm it.`,
+    action: "Create an account",
+    url,
+    noteLabel: "Didn’t ask?",
+    note: "You can ignore this email. No account has been created. If you have an account under another email address, sign in with that one instead.",
+  });
+}
+
+function accountEmail({
+  subject,
+  kicker,
+  heading,
+  greeting,
+  copy,
+  action,
+  url,
+  noteLabel,
+  note,
+}: {
+  subject: string;
+  kicker: string;
+  heading: string;
+  greeting: string;
+  copy: string;
+  action: string;
+  url: string;
+  noteLabel: string;
+  note: string;
+}) {
   const website = new URL(
     process.env.BASE_URL || "https://happeningsofafrica.com",
   );
@@ -39,21 +95,11 @@ export function signInEmailTemplate({
   const logo = (width: number) =>
     `<a href="${websiteUrl}" style="display:inline-block;text-decoration:none"><img src="${logoUrl}" width="${width}" height="${Math.round((width * 81) / 1080)}" alt="${SITE_NAME}" style="display:block;width:${width}px;max-width:100%;height:auto;border:0;outline:none;text-decoration:none;font-family:${displayFont};font-size:18px;font-weight:500;text-transform:uppercase;color:${theme.white}"></a>`;
 
-  const greeting = name ? `Hello ${name},` : "Hello,";
-  const heading = newAccount ? "Confirm your email" : "Sign in";
-  const kicker = newAccount ? "Welcome to Happenings" : "One link. No password";
-  const copy = newAccount
-    ? `Welcome to ${SITE_NAME}. Press the button below to confirm your email and sign in.`
-    : `Press the button below to sign in to ${SITE_NAME}.`;
-  const note = `This link works once and expires in ${minutes} minutes. If you didn’t ask for it, you can ignore this email; nothing happens until the link is used.`;
-  const subject = newAccount
-    ? `Confirm your email for ${SITE_NAME}`
-    : `Your sign-in link for ${SITE_NAME}`;
   const safeUrl = escapeHtml(url);
 
   return {
     subject,
-    text: `${greeting}\n\n${copy}\n\nSign in: ${url}\n\n${note}\n\n${SITE_NAME}\nWhere Africa’s people, ideas and events meet`,
+    text: `${greeting}\n\n${copy}\n\n${action}: ${url}\n\n${note}\n\n${SITE_NAME}\nWhere Africa’s people, ideas and events meet`,
     html: `<!doctype html>
 <html lang="en">
   <head>
@@ -90,11 +136,11 @@ export function signInEmailTemplate({
           <tr><td class="email-pad" bgcolor="${theme.white}" style="background:${theme.white};padding:32px 24px">
             <p style="${body}margin:0 0 12px">${escapeHtml(greeting)}</p>
             <p style="${body}margin:0 0 28px">${escapeHtml(copy)}</p>
-            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 16px"><tr><td bgcolor="${theme.red}" style="background:${theme.red};mso-padding-alt:16px 28px"><a href="${safeUrl}" style="display:inline-block;padding:16px 28px;${label(14, theme.white)}text-decoration:none;mso-padding-alt:0">Sign in</a></td></tr></table>
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 16px"><tr><td bgcolor="${theme.red}" style="background:${theme.red};mso-padding-alt:16px 28px"><a href="${safeUrl}" style="display:inline-block;padding:16px 28px;${label(14, theme.white)}text-decoration:none;mso-padding-alt:0">${escapeHtml(action)}</a></td></tr></table>
             <p style="${body}font-size:13px;margin:0 0 28px">Or open this link:<br><a href="${safeUrl}" style="color:${theme.red};text-decoration:underline;word-break:break-all">${safeUrl}</a></p>
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="${theme.cream}" style="width:100%;background:${theme.cream};border-collapse:collapse;table-layout:fixed">
               <tr><td style="padding:16px 20px">
-                <p style="${label(11, theme.red)}margin:0 0 6px">Works once · ${minutes} minutes</p>
+                <p style="${label(11, theme.red)}margin:0 0 6px">${escapeHtml(noteLabel)}</p>
                 <p style="${body}font-size:14px;margin:0">${escapeHtml(note)}</p>
               </td></tr>
             </table>

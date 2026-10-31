@@ -39,7 +39,7 @@ export default function ReviewSteps({ done = 1 }: Props) {
               </DateCircle>
               <span
                 aria-hidden="true"
-                className="h-px flex-1 bg-red hidden md:flex"
+                className="hidden h-px flex-1 bg-red md:flex"
               />
               {/* Desktop: the rule ends in an empty circle at the far end. */}
               {last && (
@@ -55,7 +55,7 @@ export default function ReviewSteps({ done = 1 }: Props) {
                 as="h3"
                 text={step.title}
                 delay={index * 0.1}
-                className="ml-4 md:hidden font-montreal text-3xl font-medium tracking-cou text-red sm:text-4xl"
+                className="ml-4 font-montreal text-3xl font-medium tracking-cou text-red sm:text-4xl md:hidden"
               />
             </div>
 

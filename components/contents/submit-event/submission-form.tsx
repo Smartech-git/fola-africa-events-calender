@@ -17,6 +17,7 @@ import {
   type SubmitEventActionState,
 } from "@/actions/submit-event";
 import HoverText from "@/components/animations/hover-text";
+import ArtworkUpload from "@/components/contents/submit-event/artwork-upload";
 import {
   ChoiceCard,
   FieldRow,
@@ -115,6 +116,8 @@ export default function SubmissionForm({ cities, account }: Props) {
   const [start, setStart] = useState<Time | null>(null);
   const [end, setEnd] = useState<Time | null>(null);
   const [endDate, setEndDate] = useState<CalendarDate | null>(null);
+  // Submitting waits for an artwork upload in progress.
+  const [uploading, setUploading] = useState(false);
 
   const [
     title,
@@ -124,6 +127,7 @@ export default function SubmissionForm({ cities, account }: Props) {
     visibility,
     venueName,
     description,
+    artwork,
   ] = useWatch({
     control,
     name: [
@@ -134,6 +138,7 @@ export default function SubmissionForm({ cities, account }: Props) {
       "visibility",
       "venueName",
       "description",
+      "artwork",
     ],
   });
 
@@ -279,7 +284,7 @@ export default function SubmissionForm({ cities, account }: Props) {
           className="flex min-w-0 flex-1 flex-col"
           onSubmit={(event) => {
             event.preventDefault();
-            if (busy) return;
+            if (busy || uploading) return;
             void handleSubmit((data) => startTransition(() => action(data)))(
               event,
             );
@@ -465,40 +470,60 @@ export default function SubmissionForm({ cities, account }: Props) {
             </FieldRow>
           </FormSection>
 
-          {/* <FormSection
-          id="show-us"
-          intro="Please upload your event artwork or graphic and, where relevant, the invitation"
-        >
-          <div className="flex flex-col gap-5 sm:flex-row">
-            <UploadBox
-              badge="May be shown publicly"
-              badgeTone="red"
-              title="Event artwork or graphic"
-              description="Artwork may be displayed publicly where appropriate."
+          <FormSection
+            id="show-us"
+            intro="Please upload your event artwork or graphic"
+          >
+            <Controller
+              control={control}
+              name="artwork"
+              render={({ field }) => (
+                <ArtworkUpload
+                  value={field.value}
+                  onChange={(id) => {
+                    setValue("artwork", id, validate);
+                    if (!id) setValue("artworkRights", false, validate);
+                  }}
+                  onBusyChange={setUploading}
+                  disabled={busy}
+                  error={errors.artwork?.message}
+                />
+              )}
             />
-            <UploadBox
-              badge="Verification only"
-              badgeTone="ink"
-              title="Invitation"
-              description="Used to verify the event."
-            />
-          </div>
-          <Note>
-            Upload your event artwork, invitation or supporting material.
-            Invitations submitted for verification will not be published unless
-            you explicitly choose otherwise.
-          </Note>
-          <ChoiceCard
-            type="checkbox"
-            name="displayInvitation"
-            value="yes"
-            label="Display the invitation publicly"
-            description="Off by default."
-            checked={false}
-            disabled
-            onChange={() => undefined}
-          />
-        </FormSection> */}
+            {artwork && (
+              <Controller
+                name="artworkRights"
+                control={control}
+                render={({ field }) => (
+                  <Checkbox
+                    ref={field.ref}
+                    name={field.name}
+                    isSelected={field.value}
+                    onValueChange={field.onChange}
+                    onBlur={field.onBlur}
+                    isRequired
+                    isDisabled={busy}
+                    isInvalid={Boolean(errors.artworkRights)}
+                  >
+                    I have the right to share this artwork, and Happenings may
+                    show it on the calendar.
+                  </Checkbox>
+                )}
+              />
+            )}
+            {errors.artworkRights && (
+              <p
+                role="alert"
+                className="font-courier text-xs tracking-cou text-red uppercase"
+              >
+                {errors.artworkRights.message}
+              </p>
+            )}
+            <Note>
+              Artwork appears on the event page for Full listings, after review.
+              It never appears in the calendar lists.
+            </Note>
+          </FormSection>
 
           <FormSection id="about-you">
             <FieldRow>
@@ -633,11 +658,19 @@ export default function SubmissionForm({ cities, account }: Props) {
                 variant="solid"
                 size="md"
                 isLoading={isSubmitting || isPending}
-                disabled={busy || !cities.length}
+                disabled={busy || uploading || !cities.length}
                 className="w-full sm:w-fit"
               >
                 <HoverText text="Submit for review" />
               </Button>
+              {uploading && (
+                <p
+                  aria-live="polite"
+                  className="font-courier text-xs tracking-cou uppercase"
+                >
+                  Waiting for your artwork to finish uploading
+                </p>
+              )}
             </div>
           </div>
         </form>

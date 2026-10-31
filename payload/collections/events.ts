@@ -301,6 +301,28 @@ export const events: CollectionConfig = {
     },
     { name: "description", type: "textarea", validate: shortDescription },
     {
+      name: "artwork",
+      type: "upload",
+      relationTo: "media",
+      admin: {
+        description:
+          "Shown on the event page for Full listings only, never in list views. Replacing it on a live listing needs approval again.",
+      },
+    },
+    {
+      name: "artworkRightsConfirmedAt",
+      label: "Artwork rights confirmed",
+      type: "date",
+      access: { create: () => false, update: () => false },
+      admin: {
+        readOnly: true,
+        condition: (data) => Boolean(data.artworkRightsConfirmedAt),
+        description:
+          "When the submitter confirmed they have the right to share the artwork.",
+        date: { pickerAppearance: "dayAndTime" },
+      },
+    },
+    {
       name: "status",
       type: "select",
       required: true,

@@ -20,11 +20,20 @@ export const metadata: Metadata = {
 };
 
 interface Props {
-  searchParams: Promise<{ next?: string | string[] }>;
+  searchParams: Promise<{
+    next?: string | string[];
+    email?: string | string[];
+  }>;
 }
 
 export default async function Page({ searchParams }: Props) {
-  const next = safeNextPath((await searchParams).next);
+  const params = await searchParams;
+  const next = safeNextPath(params.next);
+  // Prefilled from a sign-in attempt or the no-account email; still validated on submit.
+  const email =
+    typeof params.email === "string" && params.email.length <= 254
+      ? params.email.trim()
+      : undefined;
   if (await getMember()) redirect(next ?? "/account");
 
   let cities;
@@ -39,5 +48,5 @@ export default async function Page({ searchParams }: Props) {
       </SectionWrapper>
     );
   }
-  return <CreateAccountFlow cities={cities} next={next} />;
+  return <CreateAccountFlow cities={cities} next={next} defaultEmail={email} />;
 }

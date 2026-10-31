@@ -39,16 +39,21 @@ const idle: MemberActionState = { status: "idle" };
 const legalLink = {
   target: "_blank",
   rel: "noopener noreferrer",
-  className: "hover:underline max-sm:text-red mx-0.5 text-red font-courier uppercase",
+  className:
+    "hover:underline max-sm:text-red mx-0.5 text-red font-courier uppercase",
 } as const;
-
 
 interface Props {
   cities: CityOption[];
   next?: string;
+  defaultEmail?: string;
 }
 
-export default function CreateAccountFlow({ cities, next }: Props) {
+export default function CreateAccountFlow({
+  cities,
+  next,
+  defaultEmail = "",
+}: Props) {
   const resend = useSendLink();
   const [created, setCreated] = useState<{ email: string; at: number }>();
   const [error, setError] = useState<string>();
@@ -57,7 +62,7 @@ export default function CreateAccountFlow({ cities, next }: Props) {
     createAccountSchema,
     {
       ...profileDefaults,
-      email: "",
+      email: defaultEmail,
       next,
     },
   );

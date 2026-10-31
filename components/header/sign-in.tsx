@@ -22,7 +22,6 @@ export default function SignIn({
 }: Props) {
   const { signedIn } = useAccount();
 
-  // Distinct keys remount the button: HoverText splits its text once, on mount.
   if (signedIn)
     return (
       <Link key="account" href="/account" className="has-[.hidden]:hidden">

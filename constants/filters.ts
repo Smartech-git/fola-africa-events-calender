@@ -8,9 +8,12 @@ export const FILTER_KEYS = {
   industry: "industry",
   access: "access",
   page: "page",
-  homeDate: 'homeDate',
-  siteCity : "siteCity"
+  homeDate: "homeDate",
+  siteCity: "siteCity",
 } as const;
+
+/** The search API's city value that searches every city. */
+export const ALL_CITIES = "all";
 
 export const EVENTS_FILTER = [
   { label: "Date", key: FILTER_KEYS.date },

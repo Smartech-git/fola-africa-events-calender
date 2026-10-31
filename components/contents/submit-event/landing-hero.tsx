@@ -45,7 +45,6 @@ export default function LandingHero() {
             <p className="font-courier text-sm tracking-cou uppercase">
               Public, ticketed, RSVP, invitation only or private.
             </p>
-           
           </div>
         </div>
 

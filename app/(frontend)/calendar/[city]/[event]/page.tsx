@@ -27,12 +27,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { city, event: slug } = await params;
   const event = await getEvent(slug, city);
   if (!event) notFound();
-  return pageMetadata(
+  const metadata = pageMetadata(
     `${event.title} in ${event.city!.name}`,
     event.description ||
       `${event.title} in ${event.city!.name} on ${formatDay(cityDate(event.startAt, event.city!.timezone), "d MMMM yyyy")}. View event details on ${SITE_NAME}.`,
     eventPath(event, city),
   );
+  // Shared links show the artwork when the listing has one.
+  const share = event.artwork?.og;
+  if (!share) return metadata;
+  const image = { ...share, alt: event.artwork!.alt };
+  return {
+    ...metadata,
+    openGraph: { ...metadata.openGraph, images: [image] },
+    twitter: { ...metadata.twitter, images: [image] },
+  };
 }
 
 async function sameDayEvents(event: PublicEvent, date: string) {
@@ -65,7 +74,10 @@ export default async function EventPage({ params }: Props) {
     <div className="flex w-full flex-col bg-white">
       <EventHeader event={event} timezone={timezone} />
       <SectionWrapper className="gap-10 bg-white lg:flex-row lg:items-start lg:gap-14 xl:gap-20">
-        <EventArtwork className="max-w-130 lg:w-[38%]" />
+        <EventArtwork
+          className="max-w-130 lg:w-[38%]"
+          artwork={event.artwork}
+        />
         <EventAbout event={event} timezone={timezone} />
       </SectionWrapper>
       <EventSameDay
