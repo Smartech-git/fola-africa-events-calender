@@ -10,7 +10,6 @@ import Button from "@/components/ui/button";
 import { DEFAULT_CITY_TIMEZONE, NAV } from "@/constants/nav";
 import { cityDate, formatDay } from "@/lib/events/event-list";
 
-// Figma: Submission Confirmation — Desktop / Mobile (341:3023, 341:3090).
 export default function SuccessHero() {
   const today = formatDay(
     cityDate(new Date(), DEFAULT_CITY_TIMEZONE),

@@ -60,10 +60,13 @@ export const statusLabel = (event: PublicEvent) =>
       ? "Postponed · New date to be confirmed"
       : null;
 
-/** The organiser's map link when it is a Google Maps link, else a search. */
+/**
+ * Only when the venue has a saved map link: that link when it is Google Maps,
+ * else a search for the venue.
+ */
 export function venueMapUrl(event: PublicEvent) {
   const venue = event.venue;
-  if (!venue) return undefined;
+  if (!venue?.mapUrl) return undefined;
   const saved = externalUrl(venue.mapUrl);
   const url = saved ? new URL(saved) : undefined;
   if (
