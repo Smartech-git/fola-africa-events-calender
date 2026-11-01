@@ -67,7 +67,7 @@ function State({ happening }: { happening: MemberHappening }) {
       {live && (
         <span
           aria-hidden="true"
-          className="size-2.5 shrink-0 rounded-full bg-red"
+          className="size-2.5 shrink-0 mb-0.5 rounded-full bg-red"
         />
       )}
       {state}

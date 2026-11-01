@@ -66,7 +66,7 @@ export default function AccountHeader({
                   {current && (
                     <span
                       aria-hidden="true"
-                      className="size-2 shrink-0 rounded-full bg-red"
+                      className="size-2 shrink-0 mb-0.5 rounded-full bg-red"
                     />
                   )}
                   {tab.label}
