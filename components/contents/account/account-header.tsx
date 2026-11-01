@@ -57,7 +57,7 @@ export default function AccountHeader({
                   href={tab.href}
                   aria-current={current ? "page" : undefined}
                   className={cn(
-                    "-mb-[1.5px] flex items-center gap-2 border-b-[3px] md:py-6 py-3 font-courier text-sm tracking-cou uppercase transition-colors focus-visible:outline-2 focus-visible:outline-red",
+                    "-mb-[1.5px] flex items-center gap-2 border-b-[3px] md:py-4 py-3 font-courier text-sm tracking-cou uppercase transition-colors focus-visible:outline-2 focus-visible:outline-red",
                     current
                       ? "border-red text-red"
                       : "border-transparent hover:text-red",
