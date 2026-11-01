@@ -16,7 +16,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       {...props}
       classNames={{
         ...classNames,
-        base: cn("max-w-full items-start gap-2 py-2", classNames?.base),
+        base: cn("max-w-full items-start sm:gap-2 gap-1 py-2", classNames?.base),
         wrapper: cn(
           "shrink-0 w-4! h-4! rounded-none bg-white before:rounded-none before:border before:border-ink after:rounded-none after:bg-red group-data-[invalid=true]:before:border-red group-data-[focus-visible=true]:ring-red",
           classNames?.wrapper,

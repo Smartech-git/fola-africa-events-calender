@@ -55,7 +55,7 @@ function AccountSection({
   return (
     <section
       aria-labelledby={id}
-      className="flex min-w-0 flex-col gap-5 border-t-[1.5px] border-ink pt-10 pb-12 first:border-t-0 first:pt-0"
+      className="flex min-w-0 flex-col gap-5 border-t border-ink pt-10 pb-12 first:border-t-0 first:pt-0"
     >
       <div className="flex items-center gap-4">
         <DateCircle size="sm">{String(number).padStart(2, "0")}</DateCircle>
@@ -209,7 +209,7 @@ export default function ProfileForm({ email, values, cities }: Props) {
         </div>
       </AccountSection>
 
-      <div className="flex flex-col gap-4 border-t-[1.5px] border-ink pt-8 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-4 border-t border-ink pt-8 sm:flex-row sm:items-center">
         <Button
           type="submit"
           variant="solid"

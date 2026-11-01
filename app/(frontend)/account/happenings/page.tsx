@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 
 import AccountHeader from "@/components/contents/account/account-header";
 import MyHappenings from "@/components/contents/account/my-happenings";
-import SignOutButton from "@/components/contents/account/sign-out-button";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import { getMember } from "@/lib/auth/member-session";
 import {
@@ -42,13 +41,12 @@ export default async function Page({ searchParams }: Props) {
         intro="Every happening you have submitted, from review to live"
         happenings={happenings.length}
       />
-      <SectionWrapper className="gap-10">
+      <SectionWrapper className="gap-6 md:gap-10 md:pt-7">
         <MyHappenings
           happenings={happenings}
           counts={happeningCounts(happenings)}
           filter={filter}
         />
-        <SignOutButton className="lg:hidden" />
       </SectionWrapper>
     </>
   );

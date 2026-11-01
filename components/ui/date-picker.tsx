@@ -143,7 +143,7 @@ const DatePicker = forwardRef<HTMLElement, DatePickerProps>(
           ),
           cellButton: cn(
             // The circle marks dates: a red ring for today, filled red when selected.
-            "rounded-full border-[1.5px] border-transparent font-courier text-ink data-[hover=true]:border-red data-[hover=true]:bg-transparent data-[hover=true]:text-red data-[today=true]:border-red data-[today=true]:text-red data-[selected=true]:border-red data-[selected=true]:bg-red data-[selected=true]:text-white data-[hover=true]:data-[selected=true]:bg-red data-[focus-visible=true]:outline-red",
+            "rounded-full border border-transparent font-courier text-ink data-[hover=true]:border-red data-[hover=true]:bg-transparent data-[hover=true]:text-red data-[today=true]:border-red data-[today=true]:text-red data-[selected=true]:border-red data-[selected=true]:bg-red data-[selected=true]:text-white data-[hover=true]:data-[selected=true]:bg-red data-[focus-visible=true]:outline-red",
             calendarProps?.classNames?.cellButton,
           ),
           prevButton: cn(

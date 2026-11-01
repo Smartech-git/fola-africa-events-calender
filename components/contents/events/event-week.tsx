@@ -150,7 +150,7 @@ export default function EventWeek({
               role="region"
               aria-label="Sunday to Saturday event calendar"
               tabIndex={0}
-              className="w-full overflow-x-auto scrollbar-thin  pb-4 focus-visible:outline-2 focus-visible:outline-red"
+              className="scrollbar-thin w-full overflow-x-auto pb-4 focus-visible:outline-2 focus-visible:outline-red"
             >
               <div className="flex min-w-250 flex-col gap-4">
                 {bands.length > 0 && (
@@ -165,7 +165,7 @@ export default function EventWeek({
                   </div>
                 )}
 
-                <div className="grid grid-cols-7 min-w-300 border-t-[1.5px] border-ink">
+                <div className="grid min-w-300 grid-cols-7 border-t border-ink">
                   {days.map((date, index) => {
                     const dayEvents = grouped.get(date) ?? [];
                     const isToday = date === today;
@@ -284,7 +284,7 @@ function WeekEvent({
         <span
           aria-hidden="true"
           className={cn(
-            "size-1.75 shrink-0 mb-0.5 rounded-full",
+            "mb-0.5 size-1.75 shrink-0 rounded-full",
             isPrivateEvent(event) ? "border border-red" : "bg-red",
           )}
         />
@@ -393,7 +393,7 @@ function WeekKey() {
       <li className={item}>
         <span
           aria-hidden="true"
-          className="mb-0.5 block size-4.5 rounded-full border-[1.5px] border-red"
+          className="mb-0.5 block size-4.5 rounded-full border border-red"
         />
         Today
       </li>

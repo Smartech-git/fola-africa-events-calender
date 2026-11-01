@@ -44,7 +44,7 @@ export function FormSection({
     <fieldset
       id={id}
       aria-labelledby={`${id}-title`}
-      className="flex min-w-0 scroll-mt-32 flex-col gap-5 border-t-[1.5px] border-ink pt-10 pb-12 first:border-t-0 first:pt-0"
+      className="flex min-w-0 scroll-mt-32 flex-col gap-5 border-t border-ink pt-10 pb-12 first:border-t-0 first:pt-0"
     >
       <div className="flex items-center gap-4">
         <DateCircle size="sm">{number(index)}</DateCircle>
@@ -118,7 +118,7 @@ export function ChoiceCard({
       <span
         aria-hidden="true"
         className={cn(
-          "mt-0.5 size-5 shrink-0 rounded-full border-[1.5px] transition-colors",
+          "mt-0.5 size-5 shrink-0 rounded-full border transition-colors",
           checked ? "border-red bg-red" : "border-ink",
         )}
       />
@@ -151,7 +151,7 @@ export function UploadBox({
   return (
     <div
       aria-disabled="true"
-      className="flex flex-1 flex-col items-center gap-3 border-[1.5px] border-dashed border-ink/50 bg-white px-6 py-7 text-center"
+      className="flex flex-1 flex-col items-center gap-3 border border-dashed border-ink/50 bg-white px-6 py-7 text-center"
     >
       <span
         className={cn(
@@ -258,7 +258,7 @@ export function SectionProgress({ active }: { active: FormSectionId }) {
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "size-2.5 rounded-full border-[1.5px] border-red transition-colors",
+                    "size-2.5 rounded-full border border-red transition-colors",
                     current ? "bg-red" : "bg-transparent",
                   )}
                 />

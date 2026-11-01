@@ -28,7 +28,7 @@ export default function NothingMatchesCard({
     <div
       role="status"
       className={cn(
-        "flex w-full flex-col items-start gap-6 border-[1.5px] border-ink px-6 pt-8 pb-10 text-ink sm:px-12 sm:pt-12 sm:pb-14",
+        "flex w-full flex-col items-start gap-6 border border-ink px-6 pt-8 pb-10 text-ink sm:px-12 sm:pt-12 sm:pb-14",
         className,
       )}
     >

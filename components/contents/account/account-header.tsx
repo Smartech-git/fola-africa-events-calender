@@ -17,12 +17,9 @@ interface Props {
   active: AccountTab;
   title: string;
   intro: string;
-  /** Shown beside My Happenings. */
   happenings: number;
 }
 
-// Figma: 24 — Profile and 12 — My Happenings. One cream band, then the account
-// tabs with Profile first.
 export default function AccountHeader({
   name,
   active,
@@ -49,7 +46,7 @@ export default function AccountHeader({
       </div>
       <nav
         aria-label="Account"
-        className="w-full border-b-[1.5px] border-ink px-pg-sm sm:px-pg 2xl:px-pg-2xl 4k:px-pg-4k"
+        className="w-full border-b border-ink px-pg-sm sm:px-pg 2xl:px-pg-2xl 4k:px-pg-4k"
       >
         <ul className="flex gap-8">
           {TABS.map((tab) => {
@@ -60,7 +57,7 @@ export default function AccountHeader({
                   href={tab.href}
                   aria-current={current ? "page" : undefined}
                   className={cn(
-                    "-mb-[1.5px] flex items-center gap-2 border-b-[3px] pt-5 pb-4 font-courier text-sm tracking-cou uppercase transition-colors focus-visible:outline-2 focus-visible:outline-red",
+                    "-mb-[1.5px] flex items-center gap-2 border-b-[3px] md:py-6 py-3 font-courier text-sm tracking-cou uppercase transition-colors focus-visible:outline-2 focus-visible:outline-red",
                     current
                       ? "border-red text-red"
                       : "border-transparent hover:text-red",

@@ -80,7 +80,7 @@ function CityRow({ city }: { city: CitySummary }) {
         <span
           aria-hidden="true"
           className={cn(
-            "size-4.5 shrink-0 rounded-full border-[1.5px] transition-colors duration-300 sm:size-7",
+            "size-4.5 shrink-0 rounded-full border transition-colors duration-300 sm:size-7",
             current
               ? "border-red bg-red"
               : "border-white group-hover/city:border-red group-hover/city:bg-red group-focus-visible/city:border-red group-focus-visible/city:bg-red",

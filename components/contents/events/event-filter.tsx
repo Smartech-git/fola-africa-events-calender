@@ -172,7 +172,7 @@ export default function EventFilter({
           classNames={{
             base: "w-auto shrink-0",
             inputWrapper: cn(
-              "h-[28px] min-h-[28px] rounded-full border-[1.5px] px-3 sm:px-4",
+              "h-[28px] min-h-[28px] rounded-full border px-3 sm:px-4",
               customRange
                 ? "border-ink bg-ink! data-[hover=true]:border-ink"
                 : "border-ink bg-transparent! data-[hover=true]:border-red",
@@ -242,10 +242,10 @@ export default function EventFilter({
             key: "filters",
             ariaLabel: `Filters${count ? `, ${count} active` : ""}`,
             title: (
-              <span className="flex text-red items-center gap-2">
+              <span className="flex items-center gap-2 text-red">
                 Filters
                 {count > 0 && (
-                  <span className="inline-flex h-5 min-w-5 leading-none pt-0.5 items-center justify-center rounded-full bg-ink px-1.5 text-xs text-white">
+                  <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-ink px-1.5 pt-0.5 text-xs leading-none text-white">
                     {count}
                   </span>
                 )}

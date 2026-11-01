@@ -40,7 +40,7 @@ export default function CitySelect({ cities, value, className }: Props) {
       className={cn("w-full sm:w-60", className)}
       classNames={{
         trigger:
-          "h-12 min-h-12 border-[1.5px] border-white bg-transparent! text-white data-[hover=true]:border-cream data-[open=true]:border-cream group-data-[focus=true]:border-cream data-[focus-visible=true]:outline-white",
+          "h-12 min-h-12 border border-white bg-transparent! text-white data-[hover=true]:border-cream data-[open=true]:border-cream group-data-[focus=true]:border-cream data-[focus-visible=true]:outline-white",
         value:
           "font-courier text-sm! tracking-cou text-white! uppercase sm:text-sm! group-data-[has-value=false]:text-white/70!",
         selectorIcon: "text-white",

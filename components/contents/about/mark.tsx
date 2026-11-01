@@ -65,7 +65,7 @@ const CARDS: { label: string; art: ReactNode }[] = [
     label: "03 — The circle",
     art: (
       <Appear delay={0.45}>
-        <span className="block size-18 rounded-full border-[1.5px] border-white sm:size-28" />
+        <span className="block size-18 rounded-full border border-white sm:size-28" />
       </Appear>
     ),
   },

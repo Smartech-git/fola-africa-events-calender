@@ -223,7 +223,7 @@ export default function ArtworkUpload({
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
         className={cn(
-          "flex flex-col items-center gap-3 border-[1.5px] border-dashed bg-white px-6 py-7 text-center transition-colors",
+          "flex flex-col items-center gap-3 border border-dashed bg-white px-6 py-7 text-center transition-colors",
           dragging ? "border-red bg-cream" : "border-ink/50",
           message && "border-red",
         )}

@@ -32,7 +32,7 @@ export default function AccountSidebar({ member, counts }: Props) {
         <div className="flex items-center gap-4">
           <span
             aria-hidden="true"
-            className="flex size-14 shrink-0 items-center justify-center rounded-full border-[1.5px] border-red font-courier text-lg tracking-cou text-red"
+            className="flex size-14 shrink-0 items-center justify-center rounded-full border border-red font-courier text-lg tracking-cou text-red"
           >
             {initials(member.fullName)}
           </span>
@@ -54,7 +54,7 @@ export default function AccountSidebar({ member, counts }: Props) {
           <span className="flex gap-2 font-courier text-xs tracking-cou text-red uppercase">
             <span
               aria-hidden="true"
-              className="size-2 mt-1 shrink-0 rounded-full bg-red"
+              className="mt-0.5 size-2 shrink-0 rounded-full bg-red"
             />
             Verified · Member since {since}
           </span>

@@ -128,7 +128,7 @@ export default function EventMonth({
               role="region"
               aria-label="Monthly event calendar"
               tabIndex={0}
-              className="w-full min-w-0 scrollbar-thin overflow-x-auto pb-4 focus-visible:outline-2 focus-visible:outline-red"
+              className="scrollbar-thin w-full min-w-0 overflow-x-auto pb-4 focus-visible:outline-2 focus-visible:outline-red"
             >
               <table className="w-full min-w-200 table-fixed border-collapse text-left">
                 <caption className="sr-only">
@@ -184,7 +184,7 @@ export default function EventMonth({
                               <time
                                 dateTime={date}
                                 className={cn(
-                                  "flex size-12 items-center justify-center rounded-full border-[1.5px] pt-0.5 font-courier text-lg tracking-cou transition-colors group-hover/day:border-red group-hover/day:bg-red group-hover/day:text-white group-focus-visible/day:border-red group-focus-visible/day:bg-red group-focus-visible/day:text-white sm:size-16 sm:pt-1 sm:text-xl",
+                                  "flex size-12 items-center justify-center rounded-full border pt-0.5 font-courier text-lg tracking-cou transition-colors group-hover/day:border-red group-hover/day:bg-red group-hover/day:text-white group-focus-visible/day:border-red group-focus-visible/day:bg-red group-focus-visible/day:text-white sm:size-16 sm:pt-1 sm:text-xl",
                                   marked
                                     ? "border-red text-red"
                                     : "border-transparent",
@@ -229,7 +229,7 @@ export default function EventMonth({
   );
 }
 
-const ring = "block size-5.5 rounded-full mb-0.5 border-[1.5px] border-red";
+const ring = "block size-5.5 rounded-full mb-0.5 border border-red";
 const dot = "block size-2 mb-0.5 rounded-full";
 
 const KEY = [

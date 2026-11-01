@@ -135,7 +135,7 @@ const DateRangePicker = forwardRef<HTMLElement, DateRangePickerProps>(
           ),
           cellButton: cn(
             // The circle marks dates: a red ring for today and on hover.
-            "rounded-full border-[1.5px] border-transparent font-courier text-ink data-[hover=true]:border-red data-[hover=true]:bg-transparent data-[hover=true]:text-red data-[today=true]:border-red data-[today=true]:text-red data-[focus-visible=true]:outline-red",
+            "rounded-full border border-transparent font-courier text-ink data-[hover=true]:border-red data-[hover=true]:bg-transparent data-[hover=true]:text-red data-[today=true]:border-red data-[today=true]:text-red data-[focus-visible=true]:outline-red",
             // Days inside the range sit on a cream band.
             "data-[selected=true]:data-[range-selection=true]:border-transparent data-[selected=true]:data-[range-selection=true]:bg-transparent data-[selected=true]:data-[range-selection=true]:text-ink data-[selected=true]:data-[range-selection=true]:before:bg-cream",
             "data-[selected=true]:data-[range-selection=true]:data-[outside-month=true]:text-ink/30 data-[selected=true]:data-[range-selection=true]:data-[outside-month=true]:before:bg-transparent",

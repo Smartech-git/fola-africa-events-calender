@@ -601,7 +601,7 @@ export default function SubmissionForm({ cities, account }: Props) {
             </div>
           </FormSection>
 
-          <div className="flex flex-col gap-5 border-t-[1.5px] border-ink pt-10">
+          <div className="flex flex-col gap-5 border-t border-ink pt-10">
             <Controller
               name="agreement"
               control={control}

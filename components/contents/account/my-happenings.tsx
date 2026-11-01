@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import HoverText from "@/components/animations/hover-text";
 import Button from "@/components/ui/button";
-import { chipVariants } from "@/components/ui/chip";
+import Chip from "@/components/ui/chip";
 import { CONTACT_EMAIL } from "@/constants/socials";
 import { cn } from "@/lib/utils";
 import {
@@ -95,8 +95,6 @@ interface Props {
   filter: HappeningFilter;
 }
 
-// Figma: 12 — My Happenings. Status filters are chips; the list keeps the
-// calendar listing structure, and the state is a word, not a coloured pill.
 export default function MyHappenings({ happenings, counts, filter }: Props) {
   const shown = happenings.filter((happening) =>
     matchesFilter(happening, filter),
@@ -104,7 +102,7 @@ export default function MyHappenings({ happenings, counts, filter }: Props) {
   const label = HAPPENING_FILTERS.find((entry) => entry.value === filter)!;
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-8 sm:gap-10">
       <nav aria-label="Filter your happenings">
         <ul className="flex flex-wrap gap-2">
           {HAPPENING_FILTERS.map((entry) => {
@@ -115,11 +113,11 @@ export default function MyHappenings({ happenings, counts, filter }: Props) {
                   href={`/account/happenings?show=${entry.value}`}
                   aria-current={current ? "page" : undefined}
                   scroll={false}
-                  className={chipVariants({
-                    variant: current ? "active" : "default",
-                  })}
+                  className="block rounded-full outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red"
                 >
-                  {entry.label} · {counts[entry.value]}
+                  <Chip variant={current ? "active" : "default"} tabIndex={-1}>
+                    {entry.label} · {counts[entry.value]}
+                  </Chip>
                 </Link>
               </li>
             );
@@ -131,7 +129,7 @@ export default function MyHappenings({ happenings, counts, filter }: Props) {
         <table className="w-full border-collapse text-left">
           <caption className="sr-only">{label.label} happenings</caption>
           <thead className="max-md:sr-only">
-            <tr className="border-b-[1.5px] border-ink font-courier text-sm tracking-cou text-red uppercase">
+            <tr className="border-b border-ink font-courier text-sm tracking-cou text-red uppercase">
               <th scope="col" className="w-44 pb-4 font-normal">
                 Date
               </th>
@@ -152,7 +150,7 @@ export default function MyHappenings({ happenings, counts, filter }: Props) {
               return (
                 <tr
                   key={happening.id}
-                  className="flex flex-col gap-2 border-b border-ink/20 py-6 md:table-row md:py-0"
+                  className="flex flex-col gap-2 border-b border-ink/20 pb-6 md:table-row md:py-0"
                 >
                   <td className="font-courier text-sm tracking-cou uppercase md:py-6 md:align-top">
                     <span className="md:flex md:flex-col">

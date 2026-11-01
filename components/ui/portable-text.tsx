@@ -19,7 +19,6 @@ const link =
   "text-red underline decoration-1 underline-offset-4 transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-red";
 const cell = "border border-ink/30 px-4 py-3 text-left align-top";
 
-
 const options: HTMLReactParserOptions = {
   replace(domNode) {
     if (!(domNode instanceof Element)) return;
@@ -54,7 +53,7 @@ const options: HTMLReactParserOptions = {
         return (
           <h2
             id={id}
-            className="mt-6 scroll-mt-32 border-t-[1.5px] border-ink pt-8 font-montreal text-2xl font-medium tracking-mono sm:mt-10 sm:text-3xl"
+            className="mt-6 scroll-mt-32 border-t border-ink pt-8 font-montreal text-2xl font-medium tracking-mono sm:mt-10 sm:text-3xl"
           >
             {children()}
           </h2>
