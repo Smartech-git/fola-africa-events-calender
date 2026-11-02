@@ -5,6 +5,7 @@ import type { Metadata, Viewport } from "next";
 
 import "@/app/styles/globals.css";
 import BackToTop from "@/components/common/back-to-top";
+import GoogleAnalytics from "@/components/common/google-analytics";
 import AccountAuthPopup from "@/components/contents/account/account-auth-popup";
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
@@ -93,6 +94,7 @@ export default function RootLayout({
           <BackToTop />
           <AccountAuthPopup />
         </LenisProvider>
+        <GoogleAnalytics />
       </body>
     </html>
   );

@@ -35,7 +35,6 @@ import {
 
 const idle: MemberActionState = { status: "idle" };
 
-// A new tab keeps the half-filled form.
 const legalLink = {
   target: "_blank",
   rel: "noopener noreferrer",

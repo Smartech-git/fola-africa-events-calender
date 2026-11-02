@@ -21,7 +21,6 @@ import {
 const labelOf = (options: { label: string; value: string }[], value: string) =>
   options.find((option) => option.value === value)?.label ?? value;
 
-/** "THU 03 DEC · 19:00" in the city's own time zone, as the calendar shows it. */
 function when(happening: MemberHappening) {
   const timeZone = happening.city?.timezone ?? "UTC";
   const parts = new Intl.DateTimeFormat("en-GB", {
@@ -42,7 +41,6 @@ function when(happening: MemberHappening) {
   };
 }
 
-/** Access, then the listing type when it is not a full listing. */
 function details(happening: MemberHappening) {
   return [
     labelOf(ACCESS_OPTIONS, happening.access),
@@ -67,7 +65,7 @@ function State({ happening }: { happening: MemberHappening }) {
       {live && (
         <span
           aria-hidden="true"
-          className="size-2.5 shrink-0 mb-0.5 rounded-full bg-red"
+          className="mb-0.5 size-2.5 shrink-0 rounded-full bg-red"
         />
       )}
       {state}
@@ -76,7 +74,6 @@ function State({ happening }: { happening: MemberHappening }) {
 }
 
 function ViewLink({ happening }: { happening: MemberHappening }) {
-  // Only listings on the public calendar have a page to open.
   if (!PUBLIC_STATUSES.includes(happening.status) || !happening.city)
     return null;
   return (
