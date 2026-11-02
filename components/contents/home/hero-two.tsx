@@ -49,7 +49,7 @@ export default function Hero({ header, city, cities }: Props) {
             id="hero-heading"
             text="Where Africa’s people, ideas and events meet"
             delay={0.15}
-            className="font-montreal text-5xl leading-tight font-medium tracking-mono uppercase md:text-7xl 4k:text-8xl"
+            className="font-montreal text-6xl leading-none font-medium tracking-mono md:text-8xl 4k:text-9xl"
           />
           <FadeUpText
             text="One calendar for what is happening across Africa’s cities"

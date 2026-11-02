@@ -6,7 +6,6 @@ import parse, {
   type DOMNode,
   type HTMLReactParserOptions,
 } from "html-react-parser";
-import DOMPurify from "isomorphic-dompurify";
 
 import { cn } from "@/lib/utils";
 
@@ -120,13 +119,11 @@ const options: HTMLReactParserOptions = {
 };
 
 function PortableText({ htmlString, className }: HtmlRendererProps) {
-  const sanitizedHtml = DOMPurify.sanitize(htmlString, {
-    ADD_TAGS: ["table", "thead", "tbody", "tr", "th", "td", "caption"],
-  }).replace(/&nbsp;/g, " ");
+  const html = htmlString.replace(/&nbsp;/g, " ");
 
   return (
     <div className={cn("flex w-full flex-col gap-4 text-ink", className)}>
-      {parse(sanitizedHtml, options)}
+      {parse(html, options)}
     </div>
   );
 }

@@ -127,8 +127,11 @@ export default function ThisWeek({ city, weekStart, today, events }: Props) {
             href={dayPath(city.slug, selected)}
             className="transition-colors hover:text-red focus-visible:outline-2 focus-visible:outline-red"
           >
-            <span className="lg:hidden">Filter</span>
-            <span className="max-lg:hidden">All industries · All access</span>
+            <HoverText
+              className="max-lg:hidden"
+              text="All industries · All access"
+            />
+            <HoverText className="lg:hidden" text="Filter" />
           </Link>
         </div>
 

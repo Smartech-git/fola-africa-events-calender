@@ -1,6 +1,8 @@
 "use client";
 
-import { MapPin } from "lucide-react";
+import { useTransition } from "react";
+
+import { LoaderCircle, MapPin } from "lucide-react";
 
 import Select from "@/components/ui/select";
 import { FILTER_KEYS } from "@/constants/filters";
@@ -16,6 +18,7 @@ interface Props {
 
 export default function CitySelect({ cities, value, className }: Props) {
   const { handleParamSet } = useRouteParam();
+  const [isPending, startTransition] = useTransition();
 
   return (
     <Select
@@ -28,11 +31,23 @@ export default function CitySelect({ cities, value, className }: Props) {
         const slug = Array.from(keys)[0];
         if (typeof slug !== "string" || slug === value) return;
         document.cookie = `${FILTER_KEYS.siteCity}=${encodeURIComponent(slug)}; path=/; max-age=31536000; samesite=lax`;
-        handleParamSet({
-          [FILTER_KEYS.siteCity]: slug,
-          [FILTER_KEYS.homeDate]: undefined,
-        });
+        startTransition(() =>
+          handleParamSet({
+            [FILTER_KEYS.siteCity]: slug,
+            [FILTER_KEYS.homeDate]: undefined,
+          }),
+        );
       }}
+      {...(isPending && {
+        selectorIcon: (
+          <span role="status" aria-label="Loading city">
+            <LoaderCircle
+              aria-hidden="true"
+              className="size-full animate-spin"
+            />
+          </span>
+        ),
+      })}
       startContent={
         <MapPin size={18} aria-hidden="true" className="shrink-0" />
       }
