@@ -103,16 +103,15 @@ const Modal = {
         radius="none"
         backdrop="opaque"
         scrollBehavior="inside"
-        // The project's own close button below replaces HeroUI's.
         hideCloseButton
         className={cn(
-          "border border-ink bg-white text-ink shadow-none max-sm:mx-0 max-sm:mb-0 max-sm:border-x-0 max-sm:border-b-0",
+          "border-none bg-white text-ink shadow-none max-sm:mx-0 max-sm:mb-0 max-sm:border-x-0 max-sm:border-b-0",
           className,
         )}
         classNames={{
           ...classNames,
           // Above the header (z-60) and back-to-top button (z-70).
-          wrapper: cn("z-99", classNames?.wrapper),
+          wrapper: cn("z-99 scrollbar-none", classNames?.wrapper),
           backdrop: cn("z-99 bg-ink/60", classNames?.backdrop),
         }}
         {...modalProps}

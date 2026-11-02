@@ -33,7 +33,7 @@ export default function PutItOnHappenings() {
           <DotField />
         </div>
       </SectionWrapper>
-      <div className="pointer-events-none absolute right-pg bottom-12 h-[15.5vw] w-[31vw] max-lg:hidden 2xl:right-pg-2xl">
+      <div className="pointer-events-none absolute right-pg bottom-12 h-40 w-[31vw] max-lg:hidden 2xl:right-pg-2xl">
         <DotField />
       </div>
     </section>
