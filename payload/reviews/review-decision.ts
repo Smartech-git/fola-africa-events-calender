@@ -7,7 +7,6 @@ import {
 } from "payload";
 import { z } from "zod";
 
-import { SITE_NAME } from "@/constants/brand";
 import { CONTACT_EMAIL } from "@/constants/socials";
 import { roleOf } from "@/payload/access";
 import { emailSettings, emailSiteUrl } from "@/payload/emails/email-settings";
@@ -56,16 +55,7 @@ export function reviewDecisionMessage(args: {
       kicker: rejected ? "Not approved" : "Information requested",
       heading: rejected ? "Not approved" : "A few details",
       greeting: args.name ? `Hello ${args.name},` : undefined,
-      paragraphs: rejected
-        ? [
-            `Thank you for submitting ${args.title} to ${SITE_NAME}. The Happenings team has reviewed it and won’t be listing it.`,
-            ...message,
-          ]
-        : [
-            `Thank you for submitting ${args.title} to ${SITE_NAME}. Before it can go on the calendar, the Happenings team needs a little more information.`,
-            ...message,
-            "Reply to this email with the details and we’ll pick up the review.",
-          ],
+      paragraphs: [...message],
       title: args.title,
       status: rejected ? "Not approved" : "In review · information requested",
       button: args.accountUrl
