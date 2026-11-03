@@ -16,7 +16,7 @@ interface HtmlRendererProps {
 
 const link =
   "text-red underline decoration-1 underline-offset-4 transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-red";
-const cell = "border border-ink/30 px-4 py-3 text-left align-top";
+const cell = "border border-ink/20 px-4 py-3 text-left align-top";
 
 const options: HTMLReactParserOptions = {
   replace(domNode) {
@@ -93,7 +93,7 @@ const options: HTMLReactParserOptions = {
         );
       case "table":
         return (
-          <div className="scrollbar-none w-full overflow-x-auto border border-ink/30">
+          <div className="scrollbar-none w-full overflow-x-auto border border-ink/20">
             <table className="w-full table-auto border-collapse font-montreal text-sm sm:text-base">
               {children()}
             </table>

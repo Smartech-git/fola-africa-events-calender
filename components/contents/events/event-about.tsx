@@ -17,7 +17,7 @@ interface Props {
   timezone: string;
 }
 
-const block = "flex w-full flex-col gap-3 border-t border-ink/30 pt-6";
+const block = "flex w-full flex-col gap-3 border-t border-ink/20 pt-6";
 const outbound =
   "flex w-fit items-center gap-1.5 font-courier text-base transition-colors hover:text-red focus-visible:outline-2 focus-visible:outline-red sm:text-lg";
 
@@ -109,7 +109,7 @@ export default function EventAbout({ event, timezone }: Props) {
           <Link
             key={season.slug}
             href={`/seasons/${encodeURIComponent(season.slug)}`}
-            className="group/season flex w-full items-center gap-4 border-t border-ink/30 pt-6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red"
+            className="group/season flex w-full items-center gap-4 border-t border-ink/20 pt-6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red"
           >
             {season.startDate && (
               <DateCircle size="sm">

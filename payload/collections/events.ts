@@ -385,6 +385,20 @@ export const events: CollectionConfig = {
         { label: "CSV import", value: "csv" },
         { label: "Demo fixture", value: "demo" },
       ],
+      // Only the website form creates public submissions (with their AI
+      // review), so staff never see it as a choice for their own entries.
+      filterOptions: ({ data, options }) =>
+        data?.source === "submission"
+          ? options
+          : options.filter(
+              (option) =>
+                (typeof option === "string" ? option : option.value) !==
+                "submission",
+            ),
+      admin: {
+        description:
+          "Public submission is set only by the website form. Assigning a member does not need it.",
+      },
     },
     {
       name: "sourceUrl",

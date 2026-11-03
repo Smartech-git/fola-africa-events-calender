@@ -123,7 +123,7 @@ export default function ProfileForm({ email, values, cities }: Props) {
           label="Email address"
           value={email}
           isReadOnly
-          description={`To change your email, contact ${CONTACT_EMAIL}. It is how you sign in, so we confirm the new address first.`}
+          description={`To change your email, contact us at ${CONTACT_EMAIL}. It is how you sign in, so we confirm the new address first.`}
           classNames={{
             inputWrapper: "bg-cream! border-cream",
             description: "font-montreal text-sm normal-case",

@@ -32,17 +32,17 @@ const RESULTS = {
   },
   cancelled: {
     kicker: "Cancelled",
-    heading: "Happening cancelled.",
-    copy: "It now shows as Cancelled on the calendar. The Happenings team has been told, and we’ve emailed you a confirmation.",
+    heading: "Happening cancelled",
+    copy: "It now shows as Cancelled on the calendar. The Happenings team has been informed, and we’ve emailed you a confirmation.",
   },
   postponed: {
     kicker: "Postponed",
-    heading: "Happening postponed.",
-    copy: "It now shows as Postponed · New date to be confirmed. The team has been told. When you have the new date, edit the happening and it goes back on the calendar once approved.",
+    heading: "Happening postponed",
+    copy: "It now shows as Postponed · New date to be confirmed. The team has been informed. When you have the new date, edit the happening and it goes back on the calendar once approved.",
   },
   withdrawn: {
     kicker: "Withdrawn",
-    heading: "Submission withdrawn.",
+    heading: "Submission withdrawn",
     copy: "It has left the review queue and won’t appear on the calendar.",
   },
 } as const;

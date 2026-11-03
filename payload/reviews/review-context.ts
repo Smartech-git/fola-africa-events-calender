@@ -5,6 +5,7 @@ import {
   EVENT_TYPES,
   INDUSTRIES,
   VISIBILITY_OPTIONS,
+  DESCRIPTION_MAX_WORDS,
 } from "@/payload/constants";
 import { eventSnapshot } from "@/payload/reviews/event-snapshot";
 import type { ReviewResult } from "@/payload/reviews/review-schema";
@@ -187,9 +188,10 @@ export function validateReviewMatches(
       "AI review referenced a record that was not supplied. Retry or review manually.",
     );
   if (
-    (result.suggestedListing.description?.trim().split(/\s+/u).length ?? 0) > 60
+    (result.suggestedListing.description?.trim().split(/\s+/u).length ?? 0) >
+    DESCRIPTION_MAX_WORDS
   )
     throw new Error(
-      "AI suggested a description longer than 60 words. Retry or review manually.",
+      `AI suggested a description longer than ${DESCRIPTION_MAX_WORDS} words. Retry or review manually.`,
     );
 }

@@ -72,7 +72,7 @@ export default function PrivateEventListings({ event, timezone }: Props) {
               >
                 <SurTitle as="h3" content={option.label} />
                 <p className="font-montreal text-base">{option.description}</p>
-                <div className="flex flex-col gap-1 border-t border-ink/30 pt-4">
+                <div className="flex flex-col gap-1 border-t border-ink/20 pt-4">
                   <p className="font-courier text-sm tracking-cou text-red uppercase">
                     {date}
                   </p>

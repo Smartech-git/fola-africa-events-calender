@@ -123,7 +123,7 @@ export function eventEmailTemplate({
           <tr><td class="email-pad" bgcolor="${theme.red}" style="background:${theme.red};padding:28px 24px 36px">
             ${logo(240)}
             <p style="${label(12, theme.white)}margin:40px 0 14px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${theme.white};margin-right:8px;vertical-align:middle"></span>${kicker}</p>
-            <h1 class="email-heading" style="font-family:${displayFont};font-size:48px;line-height:1;font-weight:500;letter-spacing:-0.04em;text-transform:uppercase;color:${theme.white};margin:0">${heading}</h1>
+            <h1 class="email-heading" style="font-family:${displayFont};font-size:36px;line-height:1;font-weight:500;letter-spacing:-0.04em;text-transform:uppercase;color:${theme.white};margin:0">${heading}</h1>
           </td></tr>
 
           <!-- Body on white. -->

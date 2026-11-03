@@ -46,6 +46,7 @@ import {
   LINK_REQUIRED_ACCESS,
   PRIVATE_ACCESS,
   VISIBILITY_OPTIONS,
+  DESCRIPTION_MAX_WORDS,
 } from "@/payload/constants";
 import {
   editHappeningSchema,
@@ -324,13 +325,12 @@ export default function EditHappeningForm(props: EditHappeningProps) {
       setValue("visibility", "public", validate);
   };
 
-  const submitLabel = direct ? "Save changes" : "Submit changes for approval";
+  const submitLabel = direct ? "Save changes" : "Submit changes";
 
   return (
     <>
       <div className="flex w-full flex-col gap-12 lg:flex-row lg:gap-16 xl:gap-24">
-        {/* Sidebar: the happening, the change list, actions */}
-        <aside className="flex flex-col gap-6 lg:sticky lg:top-28 lg:w-75 lg:shrink-0 lg:self-start">
+        <aside className="flex flex-col gap-6 lg:sticky lg:top-28 lg:scrollbar-none lg:max-h-[calc(100dvh-8.5rem)] lg:w-75 lg:shrink-0 lg:self-start lg:overflow-y-auto lg:overscroll-contain lg:scrollbar-thumb-red lg:scrollbar-track-transparent">
           <div className="flex flex-col gap-3 bg-cream p-5">
             <span className="flex items-center gap-2 font-courier text-xs tracking-cou text-red uppercase">
               <span
@@ -339,7 +339,7 @@ export default function EditHappeningForm(props: EditHappeningProps) {
               />
               {props.statusLine}
             </span>
-            <span className="font-montreal text-2xl font-medium break-words uppercase">
+            <span className="font-montreal text-2xl font-medium wrap-break-word uppercase">
               {props.title}
             </span>
             <span className="font-courier text-xs tracking-cou text-ink/60 uppercase">
@@ -348,10 +348,16 @@ export default function EditHappeningForm(props: EditHappeningProps) {
             {props.publicHref && (
               <Link
                 href={props.publicHref}
-                className="flex w-fit items-center gap-2 border-t border-ink/20 pt-3 font-courier text-xs tracking-cou text-red uppercase hover:underline"
+                className="w-fit border-t border-ink/20 pt-3"
               >
-                View live listing
-                <ArrowUpRight size={14} aria-hidden="true" />
+                <Button
+                  variant="flat"
+                  size="fit"
+                  className="text-xs text-red"
+                  endContent={<ArrowUpRight size={14} aria-hidden="true" />}
+                >
+                  <HoverText text="View live listing" />
+                </Button>
               </Link>
             )}
           </div>
@@ -368,7 +374,7 @@ export default function EditHappeningForm(props: EditHappeningProps) {
                 {changed.map((name) => (
                   <li
                     key={name}
-                    className="flex flex-col gap-1 border-b border-ink/15 py-3.5"
+                    className="flex flex-col gap-1 border-b border-ink/20 py-3.5"
                   >
                     <span className="font-courier text-[11px] tracking-cou text-ink/70 uppercase">
                       {fieldLabel(name)}
@@ -378,7 +384,7 @@ export default function EditHappeningForm(props: EditHappeningProps) {
                         {displayValue(name, live[name]) || "Empty"}
                       </span>
                     )}
-                    <span className="font-montreal text-base break-words">
+                    <span className="font-montreal text-base wrap-break-word">
                       {name === "artwork"
                         ? current.artwork
                           ? "New image"
@@ -389,7 +395,7 @@ export default function EditHappeningForm(props: EditHappeningProps) {
                 ))}
               </ul>
             ) : (
-              <p className="border-y border-ink/15 py-3.5 font-montreal text-sm text-ink/60">
+              <p className="border-y border-ink/20 py-3.5 font-montreal text-sm text-ink/60">
                 Change any field and it appears here.
               </p>
             )}
@@ -400,7 +406,6 @@ export default function EditHappeningForm(props: EditHappeningProps) {
               type="submit"
               form="edit-happening"
               size="md"
-              // The sidebar is narrow; let the longer label wrap.
               className="h-auto min-h-12 w-full px-4 py-3.5 text-center text-wrap whitespace-normal"
               isLoading={isSaving}
               disabled={busy || uploading || !changed.length}
@@ -485,7 +490,6 @@ export default function EditHappeningForm(props: EditHappeningProps) {
           </div>
         </aside>
 
-        {/* The form */}
         <form
           id="edit-happening"
           noValidate
@@ -538,7 +542,7 @@ export default function EditHappeningForm(props: EditHappeningProps) {
                   {current.description?.trim()
                     ? current.description.trim().split(/\s+/).length
                     : 0}{" "}
-                  / 60 words
+                  / {DESCRIPTION_MAX_WORDS} words
                 </Hint>
               )}
             </div>

@@ -521,6 +521,9 @@ export interface Event {
   approvedBy?: (number | null) | User;
   approvedAt?: string | null;
   publishedAt?: string | null;
+  /**
+   * Public submission is set only by the website form. Assigning a member does not need it.
+   */
   source: 'fola' | 'submission' | 'csv' | 'demo';
   sourceUrl?: string | null;
   /**

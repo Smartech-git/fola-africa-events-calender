@@ -4,6 +4,7 @@ import {
   LINK_REQUIRED_ACCESS,
   LINKED_ACCESS,
   PUBLIC_STATUSES,
+  DESCRIPTION_MAX_WORDS,
 } from "@/payload/constants";
 
 /**
@@ -91,9 +92,10 @@ export const normalizeActionURL: FieldHook = ({ value }) =>
     : value;
 
 export function shortDescription(value: unknown): true | string {
-  return !value || String(value).trim().split(/\s+/u).length <= 60
+  return !value ||
+    String(value).trim().split(/\s+/u).length <= DESCRIPTION_MAX_WORDS
     ? true
-    : "Descriptions must contain no more than 60 words.";
+    : `Descriptions must contain no more than ${DESCRIPTION_MAX_WORDS} words.`;
 }
 
 /** Turn an Instagram handle or profile link into a canonical profile URL. */

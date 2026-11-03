@@ -89,9 +89,11 @@ function ViewLink({ happening }: { happening: MemberHappening }) {
     <Link
       href={`/calendar/${encodeURIComponent(happening.city.slug)}/${encodeURIComponent(happening.slug)}`}
       aria-label={`View ${happening.title}`}
-      className="w-fit font-courier text-sm tracking-cou text-red uppercase hover:underline focus-visible:outline-2 focus-visible:outline-red"
+      className="w-fit"
     >
-      View
+      <Button variant="flat" size="fit" className="text-red">
+        <HoverText text="View" />
+      </Button>
     </Link>
   );
 }
@@ -105,9 +107,11 @@ function EditLink({ happening }: { happening: MemberHappening }) {
     <Link
       href={`/account/happenings/${happening.id}/edit`}
       aria-label={`${happening.pendingChange ? "View changes to" : "Edit"} ${happening.title}`}
-      className="w-fit font-courier text-sm tracking-cou text-red uppercase hover:underline focus-visible:outline-2 focus-visible:outline-red"
+      className="w-fit"
     >
-      {happening.pendingChange ? "View changes" : "Edit"}
+      <Button variant="flat" size="fit" className="text-red">
+        <HoverText text={happening.pendingChange ? "View changes" : "Edit"} />
+      </Button>
     </Link>
   );
 }
@@ -196,7 +200,7 @@ export default function MyHappenings({ happenings, counts, filter }: Props) {
                     <State happening={happening} />
                   </td>
                   <td className="md:py-6 md:text-right md:align-top">
-                    <span className="flex gap-4 md:justify-end">
+                    <span className="flex gap-6">
                       <ViewLink happening={happening} />
                       <EditLink happening={happening} />
                     </span>
@@ -228,7 +232,7 @@ export default function MyHappenings({ happenings, counts, filter }: Props) {
         <p className="font-montreal text-base sm:text-lg">
           Cancel or postpone a live happening from its Edit page. Cancelled and
           postponed listings stay visible on the calendar. For anything else
-          that can’t wait for review, email{" "}
+          that can’t wait for review, email us at{" "}
           <Link
             href={`mailto:${CONTACT_EMAIL}`}
             className="underline hover:text-cream"

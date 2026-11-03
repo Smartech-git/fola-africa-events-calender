@@ -176,7 +176,7 @@ export default function EventWeek({
                         aria-labelledby={`week-day-${date}`}
                         className={cn(
                           "flex flex-col px-3 pt-4 pb-6",
-                          index > 0 && "border-l border-ink/15",
+                          index > 0 && "border-l border-ink/20",
                           isToday && "bg-cream",
                         )}
                       >

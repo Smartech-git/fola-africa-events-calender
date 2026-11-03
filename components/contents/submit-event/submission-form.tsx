@@ -45,6 +45,7 @@ import {
   PRIVATE_ACCESS,
   SUBMITTER_RELATIONSHIPS,
   VISIBILITY_OPTIONS,
+  DESCRIPTION_MAX_WORDS,
 } from "@/payload/constants";
 import type { SubmissionOptions } from "@/payload/submissions/options";
 import {
@@ -376,11 +377,11 @@ export default function SubmissionForm({ cities, account }: Props) {
             <Textarea
               {...register("description")}
               label="Short description"
-              placeholder="What is happening, for whom, and why it matters. Up to 60 words."
+              placeholder={`What is happening, for whom, and why it matters. Up to ${DESCRIPTION_MAX_WORDS} words.`}
               isDisabled={busy}
               isInvalid={Boolean(errors.description)}
               errorMessage={errors.description?.message}
-              description={`${description?.trim() ? description.trim().split(/\s+/).length : 0} / 60 words`}
+              description={`${description?.trim() ? description.trim().split(/\s+/).length : 0} / ${DESCRIPTION_MAX_WORDS} words`}
             />
           </FormSection>
 

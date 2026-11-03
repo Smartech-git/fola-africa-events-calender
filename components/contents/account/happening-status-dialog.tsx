@@ -23,14 +23,14 @@ const COPY: Record<
     label: "Cancel happening",
     confirm: "Cancel happening",
     effect:
-      "The Happenings team is told at once. Your listing stays visible on the calendar as Cancelled.",
+      "The Happenings team is informed at once. Your listing stays visible on the calendar as Cancelled.",
     note: true,
   },
   postpone: {
     label: "Postpone happening",
     confirm: "Postpone happening",
     effect:
-      "The Happenings team is told at once. Your listing stays visible as Postponed · New date to be confirmed. When you know the date, edit the happening.",
+      "The Happenings team is informed at once. Your listing stays visible as Postponed · New date to be confirmed. When you know the date, edit the happening.",
     note: true,
   },
   withdraw: {
@@ -56,8 +56,6 @@ interface Props {
   onClose: () => void;
 }
 
-// Figma: 14 — Changes submitted · Cancel and postpone (the confirm dialog).
-// Postponing has no date: the new date is always "to be confirmed" (option 1).
 export default function HappeningStatusDialog({
   eventId,
   action,

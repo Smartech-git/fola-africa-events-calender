@@ -247,7 +247,7 @@ export default function ArtworkUpload({
             src={preview!}
             alt="Your event artwork"
             className={cn(
-              "max-h-80 w-auto max-w-full border border-ink/15 object-contain",
+              "max-h-80 w-auto max-w-full border border-ink/20 object-contain",
               working && "opacity-60",
             )}
           />

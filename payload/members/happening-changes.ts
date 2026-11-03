@@ -273,7 +273,7 @@ export function changeDecisionMessage(args: {
     status: approved ? "Live · updated" : "Live · unchanged",
     rows: changeRows(args.request),
     button: { label: "View my happenings", url: args.accountUrl },
-    footnote: `Questions? Reply to this email or contact ${CONTACT}.`,
+    footnote: `Questions? Reply to this email or reach us at ${CONTACT}.`,
   });
 }
 
@@ -320,7 +320,7 @@ export function statusChangeMessages(args: {
       heading: word,
       greeting: `Hello ${args.member.fullName},`,
       paragraphs: [
-        `${args.title} now shows as ${word} on the calendar. The Happenings team has been told.`,
+        `${args.title} now shows as ${word} on the calendar. The Happenings team has been informed.`,
         ...(args.status === "postponed"
           ? [
               "When you have the new date, edit the happening and it will go back on the calendar once approved.",
@@ -331,7 +331,7 @@ export function statusChangeMessages(args: {
       status: word,
       rows,
       button: { label: "View my happenings", url: args.accountUrl },
-      footnote: `Didn’t mean to do this? Reply to this email or contact ${CONTACT}.`,
+      footnote: `Didn’t mean to do this? Reply to this email or reach us at ${CONTACT}.`,
     }),
   };
 }

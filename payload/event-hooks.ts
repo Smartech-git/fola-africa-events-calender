@@ -93,8 +93,26 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
     if (data[key] && typeof data[key] === "object")
       event[key] = { ...originalDoc?.[key], ...data[key] };
   }
-  if (originalDoc?.source === "submission" && event.source !== "submission")
-    throw new APIError("A public submission's source cannot be changed.", 400);
+  // A real submission always has its AI review from when it was received, so
+  // one without a review was marked by hand and may be switched back.
+  if (originalDoc?.source === "submission" && event.source !== "submission") {
+    const { totalDocs: reviews } = await req.payload.count({
+      collection: "event-reviews",
+      where: { event: { equals: originalDoc.id } },
+      req,
+    });
+    if (reviews)
+      throw new APIError("A public submission's source cannot be changed.", 400);
+  }
+  if (
+    event.source === "submission" &&
+    originalDoc?.source !== "submission" &&
+    req.user?.collection === "users"
+  )
+    throw new APIError(
+      "Only the website's submission form can mark an event as a public submission. Keep it as a FOLA entry; assigning a member doesn't need it.",
+      400,
+    );
   if (
     event.source === "submission" &&
     (!originalDoc ||

@@ -7,6 +7,7 @@ import {
   LINK_REQUIRED_ACCESS,
   PRIVATE_ACCESS,
   VISIBILITY_OPTIONS,
+  DESCRIPTION_MAX_WORDS,
 } from "@/payload/constants";
 import { shortDescription } from "@/payload/validation";
 import type { Event } from "@/payload-types";
@@ -40,7 +41,7 @@ export const editHappeningSchema = z
       .max(4000)
       .refine(
         (value) => shortDescription(value) === true,
-        "Use no more than 60 words.",
+        `Use no more than ${DESCRIPTION_MAX_WORDS} words.`,
       ),
     venueName: text,
     venueArea: text,

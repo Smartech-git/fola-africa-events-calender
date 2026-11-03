@@ -49,7 +49,7 @@ export default function AccountHeader({
       </div>
       <nav
         aria-label="Account"
-        className="w-full border-b border-ink px-pg-sm sm:px-pg 2xl:px-pg-2xl 4k:px-pg-4k"
+        className="w-full border-b border-ink/20 px-pg-sm sm:px-pg 2xl:px-pg-2xl 4k:px-pg-4k"
       >
         <ul className="flex gap-8">
           {TABS.map((tab) => {

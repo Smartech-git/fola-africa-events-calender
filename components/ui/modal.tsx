@@ -198,7 +198,7 @@ const Modal = {
     return (
       <HeroModalFooter
         className={cn(
-          "flex-wrap gap-3 px-5 pt-4 pb-6 max-sm:*:flex-1 sm:px-8 sm:pb-8",
+          "flex-wrap gap-3 px-5 pt-4 pb-6 sm:px-8 sm:pb-8",
           className,
         )}
         {...rest}

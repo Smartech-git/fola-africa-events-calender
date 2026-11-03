@@ -11,6 +11,7 @@ import {
   PRIVATE_SUBMITTERS,
   SUBMITTER_RELATIONSHIPS,
   VISIBILITY_OPTIONS,
+  DESCRIPTION_MAX_WORDS,
 } from "@/payload/constants";
 import {
   actionURL,
@@ -110,7 +111,7 @@ export const submitEventSchema = z
       .max(4000)
       .refine(
         (value) => shortDescription(value) === true,
-        "Use no more than 60 words.",
+        `Use no more than ${DESCRIPTION_MAX_WORDS} words.`,
       ),
     seasons: z.array(id).max(20),
     // A media ID from /api/submission-uploads, or "" for none.
