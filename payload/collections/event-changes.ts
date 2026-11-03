@@ -105,10 +105,8 @@ export const eventChanges: CollectionConfig = {
       name: "previous",
       label: "Before",
       type: "json",
-      admin: {
-        readOnly: true,
-        description: "The live listing's values when the member submitted.",
-      },
+      // Shown inside the "changes" table below, not on its own.
+      admin: { readOnly: true, hidden: true },
     },
     {
       name: "changes",
@@ -116,7 +114,9 @@ export const eventChanges: CollectionConfig = {
       type: "json",
       admin: {
         readOnly: true,
-        description: "Only the fields the member changed.",
+        components: {
+          Field: "@/payload/components/change-request-diff#ChangeRequestDiff",
+        },
       },
     },
     {

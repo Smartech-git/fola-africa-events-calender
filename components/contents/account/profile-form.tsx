@@ -42,7 +42,8 @@ const savedTime = (iso: string) =>
     hour12: false,
   }).format(new Date(iso));
 
-function AccountSection({
+/** A numbered account form section (Profile, Edit happening). */
+export function AccountSection({
   number,
   title,
   children,

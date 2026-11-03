@@ -92,6 +92,8 @@ interface Props {
   onBusyChange: (busy: boolean) => void;
   disabled?: boolean;
   error?: string;
+  /** Artwork already on the happening, shown until it is replaced or removed. */
+  current?: { id: string; url: string };
 }
 
 // Figma: Submission Form — 05 Show us the Happening, "Event artwork or graphic".
@@ -101,11 +103,17 @@ export default function ArtworkUpload({
   onBusyChange,
   disabled,
   error,
+  current,
 }: Props) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [status, setStatus] = useState<Status>({ kind: "empty" });
-  const [preview, setPreview] = useState<string | null>(null);
+  const showingCurrent = Boolean(current && value === current.id);
+  const [status, setStatus] = useState<Status>(
+    showingCurrent ? { kind: "done" } : { kind: "empty" },
+  );
+  const [preview, setPreview] = useState<string | null>(
+    showingCurrent ? current!.url : null,
+  );
   const [chosen, setChosen] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
 
@@ -263,7 +271,9 @@ export default function ArtworkUpload({
               ? "Preparing your image…"
               : `Uploading… ${status.progress}%`
             : status.kind === "done"
-              ? `${chosen?.name ?? "Your artwork"} is uploaded.`
+              ? chosen
+                ? `${chosen.name} is uploaded.`
+                : "The current artwork."
               : "Drop a file or browse. Artwork may be displayed publicly where appropriate"}
         </p>
         {working && (

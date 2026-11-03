@@ -1,0 +1,46 @@
+.panel {
+  margin-bottom: 24px;
+  padding: 20px;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 6px;
+  background: var(--theme-elevation-50);
+  color: var(--theme-text);
+  overflow-wrap: anywhere;
+}
+
+.title {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 10px 12px 10px 0;
+  border-top: 1px solid var(--theme-elevation-150);
+  text-align: left;
+  vertical-align: top;
+}
+
+.table thead th {
+  border-top: 0;
+  color: var(--theme-elevation-600);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.before {
+  color: var(--theme-elevation-600);
+  text-decoration: line-through;
+}
+
+.note {
+  margin: 12px 0 0;
+  color: var(--theme-elevation-600);
+  font-size: 13px;
+}

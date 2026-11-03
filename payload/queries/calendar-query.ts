@@ -9,6 +9,7 @@ import { ALL_CITIES } from "@/constants/filters";
 import {
   ACCESS_OPTIONS,
   INDUSTRIES,
+  PRIVATE_ACCESS,
   PUBLIC_STATUSES,
 } from "@/payload/constants";
 import { toPublicEvent } from "@/payload/public-event";
@@ -171,8 +172,9 @@ export function searchTerm(params: URLSearchParams) {
 
 /**
  * Match only text the public projection shows: titles and seasons on Public and
- * Industry listings, organiser and venue names on Public listings only. Held
- * dates never match, because their real title and relations are concealed.
+ * Industry listings, organiser and venue names on Public listings only, and
+ * venue names never for private or invitation-only events. Held dates never
+ * match, because their real title and relations are concealed.
  */
 async function searchFilter(
   payload: Payload,
@@ -211,7 +213,13 @@ async function searchFilter(
   if (organisers.length)
     matches.push({ and: [isPublic, { organiser: { in: organisers } }] });
   if (venues.length)
-    matches.push({ and: [isPublic, { venue: { in: venues } }] });
+    matches.push({
+      and: [
+        isPublic,
+        { access: { not_in: PRIVATE_ACCESS } },
+        { venue: { in: venues } },
+      ],
+    });
   if (seasons.length)
     matches.push({ and: [listed, { seasons: { in: seasons } }] });
   return { or: matches };

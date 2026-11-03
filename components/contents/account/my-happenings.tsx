@@ -56,19 +56,28 @@ function State({ happening }: { happening: MemberHappening }) {
   const state = happeningState(happening);
   const live = state === "Live";
   return (
-    <span
-      className={cn(
-        "flex items-center gap-2 font-courier text-xs tracking-cou uppercase",
-        (live || state === "Pending review") && "text-red",
+    <span className="flex flex-col gap-1">
+      <span
+        className={cn(
+          "flex items-center gap-2 font-courier text-sm tracking-cou uppercase",
+          (live || state === "Pending review") && "text-red",
+        )}
+      >
+        {live && (
+          <span
+            aria-hidden="true"
+            className="mb-0.5 size-2.5 shrink-0 rounded-full bg-red"
+          />
+        )}
+        {state}
+      </span>
+      {happening.pendingChange && (
+        <span className="font-montreal text-sm text-ink/60">
+          {happening.status === "approved"
+            ? "Waiting for approval"
+            : "Current version stays live until approved"}
+        </span>
       )}
-    >
-      {live && (
-        <span
-          aria-hidden="true"
-          className="mb-0.5 size-2.5 shrink-0 rounded-full bg-red"
-        />
-      )}
-      {state}
     </span>
   );
 }
@@ -79,11 +88,26 @@ function ViewLink({ happening }: { happening: MemberHappening }) {
   return (
     <Link
       href={`/calendar/${encodeURIComponent(happening.city.slug)}/${encodeURIComponent(happening.slug)}`}
-      // The visible label is short; screen readers hear which event it opens.
       aria-label={`View ${happening.title}`}
-      className="w-fit font-courier text-xs tracking-cou text-red uppercase hover:underline focus-visible:outline-2 focus-visible:outline-red"
+      className="w-fit font-courier text-sm tracking-cou text-red uppercase hover:underline focus-visible:outline-2 focus-visible:outline-red"
     >
       View
+    </Link>
+  );
+}
+
+const EDITABLE = ["submitted", "approved", "published", "postponed"];
+
+function EditLink({ happening }: { happening: MemberHappening }) {
+  if (!EDITABLE.includes(happening.status) || matchesFilter(happening, "past"))
+    return null;
+  return (
+    <Link
+      href={`/account/happenings/${happening.id}/edit`}
+      aria-label={`${happening.pendingChange ? "View changes to" : "Edit"} ${happening.title}`}
+      className="w-fit font-courier text-sm tracking-cou text-red uppercase hover:underline focus-visible:outline-2 focus-visible:outline-red"
+    >
+      {happening.pendingChange ? "View changes" : "Edit"}
     </Link>
   );
 }
@@ -139,6 +163,7 @@ export default function MyHappenings({ happenings, counts, filter }: Props) {
                 State
               </th>
               <th scope="col" className="w-40 pb-4 font-normal">
+                Actions
                 <span className="sr-only">Actions</span>
               </th>
             </tr>
@@ -171,8 +196,9 @@ export default function MyHappenings({ happenings, counts, filter }: Props) {
                     <State happening={happening} />
                   </td>
                   <td className="md:py-6 md:text-right md:align-top">
-                    <span className="flex md:justify-end">
+                    <span className="flex gap-4 md:justify-end">
                       <ViewLink happening={happening} />
+                      <EditLink happening={happening} />
                     </span>
                   </td>
                 </tr>
@@ -200,14 +226,16 @@ export default function MyHappenings({ happenings, counts, filter }: Props) {
           Urgent changes
         </span>
         <p className="font-montreal text-base sm:text-lg">
-          To cancel, postpone or correct a happening, email{" "}
+          Cancel or postpone a live happening from its Edit page. Cancelled and
+          postponed listings stay visible on the calendar. For anything else
+          that can’t wait for review, email{" "}
           <Link
             href={`mailto:${CONTACT_EMAIL}`}
             className="underline hover:text-cream"
           >
             {CONTACT_EMAIL}
           </Link>
-          . Cancelled and postponed listings stay visible on the calendar.
+          .
         </p>
       </div>
     </div>

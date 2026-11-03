@@ -1,6 +1,7 @@
 import {
   INDUSTRIES,
   LINKED_ACCESS,
+  PRIVATE_ACCESS,
   PUBLIC_STATUSES,
 } from "@/payload/constants";
 import type { Event, Media } from "@/payload-types";
@@ -64,8 +65,12 @@ export function toPublicEvent(event: Event) {
           website: event.organiser.website,
         }
       : undefined;
+  // Private and invitation-only events never reveal where they are held.
   const venue =
-    publicDetails && event.venue && typeof event.venue === "object"
+    publicDetails &&
+    !PRIVATE_ACCESS.includes(event.access) &&
+    event.venue &&
+    typeof event.venue === "object"
       ? {
           name: event.venue.name,
           area: event.venue.area,

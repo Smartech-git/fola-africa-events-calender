@@ -715,9 +715,6 @@ export interface EventChange {
   member?: (number | null) | Member;
   status: 'pending' | 'approved' | 'declined' | 'withdrawn';
   note?: string | null;
-  /**
-   * The live listing's values when the member submitted.
-   */
   previous?:
     | {
         [k: string]: unknown;
@@ -727,9 +724,6 @@ export interface EventChange {
     | number
     | boolean
     | null;
-  /**
-   * Only the fields the member changed.
-   */
   changes?:
     | {
         [k: string]: unknown;

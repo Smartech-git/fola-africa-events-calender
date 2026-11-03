@@ -7,12 +7,13 @@ import {
 
 import { SITE_NAME } from "@/constants/brand";
 import {
-  ACCESS_OPTIONS,
-  EVENT_TYPES,
-  INDUSTRIES,
-  PRIVATE_ACCESS,
-  VISIBILITY_OPTIONS,
-} from "@/payload/constants";
+  changedFields,
+  displayValue,
+  fieldLabel,
+  type HappeningField,
+  type HappeningValues,
+} from "@/lib/account/happening-fields";
+import { PRIVATE_ACCESS } from "@/payload/constants";
 import { emailSettings, emailSiteUrl } from "@/payload/emails/email-settings";
 import {
   queueNotification,
@@ -21,21 +22,14 @@ import {
 import { happeningUpdateTemplate } from "@/payload/emails/happening-update-template";
 import { instagramProfile, relationID } from "@/payload/validation";
 import type { City, Event, EventChange, Member } from "@/payload-types";
-import {
-  EDITABLE_FIELDS,
-  type EditHappeningValues,
-} from "@/validations/happening-edit";
 
 /** Pass in `context` when an approved change request is applied to an event. */
 export const APPLYING_CHANGE_REQUEST = "applyingChangeRequest";
 /** Pass in `context` for a member cancelling, postponing or withdrawing their own happening. */
 export const MEMBER_STATUS_CHANGE = "memberStatusChange";
 
-export type HappeningValues = Omit<
-  EditHappeningValues,
-  "artworkRights" | "note"
->;
-type FieldName = (typeof EDITABLE_FIELDS)[number]["name"];
+export type { HappeningValues };
+type FieldName = HappeningField;
 
 const cityOf = (event: Event) =>
   event.city && typeof event.city === "object" ? (event.city as City) : null;
@@ -89,57 +83,7 @@ export function happeningValues(event: Event): HappeningValues {
   };
 }
 
-/** The fields whose values differ. */
-export function changedFields(before: HappeningValues, after: HappeningValues) {
-  return EDITABLE_FIELDS.map(({ name }) => name).filter(
-    (name) => String(before[name] ?? "") !== String(after[name] ?? ""),
-  );
-}
-
-export const fieldLabel = (name: string) =>
-  EDITABLE_FIELDS.find((field) => field.name === name)?.label ?? name;
-
-const optionLabel = (
-  options: { label: string; value: string }[],
-  value: unknown,
-) =>
-  options.find((option) => option.value === value)?.label ??
-  String(value ?? "");
-
-/** A value as people read it, for emails and the change list. */
-export function displayValue(name: FieldName, value: unknown) {
-  if (value === "" || value === null || value === undefined) return "";
-  switch (name) {
-    case "startAt":
-    case "endAt": {
-      const date = new Date(`${value}:00Z`);
-      return new Intl.DateTimeFormat("en-GB", {
-        timeZone: "UTC",
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hourCycle: "h23",
-      }).format(date);
-    }
-    case "allDay":
-      return value ? "Yes" : "No";
-    case "industry":
-      return optionLabel(INDUSTRIES, value);
-    case "eventType":
-      return optionLabel(EVENT_TYPES, value);
-    case "access":
-      return optionLabel(ACCESS_OPTIONS, value);
-    case "visibility":
-      return optionLabel(VISIBILITY_OPTIONS, value);
-    case "artwork":
-      return "New image";
-    default:
-      return String(value);
-  }
-}
+export { changedFields, displayValue, fieldLabel };
 
 const venueFields = ["venueName", "venueArea", "venueAddress"];
 

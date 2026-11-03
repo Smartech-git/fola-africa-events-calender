@@ -16,6 +16,8 @@ export interface MemberHappening {
   access: string;
   visibility: string;
   city: Pick<City, "name" | "slug" | "timezone" | "timezoneLabel"> | null;
+  /** Changes to the live listing are waiting for approval. */
+  pendingChange: boolean;
 }
 
 export const HAPPENING_FILTERS = [
@@ -38,7 +40,7 @@ export function matchesFilter(
 ) {
   switch (filter) {
     case "upcoming":
-      return !ended(happening, now);
+      return happening.status !== "withdrawn" && !ended(happening, now);
     case "pending":
       return happening.status === "submitted";
     case "live":
@@ -46,23 +48,25 @@ export function matchesFilter(
     case "past":
       return ended(happening, now);
     case "cancelled":
-      return happening.status === "cancelled";
+      return ["cancelled", "withdrawn"].includes(happening.status);
   }
 }
 
-/** The state as a word, never a coloured pill (Figma: My Happenings). */
 export function happeningState(happening: MemberHappening, now = Date.now()) {
   switch (happening.status) {
     case "submitted":
       return "Pending review";
     case "approved":
-      return "Approved";
+      return happening.pendingChange ? "Changes submitted" : "Approved";
     case "published":
-      return ended(happening, now) ? "Ended" : "Live";
+      if (ended(happening, now)) return "Ended";
+      return happening.pendingChange ? "Changes submitted" : "Live";
     case "cancelled":
       return "Cancelled";
     case "postponed":
-      return "Postponed";
+      return happening.pendingChange ? "Changes submitted" : "Postponed";
+    case "withdrawn":
+      return "Withdrawn";
     default:
       return happening.status;
   }
@@ -99,7 +103,22 @@ export const getMemberHappenings = cache(
         cities: { name: true, slug: true, timezone: true, timezoneLabel: true },
       },
     });
+    const ids = result.docs.map((event) => event.id);
+    const pending = ids.length
+      ? await payload.find({
+          collection: "event-changes",
+          where: {
+            and: [{ event: { in: ids } }, { status: { equals: "pending" } }],
+          },
+          pagination: false,
+          depth: 0,
+          overrideAccess: true,
+          select: { event: true },
+        })
+      : { docs: [] };
+    const withChanges = new Set(pending.docs.map((change) => change.event));
     return result.docs.map((event) => ({
+      pendingChange: withChanges.has(event.id),
       id: event.id,
       title: event.title,
       slug: event.slug ?? "",

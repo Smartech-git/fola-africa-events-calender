@@ -15,9 +15,7 @@ interface Props {
   timezone: string;
 }
 
-// Figma: Private Event — Desktop (334:2521), header on ink.
 export default function PrivateEventHeader({ event, timezone }: Props) {
-  // A limited listing or held date shows no venue or host.
   const limited = !event.venue && !event.organiser;
   const date = cityDate(event.startAt, timezone);
 

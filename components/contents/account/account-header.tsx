@@ -18,6 +18,8 @@ interface Props {
   title: string;
   intro: string;
   happenings: number;
+  /** Replaces "Account · name", e.g. on a happening's edit page. */
+  kicker?: string;
 }
 
 export default function AccountHeader({
@@ -26,12 +28,13 @@ export default function AccountHeader({
   title,
   intro,
   happenings,
+  kicker,
 }: Props) {
   return (
     <>
       <div className="w-full bg-cream">
         <SectionWrapper className="gap-3">
-          <SurTitle dot content={`Account · ${name}`} />
+          <SurTitle dot content={kicker ?? `Account · ${name}`} />
           <FadeUpText
             as="h1"
             text={title}
@@ -57,7 +60,7 @@ export default function AccountHeader({
                   href={tab.href}
                   aria-current={current ? "page" : undefined}
                   className={cn(
-                    "-mb-[1.5px] flex items-center gap-2 border-b-[3px] md:py-4 py-3 font-courier text-sm tracking-cou uppercase transition-colors focus-visible:outline-2 focus-visible:outline-red",
+                    "-mb-[1.5px] flex items-center gap-2 border-b-[3px] py-3 font-courier text-sm tracking-cou uppercase transition-colors focus-visible:outline-2 focus-visible:outline-red md:py-4",
                     current
                       ? "border-red text-red"
                       : "border-transparent hover:text-red",
@@ -66,7 +69,7 @@ export default function AccountHeader({
                   {current && (
                     <span
                       aria-hidden="true"
-                      className="size-2 shrink-0 mb-0.5 rounded-full bg-red"
+                      className="mb-0.5 size-2 shrink-0 rounded-full bg-red"
                     />
                   )}
                   {tab.label}
