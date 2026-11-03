@@ -103,7 +103,7 @@ export default function SearchPanel({ city, onClose }: Props) {
           autoComplete="off"
           enterKeyHint="search"
           maxLength={MAX_LENGTH}
-          className="min-w-0 flex-1 bg-transparent font-montreal text-xl font-medium tracking-mono text-ink outline-none placeholder:text-ink/30 sm:text-2xl [&::-webkit-search-cancel-button]:hidden"
+          className="min-w-0 flex-1 bg-transparent font-montreal text-xl font-medium tracking-mono text-ink outline-none placeholder:text-ink/30 sm:text-xl [&::-webkit-search-cancel-button]:hidden"
         />
         <Button
           variant="bordered"

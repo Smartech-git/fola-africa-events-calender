@@ -32,7 +32,7 @@ const RESULTS = {
   },
   resubmitted: {
     kicker: "Resubmitted",
-    heading: "Back for review.",
+    heading: "Back for review",
     copy: "Your edited happening is back with the Happenings team. We’ll email you once it has been reviewed.",
   },
   cancelled: {

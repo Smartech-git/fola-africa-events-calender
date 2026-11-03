@@ -73,7 +73,7 @@ export default function SearchEvent({ siteCity, className }: Props) {
             data-lenis-prevent
             className="overflow-y-auto px-0! py-0"
           >
-            <SectionWrapper>
+            <SectionWrapper className="md:pt-7">
               <SearchPanel city={city} onClose={onClose} />
             </SectionWrapper>
           </Drawer.Body>
