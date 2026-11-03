@@ -23,7 +23,9 @@ export type EventEmailKind =
   | "changes-approved"
   | "changes-declined"
   | "urgent"
-  | "status";
+  | "status"
+  | "rejected"
+  | "information-request";
 
 const DEFAULT_API_URL = "api.zeptomail.com/";
 

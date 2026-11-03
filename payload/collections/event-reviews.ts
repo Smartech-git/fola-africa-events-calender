@@ -7,6 +7,12 @@ import {
   noAccess,
   roleOf,
 } from "@/payload/access";
+import {
+  EMAILED_DECISIONS,
+  SEND_DECISION_PATH,
+  SENDING_REVIEW_DECISION,
+  sendDecisionHandler,
+} from "@/payload/reviews/review-decision";
 import { enqueueReview } from "@/payload/reviews/review-task";
 import { relationID } from "@/payload/validation";
 
@@ -33,10 +39,25 @@ export const eventReviews: CollectionConfig = {
     readVersions: isStaff,
   },
   versions: { maxPerDoc: 3 },
+  endpoints: [
+    { path: SEND_DECISION_PATH, method: "post", handler: sendDecisionHandler },
+  ],
   hooks: {
     afterChange: [enqueueReview],
     beforeChange: [
-      async ({ data, originalDoc, req, operation }) => {
+      async ({ data, originalDoc, req, operation, context }) => {
+        // A rejection or information request must reach the submitter, so it
+        // is saved only by the send button, together with its email.
+        if (
+          operation === "update" &&
+          EMAILED_DECISIONS.includes(data.humanDecision) &&
+          data.humanDecision !== originalDoc?.humanDecision &&
+          !context[SENDING_REVIEW_DECISION]
+        )
+          throw new APIError(
+            "Use “Send email” under the decision to email the submitter. The decision is saved when the email is sent.",
+            400,
+          );
         let publicSubmission = false;
         if (
           !req.context.aiReviewWorker &&
@@ -193,7 +214,6 @@ export const eventReviews: CollectionConfig = {
         },
       },
     },
-    { name: "draftMessage", type: "textarea" },
     {
       name: "failureReason",
       type: "textarea",
@@ -212,6 +232,51 @@ export const eventReviews: CollectionConfig = {
         "request-information",
         "rejected",
       ],
+      admin: {
+        description:
+          "Rejecting or requesting information emails the submitter. Choose it, check the message below, then send.",
+      },
+    },
+    {
+      name: "draftMessage",
+      label: "Message to the submitter",
+      type: "textarea",
+      admin: {
+        description:
+          "Drafted by the AI review. Edit it before sending a rejection or information request.",
+      },
+    },
+    {
+      name: "sendDecision",
+      type: "ui",
+      admin: {
+        components: {
+          Field:
+            "@/payload/components/review-decision-email#ReviewDecisionEmail",
+        },
+      },
+    },
+    {
+      name: "decisionEmailSentAt",
+      label: "Decision emailed",
+      type: "date",
+      access: { create: () => false, update: () => false },
+      admin: {
+        readOnly: true,
+        condition: (data) => Boolean(data.decisionEmailSentAt),
+        date: { pickerAppearance: "dayAndTime" },
+      },
+    },
+    {
+      name: "decisionEmailSentBy",
+      label: "Decision emailed by",
+      type: "relationship",
+      relationTo: "users",
+      access: { create: () => false, update: () => false },
+      admin: {
+        readOnly: true,
+        condition: (data) => Boolean(data.decisionEmailSentBy),
+      },
     },
     {
       name: "decisionNotes",

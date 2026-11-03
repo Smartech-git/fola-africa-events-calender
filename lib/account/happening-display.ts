@@ -13,6 +13,7 @@ const STATUS_WORDS: Record<string, string> = {
   postponed: "Postponed",
   cancelled: "Cancelled",
   withdrawn: "Withdrawn",
+  rejected: "Not approved",
 };
 
 const label = (

@@ -1,0 +1,14 @@
+.root {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  margin: -12px 0 24px;
+  padding: 12px;
+  background: var(--theme-elevation-50);
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 4px;
+}
+.note {
+  margin: 0;
+  line-height: 1.5;
+}

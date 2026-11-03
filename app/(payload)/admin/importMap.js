@@ -10,6 +10,7 @@ import { ReviewFindings as ReviewFindings_dc331a26ac0d395b7d62f53008418258 } fro
 import { ReviewSummary as ReviewSummary_dc331a26ac0d395b7d62f53008418258 } from '@/payload/components/review-fields'
 import { ReviewSuggestedListing as ReviewSuggestedListing_dc331a26ac0d395b7d62f53008418258 } from '@/payload/components/review-fields'
 import { ReviewRecommendation as ReviewRecommendation_dc331a26ac0d395b7d62f53008418258 } from '@/payload/components/review-fields'
+import { ReviewDecisionEmail as ReviewDecisionEmail_e91e45eb751568eec000ff6405d11847 } from '@/payload/components/review-decision-email'
 import { ChangeRequestDiff as ChangeRequestDiff_cd1c07661bdb702776829a832bb6cf8d } from '@/payload/components/change-request-diff'
 import { ReviewCountBadge as ReviewCountBadge_0bbe7fb3019a9603cfbf92a523ebc4b6 } from '@/payload/components/review-count-badge'
 import { PasswordToggleProvider as PasswordToggleProvider_55f26ef67f976a5abbda60a8fd9fbfa8 } from '@/payload/components/password-toggle'
@@ -30,6 +31,7 @@ export const importMap = {
   "@/payload/components/review-fields#ReviewSummary": ReviewSummary_dc331a26ac0d395b7d62f53008418258,
   "@/payload/components/review-fields#ReviewSuggestedListing": ReviewSuggestedListing_dc331a26ac0d395b7d62f53008418258,
   "@/payload/components/review-fields#ReviewRecommendation": ReviewRecommendation_dc331a26ac0d395b7d62f53008418258,
+  "@/payload/components/review-decision-email#ReviewDecisionEmail": ReviewDecisionEmail_e91e45eb751568eec000ff6405d11847,
   "@/payload/components/change-request-diff#ChangeRequestDiff": ChangeRequestDiff_cd1c07661bdb702776829a832bb6cf8d,
   "@/payload/components/review-count-badge#ReviewCountBadge": ReviewCountBadge_0bbe7fb3019a9603cfbf92a523ebc4b6,
   "@/payload/components/password-toggle#PasswordToggleProvider": PasswordToggleProvider_55f26ef67f976a5abbda60a8fd9fbfa8,

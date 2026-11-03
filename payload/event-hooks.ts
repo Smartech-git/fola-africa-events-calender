@@ -19,6 +19,7 @@ import {
   editorialChange,
   eventSnapshot,
 } from "@/payload/reviews/event-snapshot";
+import { SENDING_REVIEW_DECISION } from "@/payload/reviews/review-decision";
 import { approveSubmissionRelations } from "@/payload/submissions/approve-submission-relations";
 import { eventProblems, relationID } from "@/payload/validation";
 import type { Event } from "@/payload-types";
@@ -102,7 +103,10 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
       req,
     });
     if (reviews)
-      throw new APIError("A public submission's source cannot be changed.", 400);
+      throw new APIError(
+        "A public submission's source cannot be changed.",
+        400,
+      );
   }
   if (
     event.source === "submission" &&
@@ -187,6 +191,15 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
   }
   const administrator = roleOf(req.user) === "admin";
   const approver = administrator || roleOf(req.user) === "approver";
+  if (
+    data.status === "rejected" &&
+    originalDoc?.status !== "rejected" &&
+    !context[SENDING_REVIEW_DECISION]
+  )
+    throw new APIError(
+      "Reject a submission from its Event Review, which emails the submitter.",
+      400,
+    );
 
   // Content edits invalidate approval and require a new review, including
   // edits by an approver. An administrator can publish directly, so their own

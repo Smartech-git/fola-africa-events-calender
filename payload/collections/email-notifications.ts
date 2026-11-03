@@ -52,6 +52,11 @@ export const emailNotifications: CollectionConfig = {
         { label: "Member: changes declined", value: "changes-declined" },
         { label: "Team: cancelled or postponed", value: "urgent" },
         { label: "Member: cancelled or postponed", value: "status" },
+        { label: "Submitter: not approved", value: "rejected" },
+        {
+          label: "Submitter: information requested",
+          value: "information-request",
+        },
       ],
       admin: { readOnly: true },
     },

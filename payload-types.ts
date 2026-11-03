@@ -510,7 +510,7 @@ export interface Event {
    * When the submitter confirmed they have the right to share the artwork.
    */
   artworkRightsConfirmedAt?: string | null;
-  status: 'submitted' | 'approved' | 'published' | 'cancelled' | 'postponed' | 'withdrawn';
+  status: 'submitted' | 'approved' | 'published' | 'cancelled' | 'postponed' | 'withdrawn' | 'rejected';
   /**
    * Mark only after direct organiser confirmation. Demo data is never verified.
    */
@@ -690,9 +690,17 @@ export interface EventReview {
     | boolean
     | null;
   recommendation?: ('approve-as-submitted' | 'approve-with-edits' | 'request-information' | 'reject') | null;
-  draftMessage?: string | null;
   failureReason?: string | null;
+  /**
+   * Rejecting or requesting information emails the submitter. Choose it, check the message below, then send.
+   */
   humanDecision: 'pending' | 'accepted' | 'amended' | 'request-information' | 'rejected';
+  /**
+   * Drafted by the AI review. Edit it before sending a rejection or information request.
+   */
+  draftMessage?: string | null;
+  decisionEmailSentAt?: string | null;
+  decisionEmailSentBy?: (number | null) | User;
   /**
    * Optional notes explaining the human decision.
    */
@@ -763,7 +771,17 @@ export interface EmailNotification {
   id: number;
   key: string;
   eventId: number;
-  kind: 'submitted' | 'published' | 'team' | 'changes' | 'changes-approved' | 'changes-declined' | 'urgent' | 'status';
+  kind:
+    | 'submitted'
+    | 'published'
+    | 'team'
+    | 'changes'
+    | 'changes-approved'
+    | 'changes-declined'
+    | 'urgent'
+    | 'status'
+    | 'rejected'
+    | 'information-request';
   /**
    * The address it was sent to. Publication emails go to the submitter.
    */
@@ -1258,9 +1276,11 @@ export interface EventReviewsSelect<T extends boolean = true> {
   summary?: T;
   suggestedListing?: T;
   recommendation?: T;
-  draftMessage?: T;
   failureReason?: T;
   humanDecision?: T;
+  draftMessage?: T;
+  decisionEmailSentAt?: T;
+  decisionEmailSentBy?: T;
   decisionNotes?: T;
   decidedBy?: T;
   decidedAt?: T;

@@ -40,7 +40,10 @@ export function matchesFilter(
 ) {
   switch (filter) {
     case "upcoming":
-      return happening.status !== "withdrawn" && !ended(happening, now);
+      return (
+        !["withdrawn", "rejected"].includes(happening.status) &&
+        !ended(happening, now)
+      );
     case "pending":
       return happening.status === "submitted";
     case "live":
@@ -48,7 +51,7 @@ export function matchesFilter(
     case "past":
       return ended(happening, now);
     case "cancelled":
-      return ["cancelled", "withdrawn"].includes(happening.status);
+      return ["cancelled", "withdrawn", "rejected"].includes(happening.status);
   }
 }
 
@@ -67,6 +70,8 @@ export function happeningState(happening: MemberHappening, now = Date.now()) {
       return happening.pendingChange ? "Changes submitted" : "Postponed";
     case "withdrawn":
       return "Withdrawn";
+    case "rejected":
+      return "Not approved";
     default:
       return happening.status;
   }

@@ -25,6 +25,8 @@ const KIND_LABELS: Record<EventEmailKind, string> = {
   "changes-declined": "Changes declined",
   urgent: "Team alert: cancelled or postponed",
   status: "Cancelled or postponed (member)",
+  rejected: "Submission not approved",
+  "information-request": "Information requested",
 };
 const caps: CSSProperties = {
   fontFamily: mono,

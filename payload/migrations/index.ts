@@ -11,6 +11,7 @@ import * as migration_20261029_225600_member_accounts from "./20261029_225600_me
 import * as migration_20261030_163849_brevo_sync_jobs from "./20261030_163849_brevo_sync_jobs";
 import * as migration_20261030_221714_event_artwork from "./20261030_221714_event_artwork";
 import * as migration_20261103_081745_member_happening_edits from "./20261103_081745_member_happening_edits";
+import * as migration_20261103_183211_review_decision_emails from "./20261103_183211_review_decision_emails";
 
 export const migrations = [
   {
@@ -77,5 +78,10 @@ export const migrations = [
     up: migration_20261103_081745_member_happening_edits.up,
     down: migration_20261103_081745_member_happening_edits.down,
     name: "20261103_081745_member_happening_edits",
+  },
+  {
+    up: migration_20261103_183211_review_decision_emails.up,
+    down: migration_20261103_183211_review_decision_emails.down,
+    name: "20261103_183211_review_decision_emails",
   },
 ];
