@@ -80,7 +80,7 @@ export default function Hero({ header, city, cities }: Props) {
           label={`See today’s happenings in ${cityName}, ${day}`}
         />
 
-        <div className="pointer-events-none absolute inset-x-pg bottom-12 hidden h-36 sm:h-36 lg:block 2xl:inset-x-pg-2xl 4k:inset-x-pg-4k">
+        <div className="pointer-events-none absolute inset-x-pg bottom-12 hidden h-40 sm:h-36 lg:block 2xl:inset-x-pg-2xl 4k:inset-x-pg-4k">
           <DotField />
         </div>
       </section>

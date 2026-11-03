@@ -11,6 +11,7 @@ import { SITE_NAME } from "@/constants/brand";
 import { roleOf } from "@/payload/access";
 import { cities } from "@/payload/collections/cities";
 import { emailNotifications } from "@/payload/collections/email-notifications";
+import { eventChanges } from "@/payload/collections/event-changes";
 import { eventReviews } from "@/payload/collections/event-reviews";
 import { events } from "@/payload/collections/events";
 import { media } from "@/payload/collections/media";
@@ -57,6 +58,7 @@ export default buildConfig({
     seasons,
     events,
     eventReviews,
+    eventChanges,
     emailNotifications,
   ],
   globals: [ReviewSettings, NotificationSettings],

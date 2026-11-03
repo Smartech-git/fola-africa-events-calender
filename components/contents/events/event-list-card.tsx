@@ -101,7 +101,7 @@ export default function EventListCard({ event, city, timezone, date }: Props) {
         >
           <HoverText
             trigger="article"
-            className="font-montreal text-xl font-medium tracking-mono wrap-break-word uppercase sm:text-[26px]"
+            className="font-montreal text-xl font-medium tracking-mono wrap-break-word uppercase sm:text-2xl"
             text={event.title}
           />
         </Link>

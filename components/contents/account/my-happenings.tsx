@@ -79,9 +79,11 @@ function ViewLink({ happening }: { happening: MemberHappening }) {
   return (
     <Link
       href={`/calendar/${encodeURIComponent(happening.city.slug)}/${encodeURIComponent(happening.slug)}`}
+      // The visible label is short; screen readers hear which event it opens.
+      aria-label={`View ${happening.title}`}
       className="w-fit font-courier text-xs tracking-cou text-red uppercase hover:underline focus-visible:outline-2 focus-visible:outline-red"
     >
-      View happening
+      View
     </Link>
   );
 }

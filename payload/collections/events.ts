@@ -393,16 +393,34 @@ export const events: CollectionConfig = {
       hooks: { beforeValidate: [normalizeWebURL] },
     },
     {
+      name: "submitterEditedAt",
+      label: "Edited by the submitter",
+      type: "date",
+      access: { create: () => false, update: () => false },
+      admin: {
+        position: "sidebar",
+        readOnly: true,
+        condition: (data) => Boolean(data.submitterEditedAt),
+        description:
+          "The submitter changed this after the AI review. Compare with the review’s original listing before approving.",
+        date: { pickerAppearance: "dayAndTime" },
+      },
+    },
+    {
       name: "member",
       label: "Submitted by member",
       type: "relationship",
       relationTo: "members",
       index: true,
-      access: { create: () => false, update: () => false },
+      // Set by the member submission flow. Administrators may assign it, e.g.
+      // for an event a member sent by email; it hands the member control.
+      access: { create: adminField, update: adminField },
+      filterOptions: { status: { equals: "active" } },
       admin: {
         position: "sidebar",
-        readOnly: true,
-        description: "The Happenings account that submitted this event.",
+        allowCreate: false,
+        description:
+          "The Happenings account that submitted this event. The member sees it in their account and can withdraw, cancel or postpone it and request changes.",
       },
     },
     {

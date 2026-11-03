@@ -1,3 +1,4 @@
+import type { City } from "@/payload-types";
 import {
   eventQueryParams,
   requestCalendarPage,
@@ -8,7 +9,6 @@ import type {
   PublicEvent,
   RequestOptions,
 } from "@/requests/helpers/types";
-import type { City } from "@/types/payload-types";
 
 export type { Events, PublicEvent } from "@/requests/helpers/types";
 

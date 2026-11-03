@@ -60,7 +60,7 @@ export default function Footer() {
 
         <nav
           aria-label="Footer"
-          className="flex flex-wrap gap-x-16 gap-y-8 whitespace-nowrap"
+          className="flex flex-wrap sm:gap-x-16 gap-x-8 max-sm:justify-between gap-y-8 whitespace-nowrap"
         >
           <FooterColumn title="Explore">
             {NAV.filter((item) => !item.isFooter).map((item) => {

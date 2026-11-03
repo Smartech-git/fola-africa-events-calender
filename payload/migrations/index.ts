@@ -10,6 +10,7 @@ import * as migration_20261028_005048_team_submission_alerts from "./20261028_00
 import * as migration_20261029_225600_member_accounts from "./20261029_225600_member_accounts";
 import * as migration_20261030_163849_brevo_sync_jobs from "./20261030_163849_brevo_sync_jobs";
 import * as migration_20261030_221714_event_artwork from "./20261030_221714_event_artwork";
+import * as migration_20261103_081745_member_happening_edits from "./20261103_081745_member_happening_edits";
 
 export const migrations = [
   {
@@ -71,5 +72,10 @@ export const migrations = [
     up: migration_20261030_221714_event_artwork.up,
     down: migration_20261030_221714_event_artwork.down,
     name: "20261030_221714_event_artwork",
+  },
+  {
+    up: migration_20261103_081745_member_happening_edits.up,
+    down: migration_20261103_081745_member_happening_edits.down,
+    name: "20261103_081745_member_happening_edits",
   },
 ];

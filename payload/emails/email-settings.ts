@@ -15,7 +15,15 @@ export const emailMessageSchema = z.object({
 });
 
 export type EmailMessage = z.infer<typeof emailMessageSchema>;
-export type EventEmailKind = "submitted" | "published" | "team";
+export type EventEmailKind =
+  | "submitted"
+  | "published"
+  | "team"
+  | "changes"
+  | "changes-approved"
+  | "changes-declined"
+  | "urgent"
+  | "status";
 
 const DEFAULT_API_URL = "api.zeptomail.com/";
 

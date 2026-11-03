@@ -26,14 +26,18 @@ import { DEFAULT_SUBMISSION_RECIPIENT } from "@/payload/globals/notification-set
 import { toPublicEvent } from "@/payload/public-event";
 import type { Event } from "@/payload-types";
 
-/** Creates the outbox record and its job; both commit or roll back with the event. */
-async function queueNotification(
+/**
+ * Creates the outbox record and its job; both commit or roll back with the
+ * event. A message written now is sent as is; otherwise it is built when sent.
+ */
+export async function queueNotification(
   req: PayloadRequest,
   data: {
     key: string;
     eventId: number;
     kind: EventEmailKind;
     recipient?: string;
+    message?: EmailMessage;
   },
 ) {
   const existing = await req.payload.count({
@@ -81,14 +85,8 @@ export const queueEventEmail: CollectionAfterChangeHook = async ({
   return doc;
 };
 
-/** Emails each address in Notification settings when an event is submitted. */
-export const queueTeamAlert: CollectionAfterChangeHook = async ({
-  doc,
-  operation,
-  req,
-}) => {
-  if (operation !== "create" || doc.isDemo || doc.source !== "submission")
-    return doc;
+/** The addresses in Notification settings, or the default inbox before it is saved. */
+export async function teamRecipients(req: PayloadRequest) {
   const settings = await req.payload.findGlobal({
     slug: "notification-settings",
     req,
@@ -99,14 +97,24 @@ export const queueTeamAlert: CollectionAfterChangeHook = async ({
   const listed = settings.updatedAt
     ? (settings.submissionRecipients ?? []).map((row) => row.email)
     : [DEFAULT_SUBMISSION_RECIPIENT];
-  const recipients = [
+  return [
     ...new Set(
       listed
         .map((email) => email?.trim().toLowerCase())
         .filter((email): email is string => z.email().safeParse(email).success),
     ),
   ];
-  for (const recipient of recipients)
+}
+
+/** Emails each address in Notification settings when an event is submitted. */
+export const queueTeamAlert: CollectionAfterChangeHook = async ({
+  doc,
+  operation,
+  req,
+}) => {
+  if (operation !== "create" || doc.isDemo || doc.source !== "submission")
+    return doc;
+  for (const recipient of await teamRecipients(req))
     await queueNotification(req, {
       key: `event-${doc.id}-team-${recipient}`,
       eventId: doc.id,
@@ -135,6 +143,10 @@ async function prepareMessage(
       message: teamAlertTemplate({ event, recipient, sender, adminUrl }),
     };
   }
+  // Change and status emails are written when queued; never rebuild them as a
+  // publication email to the submitter.
+  if (kind !== "submitted" && kind !== "published")
+    return { skip: "This email was queued without its message." };
   const published = toPublicEvent(event);
   if (
     event.source !== "submission" ||

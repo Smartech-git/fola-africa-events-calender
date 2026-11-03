@@ -1,6 +1,6 @@
+import type { City } from "@/payload-types";
 import { requestCalendarData } from "@/requests/helpers/calendar-request";
 import type { CalendarCity, SeasonSummary } from "@/requests/helpers/types";
-import type { City } from "@/types/payload-types";
 
 export type { SeasonSummary } from "@/requests/helpers/types";
 

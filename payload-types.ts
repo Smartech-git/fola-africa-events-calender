@@ -76,6 +76,7 @@ export interface Config {
     seasons: Season;
     events: Event;
     'event-reviews': EventReview;
+    'event-changes': EventChange;
     'email-notifications': EmailNotification;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
@@ -107,6 +108,7 @@ export interface Config {
     seasons: SeasonsSelect<false> | SeasonsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     'event-reviews': EventReviewsSelect<false> | EventReviewsSelect<true>;
+    'event-changes': EventChangesSelect<false> | EventChangesSelect<true>;
     'email-notifications': EmailNotificationsSelect<false> | EmailNotificationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -508,7 +510,7 @@ export interface Event {
    * When the submitter confirmed they have the right to share the artwork.
    */
   artworkRightsConfirmedAt?: string | null;
-  status: 'submitted' | 'approved' | 'published' | 'cancelled' | 'postponed';
+  status: 'submitted' | 'approved' | 'published' | 'cancelled' | 'postponed' | 'withdrawn';
   /**
    * Mark only after direct organiser confirmation. Demo data is never verified.
    */
@@ -522,7 +524,11 @@ export interface Event {
   source: 'fola' | 'submission' | 'csv' | 'demo';
   sourceUrl?: string | null;
   /**
-   * The Happenings account that submitted this event.
+   * The submitter changed this after the AI review. Compare with the review’s original listing before approving.
+   */
+  submitterEditedAt?: string | null;
+  /**
+   * The Happenings account that submitted this event. The member sees it in their account and can withdraw, cancel or postpone it and request changes.
    */
   member?: (number | null) | Member;
   /**
@@ -694,6 +700,63 @@ export interface EventReview {
   createdAt: string;
 }
 /**
+ * Changes members submitted to their live happenings. The live listing stays as it is until you approve. Approving applies the changes; declining tells the member why.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-changes".
+ */
+export interface EventChange {
+  id: number;
+  /**
+   * The fields that change.
+   */
+  summary?: string | null;
+  event: number | Event;
+  member?: (number | null) | Member;
+  status: 'pending' | 'approved' | 'declined' | 'withdrawn';
+  note?: string | null;
+  /**
+   * The live listing's values when the member submitted.
+   */
+  previous?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Only the fields the member changed.
+   */
+  changes?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Required when the venue changes: choose the venue in the event's city, or create it in Venues first.
+   */
+  venueRecord?: (number | null) | Venue;
+  /**
+   * Required when the change makes the happening Private or Invitation only.
+   */
+  organiserConfirmed?: boolean | null;
+  /**
+   * Sent to the member when you decline.
+   */
+  declineReason?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Private delivery records for publication emails, submission alerts to the team and historical submission receipts. Sent through ZeptoMail. A failure marked uncertain may have been delivered: check the ZeptoMail logs before sending again.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -703,9 +766,9 @@ export interface EmailNotification {
   id: number;
   key: string;
   eventId: number;
-  kind: 'submitted' | 'published' | 'team';
+  kind: 'submitted' | 'published' | 'team' | 'changes' | 'changes-approved' | 'changes-declined' | 'urgent' | 'status';
   /**
-   * Set for team alerts. Publication emails go to the submitter.
+   * The address it was sent to. Publication emails go to the submitter.
    */
   recipient?: string | null;
   status: 'queued' | 'sent' | 'skipped' | 'failed';
@@ -880,6 +943,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'event-reviews';
         value: number | EventReview;
+      } | null)
+    | ({
+        relationTo: 'event-changes';
+        value: number | EventChange;
       } | null)
     | ({
         relationTo: 'email-notifications';
@@ -1162,6 +1229,7 @@ export interface EventsSelect<T extends boolean = true> {
   publishedAt?: T;
   source?: T;
   sourceUrl?: T;
+  submitterEditedAt?: T;
   member?: T;
   submittedBy?:
     | T
@@ -1199,6 +1267,26 @@ export interface EventReviewsSelect<T extends boolean = true> {
   decisionNotes?: T;
   decidedBy?: T;
   decidedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-changes_select".
+ */
+export interface EventChangesSelect<T extends boolean = true> {
+  summary?: T;
+  event?: T;
+  member?: T;
+  status?: T;
+  note?: T;
+  previous?: T;
+  changes?: T;
+  venueRecord?: T;
+  organiserConfirmed?: T;
+  declineReason?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

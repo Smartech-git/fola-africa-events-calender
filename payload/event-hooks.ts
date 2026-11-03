@@ -12,6 +12,10 @@ import {
   PUBLIC_STATUSES,
 } from "@/payload/constants";
 import {
+  APPLYING_CHANGE_REQUEST,
+  MEMBER_STATUS_CHANGE,
+} from "@/payload/members/happening-changes";
+import {
   editorialChange,
   eventSnapshot,
 } from "@/payload/reviews/event-snapshot";
@@ -38,6 +42,26 @@ export const deleteEventReviews: CollectionBeforeDeleteHook = async ({
       409,
     );
   }
+  // Members' change requests belong to the event too.
+  const changes = await req.payload.delete({
+    collection: "event-changes",
+    where: { event: { equals: id } },
+    req,
+    overrideAccess: true,
+    depth: 0,
+  });
+  if (changes.errors.length)
+    throw new APIError(
+      "Unable to delete the event's change requests. Please try again.",
+      409,
+    );
+};
+
+// What a member may do to their own happening without staff (option a).
+const MEMBER_TRANSITIONS: Record<string, string[]> = {
+  submitted: ["withdrawn"],
+  published: ["cancelled", "postponed"],
+  postponed: ["cancelled"],
 };
 
 export const validateEvent: CollectionBeforeChangeHook = async ({
@@ -45,10 +69,26 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
   originalDoc: previous,
   operation,
   req,
+  context,
 }) => {
-  
   const originalDoc = operation === "update" ? previous : undefined;
   const event = { ...originalDoc, ...data };
+
+  // A member cancelling, postponing or withdrawing their own happening. Only
+  // the status may change, and only along MEMBER_TRANSITIONS; staff undo it.
+  const memberChange = context[MEMBER_STATUS_CHANGE] as
+    { memberId: number } | undefined;
+  if (memberChange) {
+    if (
+      !originalDoc ||
+      relationID(originalDoc.member) !== memberChange.memberId ||
+      editorialChange(originalDoc, event) ||
+      !MEMBER_TRANSITIONS[originalDoc.status]?.includes(data.status)
+    )
+      throw new APIError("This happening can’t be changed that way.", 403);
+    return data;
+  }
+  const applyingChange = Boolean(context[APPLYING_CHANGE_REQUEST]);
   for (const key of ["submittedOrganiser", "submittedVenue"]) {
     if (data[key] && typeof data[key] === "object")
       event[key] = { ...originalDoc?.[key], ...data[key] };
@@ -75,7 +115,13 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
     throw new APIError("Select an organiser for this event.", 400);
   const errors = eventProblems(event);
   if (errors.length) throw new APIError(errors.join(" "), 400);
-  const changed = originalDoc && editorialChange(originalDoc, event);
+  // An approved change request is itself the review, so it keeps the listing up.
+  const changed =
+    originalDoc && !applyingChange && editorialChange(originalDoc, event);
+  if (applyingChange) {
+    data.approvedBy = req.user!.id;
+    data.approvedAt = new Date().toISOString();
+  }
   for (const key of ["startAt", "endAt"]) {
     if (event[key]) data[key] = new Date(event[key]).toISOString();
   }
@@ -124,8 +170,13 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
   const administrator = roleOf(req.user) === "admin";
   const approver = administrator || roleOf(req.user) === "approver";
 
-  // Content edits invalidate approval and require a new review, including edits by an approver.
-  if (changed) {
+  // Content edits invalidate approval and require a new review, including
+  // edits by an approver. An administrator can publish directly, so their own
+  // edit is the new approval and keeps the status they chose.
+  if (changed && administrator && data.status !== "submitted") {
+    data.approvedBy = req.user!.id;
+    data.approvedAt = new Date().toISOString();
+  } else if (changed) {
     data.status = "submitted";
     data.approvedBy = null;
     data.approvedAt = null;
@@ -145,7 +196,16 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
       "New events must enter the review queue as Submitted.",
       400,
     );
-  if (nextStatus !== "submitted" && nextStatus !== originalDoc?.status) {
+  // A postponed happening returning with its new date was approved before.
+  const returningFromPostponement =
+    applyingChange &&
+    originalDoc?.status === "postponed" &&
+    nextStatus === "published";
+  if (
+    nextStatus !== "submitted" &&
+    nextStatus !== originalDoc?.status &&
+    !returningFromPostponement
+  ) {
     if (
       event.source === "submission" &&
       ["approved", "published"].includes(nextStatus) &&

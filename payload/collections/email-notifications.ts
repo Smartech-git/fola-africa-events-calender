@@ -43,7 +43,16 @@ export const emailNotifications: CollectionConfig = {
       name: "kind",
       type: "select",
       required: true,
-      options: ["submitted", "published", "team"],
+      options: [
+        { label: "Submission receipt", value: "submitted" },
+        { label: "Published", value: "published" },
+        { label: "Team: new submission", value: "team" },
+        { label: "Team: changes to review", value: "changes" },
+        { label: "Member: changes approved", value: "changes-approved" },
+        { label: "Member: changes declined", value: "changes-declined" },
+        { label: "Team: cancelled or postponed", value: "urgent" },
+        { label: "Member: cancelled or postponed", value: "status" },
+      ],
       admin: { readOnly: true },
     },
     {
@@ -52,7 +61,7 @@ export const emailNotifications: CollectionConfig = {
       admin: {
         readOnly: true,
         description:
-          "Set for team alerts. Publication emails go to the submitter.",
+          "The address it was sent to. Publication emails go to the submitter.",
       },
     },
     {

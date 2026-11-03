@@ -117,6 +117,8 @@ export const EVENT_STATUSES = [
   "Published",
   "Cancelled",
   "Postponed",
+  // Taken back by the member before approval; never public.
+  "Withdrawn",
 ].map((label) => ({ label, value: label.toLowerCase() }));
 export const PUBLIC_STATUSES = ["published", "cancelled", "postponed"];
 export const PRIVATE_ACCESS = ["invitation-only", "private"];

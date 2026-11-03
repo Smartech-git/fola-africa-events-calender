@@ -12,9 +12,9 @@ import {
   PUBLIC_STATUSES,
 } from "@/payload/constants";
 import { toPublicEvent } from "@/payload/public-event";
+import type { City } from "@/payload-types";
 import config from "@/payload.config";
 import type { SeasonSummary } from "@/requests/helpers/types";
-import type { City } from "@/types/payload-types";
 
 export function getCalendarPayload() {
   return getPayload({ config });

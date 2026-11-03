@@ -1,10 +1,10 @@
+import type { City } from "@/payload-types";
 import { requestCalendarPage } from "@/requests/helpers/calendar-request";
 import type {
   CalendarPage,
   RequestOptions,
   SeasonSummary,
 } from "@/requests/helpers/types";
-import type { City } from "@/types/payload-types";
 
 /** A season with the city it belongs to, for "In the diary". */
 export interface UpcomingSeason extends SeasonSummary {

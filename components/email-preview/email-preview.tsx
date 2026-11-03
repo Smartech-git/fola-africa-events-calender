@@ -16,6 +16,16 @@ const colours = {
   white: "#FFFFFF",
 };
 const mono = "'Courier Prime', 'Courier New', Courier, monospace";
+const KIND_LABELS: Record<EventEmailKind, string> = {
+  published: "Happening is live",
+  submitted: "Submission received",
+  team: "Team alert: new submission",
+  changes: "Team alert: changes to review",
+  "changes-approved": "Changes approved",
+  "changes-declined": "Changes declined",
+  urgent: "Team alert: cancelled or postponed",
+  status: "Cancelled or postponed (member)",
+};
 const caps: CSSProperties = {
   fontFamily: mono,
   fontSize: 13,
@@ -101,9 +111,11 @@ export default function EmailPreview({
               }
               style={field}
             >
-              <option value="published">Happening is live</option>
-              <option value="submitted">Submission received</option>
-              <option value="team">Team alert: new submission</option>
+              {Object.entries(KIND_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
             </select>
           </label>
           <label style={{ ...caps, color: colours.red }}>
@@ -146,7 +158,7 @@ export default function EmailPreview({
         <div style={{ overflowX: "auto", paddingBottom: 16 }}>
           {format === "html" ? (
             <iframe
-              title={`${{ published: "Happening is live", submitted: "Submission received", team: "Team alert" }[kind]} email preview`}
+              title={`${KIND_LABELS[kind]} email preview`}
               srcDoc={message.html}
               sandbox="allow-same-origin"
               style={{ ...frame, height: 1000, background: colours.cream }}

@@ -1,8 +1,8 @@
 import "server-only";
 
+import type { City } from "@/payload-types";
 import { requestCalendarData } from "@/requests/helpers/calendar-request";
 import type { CalendarCity, SeasonSummary } from "@/requests/helpers/types";
-import type { City } from "@/types/payload-types";
 
 export interface SeasonsHeader {
   city: CalendarCity & Pick<City, "id" | "slug">;

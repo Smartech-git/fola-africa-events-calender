@@ -9,29 +9,24 @@ import SectionWrapper from "@/components/layout/section-wrapper";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  /** The red panel's heading, in capitals (desktop only). */
   heading: string;
   intro?: string;
-  /** Extra red-panel content under the intro, such as the Create Account list. */
   asideContent?: ReactNode;
-  /** Create Account carries the dots at the foot of the panel; the rest at the top. */
   dotsAt?: "top" | "bottom";
-  /** A wider form column, for Create Account. */
   wide?: boolean;
   children: ReactNode;
 }
 
-// Figma: Sign In, Create Account, Check Your Email and Continue to Happenings.
-// Red panel on the left (desktop), the form on white to its right.
+
 export default function AuthLayout({
   heading,
   intro,
   asideContent,
-  dotsAt = "top",
+  dotsAt = "bottom",
   wide = false,
   children,
 }: Props) {
-  const dots = <DotField className="h-50 w-full" seed={3} />;
+  const dots = <DotField className="h-40 w-full" seed={3} />;
 
   return (
     <div
@@ -108,7 +103,6 @@ const TABS = [
   { id: "create-account", label: "Create an account", href: "/create-account" },
 ] as const;
 
-/** Sign In and Create an Account are two pages under one set of tabs. */
 export function AuthTabs({
   active,
   next,

@@ -20,10 +20,10 @@ import {
 } from "@/payload/validation";
 import type { Event, Organiser } from "@/payload-types";
 
-const text = z.string().trim().max(200);
-const requiredText = text.min(1, "This field is required.");
+export const text = z.string().trim().max(200);
+export const requiredText = text.min(1, "This field is required.");
 // Accepts example.com or https://example.com; bare domains are saved as HTTPS.
-const url = z
+export const url = z
   .string()
   .trim()
   .max(2000)
@@ -33,7 +33,7 @@ const url = z
   )
   .transform((value) => (value ? webURL(value)! : ""));
 // Accepts a web address or an email address; emails are saved as mailto: links.
-const actionLink = z
+export const actionLink = z
   .string()
   .trim()
   .max(2000)
@@ -42,11 +42,11 @@ const actionLink = z
     "Enter a web address such as example.com, or an email address.",
   )
   .transform((value) => (value ? actionURL(value)! : ""));
-const optionalEmail = z.union([
+export const optionalEmail = z.union([
   z.literal(""),
   z.string().trim().email("Enter a valid email address.").max(254),
 ]);
-const instagram = z
+export const instagram = z
   .string()
   .trim()
   .max(200)
@@ -54,15 +54,15 @@ const instagram = z
     (value) => !value || Boolean(instagramProfile(value)),
     "Enter an Instagram handle or profile link.",
   );
-const id = z.string().regex(/^[1-9]\d*$/, "Select an option.");
-const choice = <T extends string>(options: { value: string }[]) =>
+export const id = z.string().regex(/^[1-9]\d*$/, "Select an option.");
+export const choice = <T extends string>(options: { value: string }[]) =>
   z.custom<T>(
     (value) =>
       typeof value === "string" &&
       options.some((option) => option.value === value),
     "Select an option.",
   );
-const dateTime = z.string().refine((value) => {
+export const dateTime = z.string().refine((value) => {
   try {
     return (
       /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value) &&

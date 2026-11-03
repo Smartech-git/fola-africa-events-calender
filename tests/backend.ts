@@ -1,18 +1,13 @@
 import assert from "node:assert/strict";
 
-
 import { eventReviews } from "@/payload/collections/event-reviews";
 import { events } from "@/payload/collections/events";
 import { organisers } from "@/payload/collections/organisers";
 import { SEED_CITIES } from "@/payload/constants";
 import { validateEvent } from "@/payload/event-hooks";
 import { toPublicEvent } from "@/payload/public-event";
-import {
-  eventProblems,
-  httpURL,
-  shortDescription,
-} from "@/payload/validation";
-import type { Event } from "@/types/payload-types";
+import { eventProblems, httpURL, shortDescription } from "@/payload/validation";
+import type { Event } from "@/payload-types";
 
 let checks = 0;
 async function check(name: string, fn: () => unknown | Promise<unknown>) {
@@ -38,7 +33,11 @@ const hook = (
   data: Record<string, unknown>,
   originalDoc: any = valid,
   role = "approver",
-  review: any = { aiStatus: "completed", humanDecision: "accepted", originalListing: originalDoc },
+  review: any = {
+    aiStatus: "completed",
+    humanDecision: "accepted",
+    originalListing: originalDoc,
+  },
 ) =>
   validateEvent({
     data,

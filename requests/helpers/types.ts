@@ -1,6 +1,6 @@
 import type { toPublicEvent } from "@/payload/public-event";
 import type { querySearch } from "@/payload/queries/calendar-query";
-import type { City, Event, Season } from "@/types/payload-types";
+import type { City, Event, Season } from "@/payload-types";
 
 export type RequestOptions = {
   endpoint?: string;
