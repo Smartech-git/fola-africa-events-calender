@@ -25,7 +25,7 @@ type Submission = {
 const COPY: Record<Decision, { button: string; note: string }> = {
   rejected: {
     button: "Send rejection email",
-    note: "The submitter is told the happening won’t be listed, with your message. The event is marked Rejected and leaves the review queue.",
+    note: "The submitter is told the happening won’t be listed, with your message. The event is marked Rejected and leaves the review queue. A submitter with an account can edit it and resubmit, which puts it back in the queue.",
   },
   "request-information": {
     button: "Send information request",

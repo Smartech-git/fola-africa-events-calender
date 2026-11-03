@@ -125,7 +125,7 @@ export const reviewEventTask: TaskConfig<{
         aiStatus: "processing",
         failureReason: null,
         model,
-        promptVersion: settings.promptVersion || "fola-beta-v1",
+        promptVersion: settings.promptVersion || "fola-beta-v2",
         promptSnapshot: prompt,
       });
       if (!started.docs.length) return { output: {} };

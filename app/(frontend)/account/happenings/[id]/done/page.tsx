@@ -30,6 +30,11 @@ const RESULTS = {
     heading: "Changes saved.",
     copy: "Your submission is updated. The Happenings team reviews the latest version before it goes on the calendar.",
   },
+  resubmitted: {
+    kicker: "Resubmitted",
+    heading: "Back for review.",
+    copy: "Your edited happening is back with the Happenings team. We’ll email you once it has been reviewed.",
+  },
   cancelled: {
     kicker: "Cancelled",
     heading: "Happening cancelled",

@@ -60,7 +60,8 @@ function State({ happening }: { happening: MemberHappening }) {
       <span
         className={cn(
           "flex items-center gap-2 font-courier text-sm tracking-cou uppercase",
-          (live || state === "Pending review") && "text-red",
+          (live || ["Pending review", "Not approved"].includes(state)) &&
+            "text-red",
         )}
       >
         {live && (
@@ -76,6 +77,11 @@ function State({ happening }: { happening: MemberHappening }) {
           {happening.status === "approved"
             ? "Waiting for approval"
             : "Current version stays live until approved"}
+        </span>
+      )}
+      {happening.status === "rejected" && !matchesFilter(happening, "past") && (
+        <span className="font-montreal text-sm text-ink/60">
+          Edit it to resubmit for review
         </span>
       )}
     </span>
@@ -98,7 +104,14 @@ function ViewLink({ happening }: { happening: MemberHappening }) {
   );
 }
 
-const EDITABLE = ["submitted", "approved", "published", "postponed"];
+// A happening that wasn't approved can be fixed and resubmitted.
+const EDITABLE = [
+  "submitted",
+  "rejected",
+  "approved",
+  "published",
+  "postponed",
+];
 
 function EditLink({ happening }: { happening: MemberHappening }) {
   if (!EDITABLE.includes(happening.status) || matchesFilter(happening, "past"))
@@ -115,6 +128,14 @@ function EditLink({ happening }: { happening: MemberHappening }) {
     </Link>
   );
 }
+
+const EMPTY: Record<HappeningFilter, string> = {
+  live: "Nothing live right now.",
+  pending: "Nothing waiting for review.",
+  cancelled: "Nothing cancelled or withdrawn.",
+  rejected: "Nothing marked not approved.",
+  past: "No past happenings yet.",
+};
 
 interface Props {
   happenings: MemberHappening[];
@@ -214,7 +235,7 @@ export default function MyHappenings({ happenings, counts, filter }: Props) {
         <div className="flex flex-col items-start gap-5 border-y border-ink/20 py-10">
           <p className="font-montreal text-xl sm:text-2xl">
             {happenings.length
-              ? `Nothing ${filter === "upcoming" ? "upcoming" : `in ${label.label.toLowerCase()}`} right now.`
+              ? EMPTY[filter]
               : "You haven’t submitted a happening yet."}
           </p>
           <Link href="/submit-event/form" className="max-sm:w-full">

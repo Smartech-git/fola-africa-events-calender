@@ -7,6 +7,7 @@ import MyHappenings from "@/components/contents/account/my-happenings";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import { getMember } from "@/lib/auth/member-session";
 import {
+  defaultFilter,
   getMemberHappenings,
   HAPPENING_FILTERS,
   happeningCounts,
@@ -27,10 +28,11 @@ export default async function Page({ searchParams }: Props) {
   if (!member) redirect("/sign-in?next=/account/happenings");
 
   const { show } = await searchParams;
+  const happenings = await getMemberHappenings(member.id);
+  const counts = happeningCounts(happenings);
   const filter: HappeningFilter =
     HAPPENING_FILTERS.find((entry) => entry.value === show)?.value ??
-    "upcoming";
-  const happenings = await getMemberHappenings(member.id);
+    defaultFilter(counts);
 
   return (
     <>
@@ -42,11 +44,7 @@ export default async function Page({ searchParams }: Props) {
         happenings={happenings.length}
       />
       <SectionWrapper className="gap-6 md:gap-10 md:pt-7">
-        <MyHappenings
-          happenings={happenings}
-          counts={happeningCounts(happenings)}
-          filter={filter}
-        />
+        <MyHappenings happenings={happenings} counts={counts} filter={filter} />
       </SectionWrapper>
     </>
   );

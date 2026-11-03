@@ -40,7 +40,8 @@ export function reviewDecisionMessage(args: {
   name: string;
   title: string;
   message: string;
-  accountUrl?: string;
+  /** The member's edit page; submitters without an account get no button. */
+  editUrl?: string;
 }) {
   const rejected = args.decision === "rejected";
   const message = args.message
@@ -55,11 +56,20 @@ export function reviewDecisionMessage(args: {
       kicker: rejected ? "Not approved" : "Information requested",
       heading: rejected ? "Not approved" : "A few details",
       greeting: args.name ? `Hello ${args.name},` : undefined,
-      paragraphs: [...message],
+      paragraphs: [
+        ...message,
+        ...(args.editUrl
+          ? [
+              rejected
+                ? "You can edit your happening and send it back for review."
+                : "You can add the details by editing your happening.",
+            ]
+          : []),
+      ],
       title: args.title,
       status: rejected ? "Not approved" : "In review · information requested",
-      button: args.accountUrl
-        ? { label: "View my happenings", url: args.accountUrl }
+      button: args.editUrl
+        ? { label: "Edit happening", url: args.editUrl }
         : undefined,
       footnote: rejected
         ? `Questions? Reply to this email or reach us at ${CONTACT_EMAIL}.`
@@ -171,8 +181,8 @@ export const sendDecisionHandler: PayloadHandler = async (req) => {
         name: event.submittedBy?.name || member?.fullName || "",
         title: event.title,
         message,
-        accountUrl: member
-          ? new URL("/account/happenings", emailSiteUrl()).href
+        editUrl: member
+          ? new URL(`/account/happenings/${event.id}/edit`, emailSiteUrl()).href
           : undefined,
       }),
     });

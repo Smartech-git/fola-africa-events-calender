@@ -247,6 +247,31 @@ export function changesSubmittedMessage(args: {
   });
 }
 
+/** To the team: a member edited a happening that wasn't approved and sent it back. */
+export function resubmittedMessage(args: {
+  to: string;
+  sender: string;
+  title: string;
+  member: Person;
+  request: ChangeSet;
+  reviewUrl: string;
+}) {
+  return happeningUpdateTemplate({
+    to: args.to,
+    sender: args.sender,
+    subject: `Resubmitted for review: ${args.title}`,
+    kicker: "Resubmitted",
+    heading: "Back for review",
+    paragraphs: [
+      `${args.member.fullName} (${args.member.email}) edited their happening after it wasn’t approved and sent it back for review. It is in the review queue again.`,
+    ],
+    title: args.title,
+    status: "In review · resubmitted",
+    rows: changeRows(args.request),
+    button: { label: "Open the review", url: args.reviewUrl },
+  });
+}
+
 /** To the member: their changes were approved or declined. */
 export function changeDecisionMessage(args: {
   sender: string;
@@ -411,6 +436,37 @@ export const queueChangeDecisionEmail: CollectionAfterChangeHook<
   });
   return doc;
 };
+
+/** Tells the team a happening that wasn't approved is back in the review queue. */
+export async function queueResubmittedEmails(
+  req: PayloadRequest,
+  event: Event,
+  member: Member,
+  request: ChangeSet,
+  reviewId: number | undefined,
+) {
+  const from = sender();
+  if (!from) return;
+  const reviewUrl = reviewId
+    ? adminUrl("event-reviews", reviewId)
+    : adminUrl("events", event.id);
+  const stamp = Date.now();
+  for (const recipient of await teamRecipients(req))
+    await queueNotification(req, {
+      key: `event-${event.id}-resubmitted-${stamp}-team-${recipient}`,
+      eventId: event.id,
+      kind: "changes",
+      recipient,
+      message: resubmittedMessage({
+        to: recipient,
+        sender: from,
+        title: event.title,
+        member,
+        request,
+        reviewUrl,
+      }),
+    });
+}
 
 /** Cancelled or postponed by the member: the team at once, and a confirmation to the member. */
 export async function queueStatusChangeEmails(

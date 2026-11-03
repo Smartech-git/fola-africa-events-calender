@@ -10,6 +10,7 @@ import {
   happeningValues,
   MEMBER_STATUS_CHANGE,
   queueChangesSubmittedEmails,
+  queueResubmittedEmails,
   queueStatusChangeEmails,
   type HappeningValues,
 } from "@/payload/members/happening-changes";
@@ -24,7 +25,9 @@ import {
 
 /**
  * How a member may change a happening:
- * - "direct": still in review, so edits update the submission itself;
+ * - "direct": still in review, so edits update the submission itself. A
+ *   happening that wasn't approved is edited the same way and goes back for
+ *   review when saved;
  * - "request": approved or live, so edits wait in a change request and the
  *   live listing stays as it is until an administrator approves;
  * - "locked": withdrawn, cancelled or over.
@@ -48,6 +51,7 @@ const ended = (event: Event) =>
 
 export function editMode(event: Event): EditMode {
   if (event.status === "submitted") return "direct";
+  if (event.status === "rejected" && !ended(event)) return "direct";
   if (
     ["approved", "published", "postponed"].includes(event.status) &&
     !ended(event)
@@ -159,15 +163,23 @@ export async function saveHappeningEdits(
 
   if (mode === "direct") {
     if (!changed.length) return fail("Nothing has changed yet.");
+    // Fixing a happening that wasn't approved sends it back for review.
+    const resubmitting = event.status === "rejected";
+    const req = await createLocalReq({}, payload);
     try {
       await payload.update({
         collection: "events",
         id: event.id,
         depth: 0,
         ...trusted,
+        req,
         // Never save over a reviewer who has the submission open.
         overrideLock: false,
-        data: { ...data, submitterEditedAt: new Date().toISOString() },
+        data: {
+          ...data,
+          ...(resubmitting && { status: "submitted" }),
+          submitterEditedAt: new Date().toISOString(),
+        },
       });
     } catch (error) {
       if (error instanceof Error && /lock/i.test(error.message))
@@ -184,6 +196,16 @@ export async function saveHappeningEdits(
         ...trusted,
         data: { alt: `Artwork for ${next.title}` },
       });
+    if (resubmitting) {
+      const review = await reopenReview(payload, event.id);
+      await queueResubmittedEmails(
+        req,
+        { ...event, title: next.title },
+        member,
+        { changes: pick(next, changed), previous: pick(live, changed) },
+        review?.id,
+      );
+    }
     return { ok: true, changed: changed.map(fieldLabel) };
   }
 
@@ -225,6 +247,26 @@ export async function saveHappeningEdits(
     await queueChangesSubmittedEmails(req, event, created, member);
   }
   return { ok: true, changed: changed.map(fieldLabel) };
+}
+
+/** Puts the latest Event Review back in the queue; its earlier decision stays in its versions. */
+async function reopenReview(payload: Payload, eventId: number) {
+  const { docs } = await payload.find({
+    collection: "event-reviews",
+    where: { event: { equals: eventId } },
+    sort: "-createdAt",
+    limit: 1,
+    depth: 0,
+    ...trusted,
+  });
+  if (!docs[0]) return undefined;
+  return payload.update({
+    collection: "event-reviews",
+    id: docs[0].id,
+    depth: 0,
+    ...trusted,
+    data: { humanDecision: "pending", decidedBy: null, decidedAt: null },
+  });
 }
 
 async function discardPendingChange(payload: Payload, pending: EventChange) {

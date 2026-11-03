@@ -8,9 +8,9 @@ import type { HappeningFilter } from "@/payload/members/member-happenings";
 import type { Member } from "@/payload-types";
 
 const COUNTS: { filter: HappeningFilter; label: string }[] = [
-  { filter: "upcoming", label: "Upcoming" },
-  { filter: "pending", label: "Pending review" },
   { filter: "live", label: "Live" },
+  { filter: "pending", label: "Pending review" },
+  { filter: "rejected", label: "Not approved" },
 ];
 
 interface Props {

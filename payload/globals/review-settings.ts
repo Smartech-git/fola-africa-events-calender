@@ -19,7 +19,7 @@ export const ReviewSettings: GlobalConfig = {
       name: "promptVersion",
       type: "text",
       required: true,
-      defaultValue: "fola-beta-v1",
+      defaultValue: "fola-beta-v2",
     },
     {
       name: "systemPrompt",

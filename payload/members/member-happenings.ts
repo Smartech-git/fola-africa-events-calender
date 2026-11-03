@@ -20,12 +20,13 @@ export interface MemberHappening {
   pendingChange: boolean;
 }
 
+/** Every happening sits in exactly one filter. */
 export const HAPPENING_FILTERS = [
-  { value: "upcoming", label: "Upcoming" },
-  { value: "pending", label: "Pending review" },
   { value: "live", label: "Live" },
-  { value: "past", label: "Past" },
+  { value: "pending", label: "Pending review" },
   { value: "cancelled", label: "Cancelled" },
+  { value: "rejected", label: "Not approved" },
+  { value: "past", label: "Past" },
 ] as const;
 
 export type HappeningFilter = (typeof HAPPENING_FILTERS)[number]["value"];
@@ -39,21 +40,34 @@ export function matchesFilter(
   now = Date.now(),
 ) {
   switch (filter) {
-    case "upcoming":
+    case "live":
+      // A postponed listing stays on the calendar.
       return (
-        !["withdrawn", "rejected"].includes(happening.status) &&
+        ["published", "postponed"].includes(happening.status) &&
         !ended(happening, now)
       );
     case "pending":
-      return happening.status === "submitted";
-    case "live":
-      return happening.status === "published" && !ended(happening, now);
-    case "past":
-      return ended(happening, now);
+      // Approved happenings wait here until they are published.
+      return (
+        ["submitted", "approved"].includes(happening.status) &&
+        !ended(happening, now)
+      );
     case "cancelled":
-      return ["cancelled", "withdrawn", "rejected"].includes(happening.status);
+      return ["cancelled", "withdrawn"].includes(happening.status);
+    case "rejected":
+      return happening.status === "rejected";
+    case "past":
+      return (
+        ["submitted", "approved", "published", "postponed"].includes(
+          happening.status,
+        ) && ended(happening, now)
+      );
   }
 }
+
+/** The first filter with something in it, so the page never opens empty. */
+export const defaultFilter = (counts: Record<HappeningFilter, number>) =>
+  HAPPENING_FILTERS.find(({ value }) => counts[value])?.value ?? "live";
 
 export function happeningState(happening: MemberHappening, now = Date.now()) {
   switch (happening.status) {

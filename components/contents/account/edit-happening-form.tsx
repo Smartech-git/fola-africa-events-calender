@@ -182,6 +182,8 @@ export default function EditHappeningForm(props: EditHappeningProps) {
   const privateAccess = PRIVATE_ACCESS.includes(current.access);
   const direct = mode === "direct";
   const live_ = props.status === "published" || props.status === "postponed";
+  // Not approved: saving sends it back to the review queue.
+  const resubmit = props.status === "rejected";
 
   const submit = (data: EditHappeningValues) =>
     startSaving(async () => {
@@ -197,7 +199,7 @@ export default function EditHappeningForm(props: EditHappeningProps) {
         return;
       }
       router.push(
-        `/account/happenings/${eventId}/done?result=${direct ? "saved" : "submitted"}`,
+        `/account/happenings/${eventId}/done?result=${resubmit ? "resubmitted" : direct ? "saved" : "submitted"}`,
       );
     });
 
@@ -325,7 +327,11 @@ export default function EditHappeningForm(props: EditHappeningProps) {
       setValue("visibility", "public", validate);
   };
 
-  const submitLabel = direct ? "Save changes" : "Submit changes";
+  const submitLabel = resubmit
+    ? "Resubmit for review"
+    : direct
+      ? "Save changes"
+      : "Submit changes";
 
   return (
     <>
@@ -423,9 +429,11 @@ export default function EditHappeningForm(props: EditHappeningProps) {
               <HoverText text="Discard changes" />
             </Button>
             <p className="font-montreal text-sm text-ink/60">
-              {direct
-                ? "Your submission isn’t live yet. Saving updates what the team is reviewing."
-                : "Nothing changes on the calendar until the Happenings team approves."}
+              {resubmit
+                ? "It wasn’t approved as it was. Resubmitting sends your edited version back to the team for review."
+                : direct
+                  ? "Your submission isn’t live yet. Saving updates what the team is reviewing."
+                  : "Nothing changes on the calendar until the Happenings team approves."}
             </p>
             {error && (
               <p
@@ -437,57 +445,60 @@ export default function EditHappeningForm(props: EditHappeningProps) {
             )}
           </div>
 
-          <div className="flex flex-col gap-4 bg-ink p-5 text-white">
-            <span className="font-courier text-xs tracking-cou text-cream uppercase">
-              {direct ? "Not going ahead?" : "Urgent changes"}
-            </span>
-            <p className="font-montreal text-base">
-              {direct
-                ? "Withdraw it before it is approved. It never appears on the calendar."
-                : "Flagged to the Happenings team immediately. The listing stays visible as Cancelled or Postponed."}
-            </p>
-            {direct ? (
-              <Button
-                size="md"
-                variant="onWhite"
-                className="w-full"
-                disabled={busy}
-                onPress={() => setDialog("withdraw")}
-              >
-                <HoverText text="Withdraw submission" />
-              </Button>
-            ) : (
-              <>
-                {live_ && (
-                  <Button
-                    size="md"
-                    variant="onWhite"
-                    className="w-full"
-                    disabled={busy}
-                    onPress={() => setDialog("cancel")}
-                  >
-                    <HoverText text="Cancel happening" />
-                  </Button>
-                )}
-                {props.status === "published" && (
-                  <Button
-                    size="md"
-                    variant="outlineWhite"
-                    className="w-full"
-                    disabled={busy}
-                    onPress={() => setDialog("postpone")}
-                  >
-                    <HoverText text="Postpone happening" />
-                  </Button>
-                )}
-                {!live_ && (
-                  <p className="font-courier text-xs tracking-cou text-cream uppercase">
-                    Cancel and postpone open once the happening is live.
-                  </p>
-                )}
-              </>
-            )}
-          </div>
+          {/* Nothing to withdraw or cancel once it wasn't approved. */}
+          {!resubmit && (
+            <div className="flex flex-col gap-4 bg-ink p-5 text-white">
+              <span className="font-courier text-xs tracking-cou text-cream uppercase">
+                {direct ? "Not going ahead?" : "Urgent changes"}
+              </span>
+              <p className="font-montreal text-base">
+                {direct
+                  ? "Withdraw it before it is approved. It never appears on the calendar."
+                  : "Flagged to the Happenings team immediately. The listing stays visible as Cancelled or Postponed."}
+              </p>
+              {direct ? (
+                <Button
+                  size="md"
+                  variant="onWhite"
+                  className="w-full"
+                  disabled={busy}
+                  onPress={() => setDialog("withdraw")}
+                >
+                  <HoverText text="Withdraw submission" />
+                </Button>
+              ) : (
+                <>
+                  {live_ && (
+                    <Button
+                      size="md"
+                      variant="onWhite"
+                      className="w-full"
+                      disabled={busy}
+                      onPress={() => setDialog("cancel")}
+                    >
+                      <HoverText text="Cancel happening" />
+                    </Button>
+                  )}
+                  {props.status === "published" && (
+                    <Button
+                      size="md"
+                      variant="outlineWhite"
+                      className="w-full"
+                      disabled={busy}
+                      onPress={() => setDialog("postpone")}
+                    >
+                      <HoverText text="Postpone happening" />
+                    </Button>
+                  )}
+                  {!live_ && (
+                    <p className="font-courier text-xs tracking-cou text-cream uppercase">
+                      Cancel and postpone open once the happening is live.
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+          )}
         </aside>
 
         <form

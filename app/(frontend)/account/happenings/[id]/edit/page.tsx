@@ -27,6 +27,8 @@ const LOCKED_REASON: Record<string, string> = {
     "You withdrew this submission, so it can’t be edited. To list it, submit it again.",
   cancelled:
     "This happening is cancelled. To change it, contact the Happenings team.",
+  rejected:
+    "This happening wasn’t approved and its date has passed, so it can’t be resubmitted.",
 };
 
 export default async function Page({ params }: Props) {
@@ -58,11 +60,13 @@ export default async function Page({ params }: Props) {
         kicker={`My happenings · ${event.title}`}
         title="Edit happening"
         intro={
-          mode === "direct"
-            ? "Fix anything before the team approves it"
-            : mode === "request"
-              ? "Changes go back for approval. The live listing stays as it is until they are approved"
-              : "This happening can no longer be edited here"
+          event.status === "rejected" && mode === "direct"
+            ? "Fix what the team flagged, then send it back for review"
+            : mode === "direct"
+              ? "Fix anything before the team approves it"
+              : mode === "request"
+                ? "Changes go back for approval. The live listing stays as it is until they are approved"
+                : "This happening can no longer be edited here"
         }
         happenings={happenings.length}
       />
