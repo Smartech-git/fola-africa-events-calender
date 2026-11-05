@@ -56,6 +56,7 @@ export function EventExternalAction({
 
 const attendanceLabels: Record<string, string> = {
   tickets: "Buy tickets",
+  registration: "Register",
   rsvp: "RSVP",
   free: "Register",
   "industry-only": "Register",

@@ -145,7 +145,9 @@ export function eventProblems(event: Record<string, any>): string[] {
   )
     errors.push("End time must be later than start time.");
   if (LINK_REQUIRED_ACCESS.includes(event.access) && !event.actionUrl)
-    errors.push("Tickets and RSVP require an action URL.");
+    errors.push(
+      "Ticketed, Registration required and RSVP listings require an action URL.",
+    );
   if (!LINKED_ACCESS.includes(event.access) && event.actionUrl)
     errors.push(
       "Invitation only and Private listings cannot have an action URL.",

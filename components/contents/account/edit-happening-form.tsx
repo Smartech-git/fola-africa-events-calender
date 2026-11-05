@@ -67,6 +67,7 @@ const splitDateTime = (value: string) => {
 
 const ACTION_LINKS: Record<string, string> = {
   tickets: "Ticket link",
+  registration: "Registration link",
   rsvp: "RSVP link",
   free: "Registration link",
   "industry-only": "Registration link",

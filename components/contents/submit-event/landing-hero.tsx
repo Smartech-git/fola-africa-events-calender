@@ -31,7 +31,7 @@ export default function LandingHero() {
             />
             <Link href="/submit-event/form" className="mt-8 w-full sm:w-fit">
               <Button variant="onWhite" size="md" className="w-full">
-                <HoverText text="Get started" />
+                <HoverText text="Submit a happening" />
               </Button>
             </Link>
           </div>

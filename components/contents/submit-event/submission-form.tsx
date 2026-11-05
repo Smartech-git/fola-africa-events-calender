@@ -58,6 +58,7 @@ import {
 const ACCESS_DESCRIPTIONS: Record<string, string> = {
   free: "Anyone may attend.",
   tickets: "Paid entry.",
+  registration: "Guests sign up with you.",
   rsvp: "Free, confirm attendance.",
   "invitation-only": "Guests invited by you.",
   private: "Details for invited guests only.",
@@ -66,6 +67,7 @@ const ACCESS_DESCRIPTIONS: Record<string, string> = {
 
 const ACTION_LINKS: Record<string, string> = {
   tickets: "Ticket link",
+  registration: "Registration link",
   rsvp: "RSVP link",
   free: "Registration link",
   "industry-only": "Registration link",

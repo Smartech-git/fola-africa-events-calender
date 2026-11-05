@@ -53,14 +53,14 @@ export default function Footer() {
           </div>
           <Link href="/submit-event" className="w-full sm:w-fit">
             <Button className="max-sm:w-full" variant="solid" size="md">
-              <HoverText text="Put it on Happenings" />
+              <HoverText text="Submit a happening" />
             </Button>
           </Link>
         </div>
 
         <nav
           aria-label="Footer"
-          className="flex flex-wrap sm:gap-x-16 gap-x-8 max-sm:justify-between gap-y-8 whitespace-nowrap"
+          className="flex flex-wrap gap-x-8 gap-y-8 whitespace-nowrap max-sm:justify-between sm:gap-x-16"
         >
           <FooterColumn title="Explore">
             {NAV.filter((item) => !item.isFooter).map((item) => {
@@ -156,10 +156,9 @@ export default function Footer() {
           <Logo type="symbol" />
         </div>
 
-        <div className="flex flex-col justify-between gap-x-12 gap-4 border-t border-white/25 pt-5 font-courier text-xs tracking-cou text-white/60 uppercase sm:flex-row">
+        <div className="flex flex-col justify-between gap-4 gap-x-12 border-t border-white/25 pt-5 font-courier text-xs tracking-cou text-white/60 uppercase sm:flex-row">
           <p>
-            {SITE_NAME}™ and the Happenings symbol are trademarks of FOLA PR
-            Ltd
+            {SITE_NAME}™ and the Happenings symbol are trademarks of FOLA PR Ltd
           </p>
           <p className="shrink-0">
             © {new Date().getFullYear()} FOLA. All rights reserved.

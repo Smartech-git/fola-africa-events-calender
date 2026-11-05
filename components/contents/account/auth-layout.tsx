@@ -9,14 +9,14 @@ import SectionWrapper from "@/components/layout/section-wrapper";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  heading: string;
+  /** Optional: the red panel can be the dots alone. */
+  heading?: string;
   intro?: string;
   asideContent?: ReactNode;
   dotsAt?: "top" | "bottom";
   wide?: boolean;
   children: ReactNode;
 }
-
 
 export default function AuthLayout({
   heading,
@@ -38,11 +38,13 @@ export default function AuthLayout({
       <SectionWrapper className="justify-between gap-4 bg-red text-white max-lg:hidden lg:min-h-[calc(100dvh-var(--spacing-header))]">
         {dotsAt === "top" && dots}
         <div className="flex flex-col gap-6">
-          <FadeUpText
-            as="h2"
-            text={heading}
-            className="max-w-160 font-montreal text-7xl font-medium tracking-mono uppercase xl:text-8xl"
-          />
+          {heading && (
+            <FadeUpText
+              as="h2"
+              text={heading}
+              className="max-w-160 font-montreal text-7xl font-medium tracking-mono uppercase xl:text-8xl"
+            />
+          )}
           {intro && (
             <FadeUpText
               text={intro}

@@ -95,11 +95,11 @@ export default function SignInFlow({
 
   return (
     <AuthLayout
-      heading={expired ? "Know what’s happening" : "Check Happenings"}
+      heading={expired ? "Know what’s happening" : undefined}
       intro={
         expired
           ? "Your calendar, your submissions and your profile, one step away"
-          : "Know what’s happening in your city, and put your own happenings on the calendar"
+          : undefined
       }
     >
       {expired ? (

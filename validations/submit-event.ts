@@ -149,7 +149,10 @@ export const submitEventSchema = z
     if (data.endAt && data.endAt <= data.startAt)
       issue("endAt", "End time must be later than start time.");
     if (LINK_REQUIRED_ACCESS.includes(data.access) && !data.actionUrl)
-      issue("actionUrl", "Tickets and RSVP need a ticket or RSVP link.");
+      issue(
+        "actionUrl",
+        "Ticketed, registration and RSVP happenings need a link.",
+      );
     if (PRIVATE_ACCESS.includes(data.access)) {
       if (data.actionUrl)
         issue(

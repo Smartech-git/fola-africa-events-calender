@@ -23,7 +23,6 @@ export const categoryLabel = (event: PublicEvent) =>
     .join(" · ");
 
 export function accessLabel(event: PublicEvent) {
-  if (event.access === "invitation-only") return "Private · Invitation only";
   return (
     ACCESS_OPTIONS.find((item) => item.value === event.access)?.label ??
     event.access

@@ -54,14 +54,17 @@ export default function PrivateEventHeader({ event, timezone }: Props) {
             className="text-cream"
           />
           {event.organiser && (
-            <p className="font-montreal text-lg text-cream">
-              Hosted by {event.organiser.name}
-            </p>
+            <div className="flex flex-col gap-2">
+              <SurTitle content="Organiser" className="text-cream" />
+              <p className="font-montreal text-lg text-cream">
+                {event.organiser.name}
+              </p>
+            </div>
           )}
           <div className="flex w-full flex-col items-start gap-5 border border-cream px-6 pt-7 pb-8 sm:px-8">
             <p className="font-montreal text-lg sm:text-2xl">
-              Venue, guest list and details are visible to invited guests. Sign
-              in with the email your invitation was sent to.
+              Details are visible to invited guests. Sign in with the email your
+              invitation was sent to.
             </p>
             <Button variant="onWhite">
               <HoverText text="Sign in to view" />{" "}

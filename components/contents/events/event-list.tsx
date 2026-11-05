@@ -110,7 +110,7 @@ export default function EventList({
           const count = `${day.events.length} ${day.events.length === 1 ? "happening" : "happenings"}`;
           return (
             <section key={day.date} aria-labelledby={`day-${day.date}`}>
-              <header className="sticky top-sm-header bg-crea z-30 flex items-center gap-3 border-b border-ink bg-white pt-4 pb-3.5 sm:top-header sm:gap-5 sm:pb-4.5">
+              <header className="bg-crea sticky top-sm-header z-30 flex items-center gap-3 border-b border-ink bg-white pt-4 pb-3.5 sm:top-header sm:gap-5 sm:pb-4.5">
                 <DateCircle size="sm" variant={isToday ? "filled" : "outline"}>
                   {formatDay(day.date, "dd")}
                 </DateCircle>
@@ -185,7 +185,9 @@ export default function EventList({
           </div>
         )}
         <p role="status" aria-live="polite" className="sr-only">
-          {loading ? "Loading events" : `${events.length} events loaded`}
+          {loading
+            ? "Loading happenings"
+            : `${events.length} ${events.length === 1 ? "happening" : "happenings"}`}
         </p>
       </SectionWrapper>
     </div>

@@ -62,7 +62,7 @@ export default function Hero({ header, city, cities }: Props) {
               className="w-full sm:w-fit"
             >
               <Button variant="ink" size="md" className="w-full">
-                <HoverText text="See what’s happening" />
+                <HoverText text={`See what’s happening in ${city.name}`} />
               </Button>
             </Link>
             {cities.length > 1 && (
@@ -121,13 +121,11 @@ function TodayMark({
         className="group pointer-events-auto absolute top-[10vw] left-[47.7vw] flex w-[50vw] flex-col items-center gap-2 text-center transition-colors hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-white lg:top-[14vw] lg:left-[73.6vw] lg:w-[21.7vw]"
       >
         <FadeUpText text={caption} delay={1.1} className={label} />
-        <FadeUpText
-          text={`Today · ${day}`}
-          delay={0.7}
-
-          className={label}
-        />
-        <div className="relative right-[-4.5vw] flex font-courier text-[32vw] leading-none lg:right-[-1.6vw] lg:text-[18vw]">
+        <FadeUpText text={`Today · ${day}`} delay={0.7} className={label} />
+        <div
+          aria-hidden="true"
+          className="relative right-[-4.5vw] flex font-courier text-[32vw] leading-none lg:right-[-1.6vw] lg:text-[18vw]"
+        >
           {digits.map((digit, index) => (
             <Fade
               key={index}

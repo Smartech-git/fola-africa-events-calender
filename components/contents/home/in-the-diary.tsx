@@ -35,7 +35,7 @@ export default function InTheDiary({ seasons }: { seasons: UpcomingSeason[] }) {
             className="font-montreal text-5xl font-medium tracking-mono uppercase sm:text-6xl xl:text-7xl"
           />
           <FadeUpText
-            text="Major dates and seasons, from investor forums to fashion weeks. The first day is circled."
+            text="Major dates and seasons, from investor forums to fashion weeks."
             delay={0.1}
             className="font-montreal text-lg sm:text-2xl lg:max-w-85"
           />
@@ -59,7 +59,7 @@ export default function InTheDiary({ seasons }: { seasons: UpcomingSeason[] }) {
                       {firstDay}
                     </DateCircle>
                     <span className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:gap-7">
-                      <span className="font-courier uppercase text-sm sm:w-47.5 sm:shrink-0 sm:text-lg">
+                      <span className="font-courier text-sm uppercase sm:w-47.5 sm:shrink-0 sm:text-lg">
                         {dates}
                       </span>
                       <span className="font-montreal text-xl font-medium tracking-mono uppercase transition-colors group-hover/season:text-red sm:flex-1 sm:text-[26px]">

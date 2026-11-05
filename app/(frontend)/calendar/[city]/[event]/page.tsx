@@ -7,7 +7,6 @@ import EventArtwork from "@/components/contents/events/event-artwork";
 import EventHeader from "@/components/contents/events/event-header";
 import EventSameDay from "@/components/contents/events/event-same-day";
 import PrivateEventHeader from "@/components/contents/events/private-event-header";
-import PrivateEventListings from "@/components/contents/events/private-event-listings";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import { SITE_NAME } from "@/constants/brand";
 import { isPrivateEvent } from "@/lib/events/event-details";
@@ -63,7 +62,6 @@ export default async function EventPage({ params }: Props) {
     return (
       <div className="relative -mt-sm-header flex w-full flex-col bg-ink sm:-mt-header">
         <PrivateEventHeader event={event} timezone={timezone} />
-        <PrivateEventListings event={event} timezone={timezone} />
       </div>
     );
 

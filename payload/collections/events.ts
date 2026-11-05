@@ -132,7 +132,7 @@ export const events: CollectionConfig = {
       hooks: { beforeValidate: [normalizeActionURL] },
       admin: {
         description:
-          "Ticket, registration or RSVP link, or an email address (saved as a mailto: link). Required for Tickets and RSVP required.",
+          "Ticket, registration or RSVP link, or an email address (saved as a mailto: link). Required for Ticketed, Registration required and RSVP required.",
       },
     },
     {

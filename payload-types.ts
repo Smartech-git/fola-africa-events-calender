@@ -415,10 +415,10 @@ export interface Event {
     | 'party'
     | 'pop-up'
     | 'run';
-  access: 'free' | 'tickets' | 'rsvp' | 'invitation-only' | 'private' | 'industry-only';
+  access: 'free' | 'tickets' | 'registration' | 'rsvp' | 'invitation-only' | 'private' | 'industry-only';
   visibility: 'public' | 'industry' | 'held-date';
   /**
-   * Ticket, registration or RSVP link, or an email address (saved as a mailto: link). Required for Tickets and RSVP required.
+   * Ticket, registration or RSVP link, or an email address (saved as a mailto: link). Required for Ticketed, Registration required and RSVP required.
    */
   actionUrl?: string | null;
   /**

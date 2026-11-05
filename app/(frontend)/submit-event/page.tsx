@@ -1,5 +1,6 @@
 import HowItWorks from "@/components/contents/submit-event/how-it-works";
 import LandingHero from "@/components/contents/submit-event/landing-hero";
+import ListingOptions from "@/components/contents/submit-event/listing-options";
 import { SITE_NAME } from "@/constants/brand";
 import { pageMetadata } from "@/lib/metadata";
 
@@ -14,6 +15,7 @@ export default function Page() {
     <div className="relative -mt-sm-header flex w-full flex-col sm:-mt-header">
       <LandingHero />
       <HowItWorks />
+      <ListingOptions />
     </div>
   );
 }
