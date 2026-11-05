@@ -45,6 +45,9 @@ export const events: CollectionConfig = {
     ],
     description:
       "Public submissions get one AI review when received, then need administrator approval. Choose existing organiser/venue records or create them from the submitted details on approval. Publishing records approval too. Content changes require reapproval.",
+    components: {
+      beforeListTable: ["@/payload/components/events-metrics#EventsMetrics"],
+    },
   },
   // Raw records and counts stay private. Public callers use the whitelisted calendar projection.
   access: {
