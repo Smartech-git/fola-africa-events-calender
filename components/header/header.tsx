@@ -24,7 +24,7 @@ export default async function Header({ className, isLight = false }: Props) {
       )}
     >
       <Logo variant={isLight ? "white" : "red"} />
-      <div className="flex items-center gap-2 lg:gap-6">
+      <div className="flex items-center sm:gap-2 gap-1 lg:gap-6">
         <HeaderNav className="flex items-center max-lg:hidden" />
         <SearchEvent siteCity={siteCity} />
         <SubmitEvent

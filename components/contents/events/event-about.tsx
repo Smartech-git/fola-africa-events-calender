@@ -35,7 +35,7 @@ export default function EventAbout({ event, timezone }: Props) {
     <div className="flex min-w-0 flex-1 flex-col gap-6">
       {event.description && (
         <>
-          <SurTitle as="h2" content="About this happening" />
+          <SurTitle as="h2" className="text-sm" content="About this happening" />
           <FadeUpText
             text={event.description}
             className="font-montreal text-xl sm:text-2xl"
@@ -45,7 +45,7 @@ export default function EventAbout({ event, timezone }: Props) {
 
       {event.organiser && (
         <section aria-labelledby="event-organiser" className={block}>
-          <SurTitle as="h2" id="event-organiser" content="Organiser" />
+          <SurTitle as="h2" className="text-sm" id="event-organiser" content="Organiser" />
           <p className="font-montreal text-xl tracking-mono sm:text-2xl">
             {event.organiser.name}
           </p>
@@ -69,7 +69,7 @@ export default function EventAbout({ event, timezone }: Props) {
 
       {(links.length > 0 || event.publicContactEmail) && (
         <section aria-labelledby="event-links" className={block}>
-          <SurTitle as="h2" id="event-links" content="Links" />
+          <SurTitle as="h2" className="text-sm" id="event-links" content="Links" />
           <ul className="flex flex-wrap gap-x-8 gap-y-2">
             {links.map((link) => (
               <li key={link.label}>

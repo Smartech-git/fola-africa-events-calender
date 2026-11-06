@@ -125,7 +125,7 @@ export default function EventWeek({
       >
         <header className="mb-4 sm:mb-8">
           <FadeUpText
-            className="font-montreal text-xl font-medium tracking-mono md:text-3xl"
+            className="font-montreal text-2xl font-medium tracking-mono md:text-3xl"
             text={heading.title}
           />
         </header>
@@ -246,9 +246,16 @@ export default function EventWeek({
               <div className="pt-8">
                 {activeFilterLabels(searchParams, { includeDates: false })
                   .length ? (
-                  <NothingMatchesCard includeDates={false} />
+                  <NothingMatchesCard
+                    includeDates={false}
+                    past={query.range.to < today}
+                  />
                 ) : (
-                  <NothingHereCard label={`${cityName} · ${heading.title}`} />
+                  <NothingHereCard
+                    label={`${cityName} · ${heading.title}`}
+                    past={query.range.to < today}
+                    upcomingHref={`/calendar/${encodeURIComponent(city)}`}
+                  />
                 )}
               </div>
             )}

@@ -110,7 +110,6 @@ const Modal = {
         )}
         classNames={{
           ...classNames,
-          // Above the header (z-60) and back-to-top button (z-70).
           wrapper: cn("z-99 scrollbar-none", classNames?.wrapper),
           backdrop: cn("z-99 bg-ink/60", classNames?.backdrop),
         }}
@@ -119,7 +118,6 @@ const Modal = {
         <HeroModalContent>
           {(close) => (
             <>
-              {/* Like the mobile menu's: a solid round icon button. */}
               {!hideCloseButton && (
                 <Button
                   variant="bordered"
@@ -147,7 +145,6 @@ const Modal = {
     className,
     ...rest
   }: ComponentProps<typeof HeroModalHeader> & {
-    /** Courier caps line above the title, marked with a red circle. */
     label?: ReactNode;
   }) {
     return (
@@ -162,7 +159,7 @@ const Modal = {
           <span className="flex items-center gap-2.5 font-courier text-xs font-normal tracking-cou text-red uppercase sm:text-sm">
             <span
               aria-hidden="true"
-              className="size-2.5 shrink-0 rounded-full bg-red"
+              className="size-2.5 shrink-0 mb-0.5 rounded-full bg-red"
             />
             {label}
           </span>
@@ -180,7 +177,6 @@ const Modal = {
   }: ComponentProps<typeof HeroModalBody>) {
     return (
       <HeroModalBody
-        // Lenis smooth-scrolls the page; let the modal scroll natively.
         data-lenis-prevent
         className={cn(
           "scrollbar-thin gap-4 px-5 py-2 font-montreal text-base sm:px-8 sm:text-lg",

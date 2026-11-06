@@ -11,6 +11,7 @@ import SectionWrapper from "@/components/layout/section-wrapper";
 import { SITE_NAME } from "@/constants/brand";
 import { isPrivateEvent } from "@/lib/events/event-details";
 import { cityDate, eventPath, formatDay } from "@/lib/events/event-list";
+import { cityToday } from "@/lib/events/event-tense";
 import { pageMetadata } from "@/lib/metadata";
 import { getEvent } from "@/requests/events/get-event";
 import { getEventList } from "@/requests/events/get-event-list";
@@ -32,7 +33,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       `${event.title} in ${event.city!.name} on ${formatDay(cityDate(event.startAt, event.city!.timezone), "d MMMM yyyy")}. View event details on ${SITE_NAME}.`,
     eventPath(event, city),
   );
-  // Shared links show the artwork when the listing has one.
   const share = event.artwork?.og;
   if (!share) return metadata;
   const image = { ...share, alt: event.artwork!.alt };
@@ -82,6 +82,7 @@ export default async function EventPage({ params }: Props) {
         city={event.city!}
         timezone={timezone}
         date={date}
+        today={cityToday(timezone)}
         events={others}
       />
     </div>

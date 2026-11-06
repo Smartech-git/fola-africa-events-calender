@@ -26,7 +26,6 @@ export interface SentLink {
   at: number;
 }
 
-/** Sends a sign-in link and tracks when, so Check Your Email can unlock Resend. */
 export function useSendLink() {
   const [sent, setSent] = useState<SentLink | null>(null);
   const [error, setError] = useState<string>();
@@ -50,13 +49,11 @@ export const CHECK_EMAIL_ASIDE = {
 };
 
 interface Props {
-  /** "expired": the page an expired or used link opens (Figma: Link Expired). */
   variant?: "sign-in" | "expired";
   next?: string;
   defaultEmail?: string;
 }
 
-// Figma: 10 — Sign In and 26 — Link Expired. Google sign-in comes later.
 export default function SignInFlow({
   variant = "sign-in",
   next,

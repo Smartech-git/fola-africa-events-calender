@@ -1,4 +1,5 @@
 import { externalUrl, formatTime } from "@/lib/events/event-list";
+import { hasEnded } from "@/lib/events/event-tense";
 import {
   ACCESS_OPTIONS,
   EVENT_TYPES,
@@ -29,7 +30,6 @@ export function accessLabel(event: PublicEvent) {
   );
 }
 
-/** "9:00 AM to 5:00 PM WAT", or "All day". */
 export function timeRange(
   event: PublicEvent,
   timezone: string,
@@ -57,12 +57,10 @@ export const statusLabel = (event: PublicEvent) =>
     ? "Cancelled"
     : event.status === "postponed"
       ? "Postponed · New date to be confirmed"
-      : null;
+      : hasEnded(event)
+        ? "Ended"
+        : null;
 
-/**
- * Only when the venue has a saved map link: that link when it is Google Maps,
- * else a search for the venue.
- */
 export function venueMapUrl(event: PublicEvent) {
   const venue = event.venue;
   if (!venue?.mapUrl) return undefined;

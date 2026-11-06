@@ -11,12 +11,15 @@ import { cn } from "@/lib/utils";
 
 interface Props {
   includeDates?: boolean;
+  /** The dates have gone by, so nothing can still turn up. */
+  past?: boolean;
   as?: "h2" | "h3";
   className?: string;
 }
 
 export default function NothingMatchesCard({
   includeDates = true,
+  past = false,
   as: Heading = "h2",
   className,
 }: Props) {
@@ -50,7 +53,7 @@ export default function NothingMatchesCard({
         </>
       )}
       <Heading className="font-montreal text-5xl leading-none font-medium tracking-mono text-red uppercase sm:text-7xl lg:text-[80px]">
-        Nothing matches yet
+        {past ? "Nothing matched" : "Nothing matches yet"}
       </Heading>
       <p className="font-montreal text-lg sm:text-2xl">
         Try another date or filter.

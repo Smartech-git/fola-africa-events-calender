@@ -1,7 +1,7 @@
 import { parseISO } from "date-fns";
 
 import Cities from "@/components/contents/home/cities";
-import Hero from "@/components/contents/home/hero-two";
+import Hero from "@/components/contents/home/hero";
 import InTheDiary from "@/components/contents/home/in-the-diary";
 import Industries from "@/components/contents/home/industries";
 import PutItOnHappenings from "@/components/contents/home/put-it-on-happenings";

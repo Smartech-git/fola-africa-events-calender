@@ -102,7 +102,7 @@ export default function EventMonth({
         <header className="mb-4 space-y-2 sm:mb-8">
           <h2>
             <FadeUpText
-              className="font-montreal text-xl font-medium tracking-mono md:text-3xl"
+              className="font-montreal text-2xl font-medium tracking-mono md:text-3xl"
               text={formatDay(query.range.from, "MMMM yyyy")}
             />
           </h2>
@@ -214,10 +214,15 @@ export default function EventMonth({
               <div className="pt-8">
                 {activeFilterLabels(searchParams, { includeDates: false })
                   .length ? (
-                  <NothingMatchesCard includeDates={false} />
+                  <NothingMatchesCard
+                    includeDates={false}
+                    past={query.range.to < today}
+                  />
                 ) : (
                   <NothingHereCard
                     label={`${cityName} · ${formatDay(query.range.from, "MMMM yyyy")}`}
+                    past={query.range.to < today}
+                    upcomingHref={pathname}
                   />
                 )}
               </div>

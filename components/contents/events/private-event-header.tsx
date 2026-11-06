@@ -8,6 +8,7 @@ import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
 import { industryLabel, timeRange } from "@/lib/events/event-details";
 import { cityDate, formatDay } from "@/lib/events/event-list";
+import { hasEnded } from "@/lib/events/event-tense";
 import type { PublicEvent } from "@/requests/helpers/types";
 
 interface Props {
@@ -72,7 +73,9 @@ export default function PrivateEventHeader({ event, timezone }: Props) {
           </div>
           {limited && (
             <p className="font-courier text-[15px] text-cream/70">
-              Listed so the city knows it is happening. Nothing else is shown.
+              {hasEnded(event)
+                ? "Listed so the city knew it was happening. Nothing else is shown."
+                : "Listed so the city knows it is happening. Nothing else is shown."}
             </p>
           )}
         </div>

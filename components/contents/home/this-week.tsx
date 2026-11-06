@@ -151,6 +151,7 @@ export default function ThisWeek({ city, weekStart, today, events }: Props) {
           <NothingHereCard
             as="h3"
             label={`${city.name} · ${formatDay(selected, "EEE dd MMM")}`}
+            past={selected < today}
           />
         )}
 

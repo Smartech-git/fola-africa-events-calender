@@ -10,7 +10,6 @@ import DotField from "@/components/animations/dot-field";
 import Fade from "@/components/animations/fade";
 import FadeUpText from "@/components/animations/fade-up-text";
 import HoverText from "@/components/animations/hover-text";
-// import Logo from "@/components/header/logo";
 import CitySelect from "@/components/contents/home/city-select";
 import SectionWrapper from "@/components/layout/section-wrapper";
 import Button from "@/components/ui/button";
@@ -62,7 +61,7 @@ export default function Hero({ header, city, cities }: Props) {
               className="w-full sm:w-fit"
             >
               <Button variant="ink" size="md" className="w-full">
-                <HoverText text={`See what’s happening in ${city.name}`} />
+                <HoverText text={`See happenings in ${city.name}`} />
               </Button>
             </Link>
             {cities.length > 1 && (

@@ -7,12 +7,18 @@ import { cn } from "@/lib/utils";
 interface Props {
   label?: string;
   as?: "h2" | "h3";
+  /** The dates have gone by: look forward instead of asking for submissions. */
+  past?: boolean;
+  /** Where "See what’s coming up" goes on a past date. */
+  upcomingHref?: string;
   className?: string;
 }
 
 export default function NothingHereCard({
   label,
   as: Heading = "h2",
+  past = false,
+  upcomingHref,
   className,
 }: Props) {
   return (
@@ -27,16 +33,28 @@ export default function NothingHereCard({
         <p className="font-courier text-sm tracking-cou uppercase">{label}</p>
       )}
       <Heading className="font-montreal text-5xl leading-none font-medium tracking-mono uppercase sm:text-7xl lg:text-[80px]">
-        Nothing here yet
+        {past ? "Nothing on record" : "Nothing here yet"}
       </Heading>
       <p className="font-montreal text-lg sm:text-2xl">
-        Know something we don’t?
+        {past
+          ? "Nothing was listed for these dates."
+          : "Know something we don’t?"}
       </p>
-      <Link href="/submit-event" className="w-full sm:w-fit">
-        <Button variant="onWhite" size="md" className="w-full">
-          <HoverText text="Submit a happening" />
-        </Button>
-      </Link>
+      {past ? (
+        upcomingHref && (
+          <Link href={upcomingHref} className="w-full sm:w-fit">
+            <Button variant="onWhite" size="md" className="w-full">
+              <HoverText text="See what’s coming up" />
+            </Button>
+          </Link>
+        )
+      ) : (
+        <Link href="/submit-event" className="w-full sm:w-fit">
+          <Button variant="onWhite" size="md" className="w-full">
+            <HoverText text="Submit a happening" />
+          </Button>
+        </Link>
+      )}
     </div>
   );
 }
