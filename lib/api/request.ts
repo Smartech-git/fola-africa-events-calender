@@ -11,8 +11,6 @@ export const request: FetchFunction = async ({ endpoint = "", options }) => {
     customHeaders = {},
     fetchOptions = {},
     useAuth = false,
-    // Requests often run while a page renders, so fail fast rather than
-    // holding the render (and the build) for minutes.
     retry = 3,
     delay = 10000,
   } = options;

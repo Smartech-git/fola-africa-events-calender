@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useId, useRef, type ReactNode } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useTransition,
+  type ReactNode,
+} from "react";
 
 import {
   endOfMonth,
@@ -10,14 +17,14 @@ import {
   type CalendarDate,
 } from "@internationalized/date";
 import type { LenisRef } from "lenis/react";
-import { CalendarPlus } from "lucide-react";
+import { CalendarPlus, LoaderCircle } from "lucide-react";
 
 import LenisProvider from "@/components/providers/lenis-provider";
 import { Accordion } from "@/components/ui/accordion";
 import Button from "@/components/ui/button";
 import DateRangePicker from "@/components/ui/date-range-picker";
 import { FILTER_KEYS } from "@/constants/filters";
-import { useRouteParam } from "@/hooks/use-route-param";
+import { useRouteParam, type KeyValuePairs } from "@/hooks/use-route-param";
 import { cn } from "@/lib/utils";
 import { ACCESS_OPTIONS, INDUSTRIES } from "@/payload/constants";
 import type { CitySummary } from "@/requests/get-cities";
@@ -51,6 +58,13 @@ export default function EventFilter({
   seasonSelected = false,
 }: Props) {
   const { getFilterValue, getFilterValues, handleParamSet } = useRouteParam();
+  const [isPending, startTransition] = useTransition();
+  const [pendingKey, setPendingKey] = useState<string>();
+  const apply = (key: string, params: KeyValuePairs) => {
+    setPendingKey(key);
+    startTransition(() => handleParamSet(params));
+  };
+  const loading = (key: string) => isPending && pendingKey === key;
   const city = cities.find((item) => item.slug === currentCity);
   const single = getFilterValue(FILTER_KEYS.date);
   const from = readDate(getFilterValue(FILTER_KEYS.dateFrom) ?? single);
@@ -76,8 +90,11 @@ export default function EventFilter({
     );
   })?.value;
 
-  const setDates = (range: { from: CalendarDate; to: CalendarDate } | null) =>
-    handleParamSet({
+  const setDates = (
+    key: string,
+    range: { from: CalendarDate; to: CalendarDate } | null,
+  ) =>
+    apply(key, {
       [FILTER_KEYS.date]: undefined,
       [FILTER_KEYS.dateFrom]: range?.from.toString(),
       [FILTER_KEYS.dateTo]: range?.to.toString(),
@@ -92,7 +109,7 @@ export default function EventFilter({
     selected: string[],
     value?: string,
   ) =>
-    handleParamSet({
+    apply(`${key}:${value ?? "all"}`, {
       [key]: !value
         ? undefined
         : selected.includes(value)
@@ -106,7 +123,7 @@ export default function EventFilter({
   const anyActive = datesSet || industry.length > 0 || access.length > 0;
 
   const clearAll = () =>
-    handleParamSet({
+    apply("clear", {
       ...(!seasonSelected && {
         [FILTER_KEYS.date]: undefined,
         [FILTER_KEYS.dateFrom]: undefined,
@@ -133,6 +150,7 @@ export default function EventFilter({
           variant="bordered"
           disabled={!anyActive}
           onPress={clearAll}
+          endContent={loading("clear") && <FilterSpinner />}
           className="shrink-0 rounded-full border-red text-red hover:bg-red hover:text-white sm:px-4"
         >
           Clear all
@@ -146,7 +164,13 @@ export default function EventFilter({
               label={preset.label}
               selected={selected}
               disabled={seasonSelected || !range}
-              onPress={() => setDates(selected ? null : (range ?? null))}
+              loading={loading(`date:${preset.value}`)}
+              onPress={() =>
+                setDates(
+                  `date:${preset.value}`,
+                  selected ? null : (range ?? null),
+                )
+              }
             />
           );
         })}
@@ -160,6 +184,7 @@ export default function EventFilter({
           value={from && to ? { start: from, end: to } : null}
           onChange={(range) =>
             setDates(
+              "date:custom",
               range
                 ? {
                     from: parseDate(range.start.toString()),
@@ -168,7 +193,13 @@ export default function EventFilter({
                 : null,
             )
           }
-          selectorIcon={<CalendarPlus size={16} aria-hidden="true" />}
+          selectorIcon={
+            loading("date:custom") ? (
+              <FilterSpinner />
+            ) : (
+              <CalendarPlus size={16} aria-hidden="true" />
+            )
+          }
           classNames={{
             base: "w-auto shrink-0",
             inputWrapper: cn(
@@ -198,6 +229,7 @@ export default function EventFilter({
         <FilterButton
           label="All"
           selected={!industry.length}
+          loading={loading(`${FILTER_KEYS.industry}:all`)}
           onPress={() => toggle(FILTER_KEYS.industry, industry)}
         />
         {INDUSTRIES.map((option) => (
@@ -205,6 +237,7 @@ export default function EventFilter({
             key={option.value}
             label={option.label}
             selected={industry.includes(option.value)}
+            loading={loading(`${FILTER_KEYS.industry}:${option.value}`)}
             onPress={() => toggle(FILTER_KEYS.industry, industry, option.value)}
           />
         ))}
@@ -214,6 +247,7 @@ export default function EventFilter({
         <FilterButton
           label="All"
           selected={!access.length}
+          loading={loading(`${FILTER_KEYS.access}:all`)}
           onPress={() => toggle(FILTER_KEYS.access, access)}
         />
         {ACCESS_OPTIONS.map((option) => (
@@ -221,6 +255,7 @@ export default function EventFilter({
             key={option.value}
             label={option.label}
             selected={access.includes(option.value)}
+            loading={loading(`${FILTER_KEYS.access}:${option.value}`)}
             onPress={() => toggle(FILTER_KEYS.access, access, option.value)}
           />
         ))}
@@ -310,11 +345,13 @@ function FilterButton({
   label,
   selected,
   disabled,
+  loading,
   onPress,
 }: {
   label: string;
   selected: boolean;
   disabled?: boolean;
+  loading?: boolean;
   onPress: () => void;
 }) {
   return (
@@ -324,6 +361,8 @@ function FilterButton({
       aria-pressed={selected}
       disabled={disabled}
       onPress={onPress}
+      aria-busy={loading || undefined}
+      endContent={loading && <FilterSpinner />}
       className={cn(
         "shrink-0 rounded-full sm:px-4",
         !selected && "hover:border-red hover:text-red",
@@ -331,5 +370,15 @@ function FilterButton({
     >
       {label}
     </Button>
+  );
+}
+
+function FilterSpinner() {
+  return (
+    <LoaderCircle
+      size={14}
+      aria-hidden="true"
+      className="shrink-0 animate-spin animate-duration-500"
+    />
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import type { RefObject } from "react";
+import { useState, useTransition, type RefObject } from "react";
 
 import { useLenis } from "lenis/react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, LoaderCircle } from "lucide-react";
 
 import HoverText from "@/components/animations/hover-text";
 import Button from "@/components/ui/button";
@@ -27,6 +27,10 @@ export default function EventDateNavigation({
 }: Props) {
   const { handleParamSet } = useRouteParam();
   const lenis = useLenis();
+  const [isPending, startTransition] = useTransition();
+  const [pendingDirection, setPendingDirection] = useState<number>();
+  const loading = (direction: number) =>
+    isPending && pendingDirection === direction;
   const activeDate = date ?? today;
   const step = view === "week" ? 7 : 1;
   const unit = view === "month" ? "month" : view === "week" ? "week" : "day";
@@ -34,8 +38,12 @@ export default function EventDateNavigation({
     view === "month"
       ? shiftMonth(activeDate, direction)
       : shiftDate(activeDate, direction * step);
-  const navigate = (target: string) => {
-    handleParamSet(calendarDateParams(view, target));
+  const navigate = (direction: number) => {
+    setPendingDirection(direction);
+    // The transition stays pending until the new period has rendered.
+    startTransition(() =>
+      handleParamSet(calendarDateParams(view, shift(direction))),
+    );
     if (scrollTarget?.current) {
       if (lenis)
         lenis.scrollTo(scrollTarget.current, { offset: -50, immediate: true });
@@ -52,23 +60,47 @@ export default function EventDateNavigation({
       <Button
         variant="bordered"
         size="xs"
-        className="rounded-full border-red pl-2 max-sm:pr-0 text-red"
+        className="rounded-full border-red pl-2 text-red max-sm:pr-0"
         aria-label={`Previous ${unit}`}
-        startContent={<ChevronLeft size={14} aria-hidden="true" />}
-        onPress={() => navigate(shift(-1))}
+        aria-busy={loading(-1) || undefined}
+        startContent={
+          loading(-1) ? (
+            <NavSpinner />
+          ) : (
+            <ChevronLeft size={14} aria-hidden="true" />
+          )
+        }
+        onPress={() => navigate(-1)}
       >
         <HoverText text="Previous" className="max-sm:hidden" />
       </Button>
       <Button
         variant="bordered"
         size="xs"
-        className="rounded-full border-red max-sm:pl-0 pr-2 text-xs text-red"
+        className="rounded-full border-red pr-2 text-xs text-red max-sm:pl-0"
         aria-label={`Next ${unit}`}
-        endContent={<ChevronRight size={14} aria-hidden="true" />}
-        onPress={() => navigate(shift(1))}
+        aria-busy={loading(1) || undefined}
+        endContent={
+          loading(1) ? (
+            <NavSpinner />
+          ) : (
+            <ChevronRight size={14} aria-hidden="true" />
+          )
+        }
+        onPress={() => navigate(1)}
       >
         <HoverText text="Next" className="max-sm:hidden" />
       </Button>
     </div>
+  );
+}
+
+function NavSpinner() {
+  return (
+    <LoaderCircle
+      size={14}
+      aria-hidden="true"
+      className="shrink-0 animate-spin animate-duration-500"
+    />
   );
 }
