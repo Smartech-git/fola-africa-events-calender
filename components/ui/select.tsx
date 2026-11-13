@@ -54,7 +54,7 @@ const Select = forwardRef<HTMLSelectElement, Props>(
           "group-data-[has-value=false]:text-ink/40!",
           classNames?.value,
         ),
-        selectorIcon: cn("size-6 shrink-0 text-ink", classNames?.selectorIcon),
+        selectorIcon: cn("size-4 shrink-0 text-ink", classNames?.selectorIcon),
         label: cn(
           "font-courier text-sm! leading-[1.3] font-normal tracking-mono text-red! uppercase",
           "pb-2",
