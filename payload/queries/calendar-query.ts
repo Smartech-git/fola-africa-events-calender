@@ -247,8 +247,12 @@ export async function queryEventsBySeasons(
 
 /** Events the public calendar may show for a city (matches toPublicEvent). */
 function publicEventFilters(city: City): Where[] {
+  return [{ city: { equals: city.id } }, ...publicEventBaseFilters()];
+}
+
+/** The public-event rules for any city, e.g. for the sitemap. */
+export function publicEventBaseFilters(): Where[] {
   return [
-    { city: { equals: city.id } },
     { status: { in: PUBLIC_STATUSES } },
     { isDemo: { not_equals: true } },
     { publishedAt: { exists: true } },
