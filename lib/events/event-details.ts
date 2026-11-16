@@ -1,5 +1,4 @@
 import { externalUrl, formatTime } from "@/lib/events/event-list";
-import { hasEnded } from "@/lib/events/event-tense";
 import {
   ACCESS_OPTIONS,
   EVENT_TYPES,
@@ -57,9 +56,7 @@ export const statusLabel = (event: PublicEvent) =>
     ? "Cancelled"
     : event.status === "postponed"
       ? "Postponed · New date to be confirmed"
-      : hasEnded(event)
-        ? "Ended"
-        : null;
+      : null;
 
 export function venueMapUrl(event: PublicEvent) {
   const venue = event.venue;

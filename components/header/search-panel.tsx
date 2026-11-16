@@ -3,7 +3,6 @@
 import { useEffect, useId, useState, type FormEvent } from "react";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import { ArrowRight, Search, X } from "lucide-react";
 
@@ -19,7 +18,7 @@ import {
   formatTime,
 } from "@/lib/events/event-list";
 import { ACCESS_OPTIONS, EVENT_TYPES, INDUSTRIES } from "@/payload/constants";
-import type { PublicEvent, SearchResults } from "@/requests/helpers/types";
+import type { SearchResults } from "@/requests/helpers/types";
 
 const DEBOUNCE_MS = 300;
 const MAX_LENGTH = 100;
@@ -28,17 +27,23 @@ const label = "font-courier text-sm tracking-cou text-red uppercase";
 const focus =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red";
 
-const calendarLink = (key: string, value: string, city: string) =>
-  `/calendar/${encodeURIComponent(city)}?${new URLSearchParams({ [key]: value })}`;
+const calendarLink = (city: string, params: Record<string, string>) =>
+  `/calendar/${encodeURIComponent(city)}?${new URLSearchParams(params)}`;
+
+const searchLink = (term: string, city: string, from?: string) =>
+  calendarLink(city, {
+    [FILTER_KEYS.search]: term,
+    ...(from && { [FILTER_KEYS.dateFrom]: from }),
+  });
+
+type SearchEvent = SearchResults["events"]["data"][number];
 
 interface Props {
-  /** The city searched first: the open calendar's, else the visitor's choice. */
   city: string;
   onClose: () => void;
 }
 
 export default function SearchPanel({ city, onClose }: Props) {
-  const router = useRouter();
   const inputId = useId();
   const [query, setQuery] = useState("");
   const [term, setTerm] = useState("");
@@ -54,20 +59,17 @@ export default function SearchPanel({ city, onClose }: Props) {
     search: term,
     city: allCities ? ALL_CITIES : city,
   });
-  const { data, error, isLoading } = useAPI<SearchResults>(
-    term ? `/api/public/search?${params}` : null,
-    { keepPreviousData: true },
-  );
+  const { data, error, isLoading, isValidating, mutate } =
+    useAPI<SearchResults>(term ? `/api/public/search?${params}` : null, {
+      keepPreviousData: true,
+    });
   const results = term && data ? data : undefined;
 
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (!typed) return;
-    // Across cities, see all in the city with the most matches.
-    const target =
-      results?.city?.slug ?? results?.events.byCity[0]?.city.slug ?? city;
-    router.push(calendarLink(FILTER_KEYS.search, typed, target));
-    onClose();
+    if (!typed || isValidating) return;
+    if (typed !== term) setTerm(typed);
+    else void mutate();
   };
 
   return (
@@ -80,11 +82,11 @@ export default function SearchPanel({ city, onClose }: Props) {
         role="search"
         noValidate
         onSubmit={onSubmit}
-        className="flex items-center gap-4 border-b-2 border-ink pb-3.5"
+        className="flex items-center gap-4 border-b border-ink pb-3.5"
       >
         <button
           type="submit"
-          aria-label="See all results"
+          aria-label="Search"
           className={`shrink-0 cursor-pointer ${focus}`}
         >
           <Search
@@ -126,7 +128,7 @@ export default function SearchPanel({ city, onClose }: Props) {
               ? "Search is unavailable right now. Try again shortly."
               : !results || isLoading
                 ? "Searching…"
-                : `${resultCount(results)} ${resultCount(results) === 1 ? "result" : "results"} in ${results.city?.name ?? "all cities"} · Upcoming`}
+                : `${resultCount(results)} ${resultCount(results) === 1 ? "result" : "results"} in ${results.city?.name ?? "all cities"}`}
           </p>
         )}
         <Checkbox
@@ -167,7 +169,7 @@ function Results({
   // Cities with more matches than the list shows.
   const more = events.byCity.filter(
     (row) =>
-      row.upcoming >
+      row.count >
       events.data.filter((event) => event.city?.slug === row.city.slug).length,
   );
   const groups = [
@@ -202,11 +204,11 @@ function Results({
             {more.map((row) => (
               <LinkRow
                 key={row.city.slug}
-                href={calendarLink(FILTER_KEYS.search, term, row.city.slug)}
+                href={searchLink(term, row.city.slug, row.from)}
                 text={
                   showCity
-                    ? `See all ${row.upcoming} in ${row.city.name}`
-                    : `See all ${row.upcoming} happenings`
+                    ? `See all ${row.count} in ${row.city.name}`
+                    : `See all ${row.count} happenings`
                 }
                 onNavigate={onNavigate}
               />
@@ -230,11 +232,13 @@ function Results({
                 {group.rows.map((row) => (
                   <li key={`${row.value}-${row.city.slug}`}>
                     <LinkRow
-                      href={calendarLink(group.key, row.value, row.city.slug)}
+                      href={calendarLink(row.city.slug, {
+                        [group.key]: row.value,
+                      })}
                       text={[
                         row.label,
                         showCity && row.city.name,
-                        `${row.upcoming} upcoming`,
+                        `${row.count} upcoming`,
                       ]
                         .filter(Boolean)
                         .join(" · ")}
@@ -259,7 +263,7 @@ function EventRow({
   term,
   onNavigate,
 }: {
-  event: PublicEvent;
+  event: SearchEvent;
   href: string;
   timezone: string;
   /** Shown when searching every city. */
@@ -267,12 +271,17 @@ function EventRow({
   term: string;
   onNavigate: () => void;
 }) {
-  const day = formatDay(cityDate(event.startAt, timezone), "EEE dd MMM");
+  // Past happenings may be from another year.
+  const day = formatDay(
+    cityDate(event.startAt, timezone),
+    event.past ? "EEE dd MMM yyyy" : "EEE dd MMM",
+  );
   const time = event.allDay ? "All day" : formatTime(event.startAt, timezone);
   const details = [
     EVENT_TYPES.find((item) => item.value === event.eventType)?.label,
     INDUSTRIES.find((item) => item.value === event.industry)?.label,
     ACCESS_OPTIONS.find((item) => item.value === event.access)?.label,
+    event.past && "Past",
     event.status === "cancelled" && "Cancelled",
     event.status === "postponed" && "Postponed",
   ]

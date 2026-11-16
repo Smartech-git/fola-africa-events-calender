@@ -66,6 +66,7 @@ export function useAPI<T>(endpoint: Key, options: UseAPIOptions = {}) {
     error,
     mutate,
     isLoading,
+    isValidating,
   } = useSWR<T>(endpoint, fetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
@@ -118,6 +119,7 @@ export function useAPI<T>(endpoint: Key, options: UseAPIOptions = {}) {
     data: response,
     error,
     isLoading,
+    isValidating,
     mutate,
     addItem,
     removeItem,
