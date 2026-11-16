@@ -130,22 +130,36 @@ export const reviewEventTask: TaskConfig<{
       });
       if (!started.docs.length) return { output: {} };
       const context = await reviewContext(event, req);
-      const result = await anthropicReview(prompt, context, model);
+      const { review: result, model: reviewedBy } = await anthropicReview(
+        prompt,
+        context,
+        model,
+      );
       validateReviewMatches(result, context);
-      await update({ ...result, aiStatus: "completed", failureReason: null });
+      await update({
+        ...result,
+        model: reviewedBy,
+        aiStatus: "completed",
+        failureReason: null,
+      });
       return { output: {} };
     } catch (error) {
       const message =
         error instanceof AnthropicReviewError
           ? error.message
           : "AI review could not be completed. Check configuration or retry the review.";
+      // A declined or oversized review fails the same way on every attempt.
+      const final =
+        (error instanceof AnthropicReviewError && !error.retryable) ||
+        (job.totalTried ?? 0) >= REVIEW_RETRIES;
       if (error instanceof AnthropicReviewError && error.retryAt)
         job.waitUntil = error.retryAt;
       await update({
-        aiStatus:
-          (job.totalTried ?? 0) >= REVIEW_RETRIES ? "failed" : "pending",
+        aiStatus: final ? "failed" : "pending",
         failureReason: message,
       });
+      if (error instanceof AnthropicReviewError && !error.retryable)
+        return { output: {} };
       throw new Error(message);
     }
   },
