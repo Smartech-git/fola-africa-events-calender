@@ -12,9 +12,7 @@ import Modal from "@/components/ui/modal";
 import { ACCOUNT_BENEFITS } from "@/constants/account";
 import { useAccount } from "@/hooks/use-account";
 
-const DELAY_MS = 12_000;
-const SNOOZE_DAYS = 3;
-const STORAGE_KEY = "hoa-account-popup-dismissed";
+const DELAY_MS = 15_000;
 const HIDDEN_ON = [
   "/sign-in",
   "/create-account",
@@ -22,21 +20,6 @@ const HIDDEN_ON = [
   "/terms-of-use",
   "/privacy-policy",
 ];
-
-function isSnoozed() {
-  try {
-    const at = Number(localStorage.getItem(STORAGE_KEY));
-    return Boolean(at) && Date.now() - at < SNOOZE_DAYS * 24 * 60 * 60 * 1000;
-  } catch {
-    return false;
-  }
-}
-
-function snooze() {
-  try {
-    localStorage.setItem(STORAGE_KEY, String(Date.now()));
-  } catch {}
-}
 
 export default function AccountAuthPopup() {
   const { signedIn } = useAccount();
@@ -51,7 +34,7 @@ export default function AccountAuthPopup() {
     );
 
   useEffect(() => {
-    if (hidden || isSnoozed()) return;
+    if (hidden) return;
     const timer = window.setTimeout(() => {
       setNext(`${window.location.pathname}${window.location.search}`);
       setOpen(true);
@@ -59,10 +42,7 @@ export default function AccountAuthPopup() {
     return () => window.clearTimeout(timer);
   }, [hidden]);
 
-  const close = () => {
-    snooze();
-    setOpen(false);
-  };
+  const close = () => setOpen(false);
   const query = new URLSearchParams({ next }).toString();
 
   return (
@@ -70,7 +50,7 @@ export default function AccountAuthPopup() {
       isOpen={open && !hidden}
       onOpenChange={(isOpen) => !isOpen && close()}
     >
-      <Modal.Content isDismissable={false} size="4xl" scrollBehavior="normal">
+      <Modal.Content hideCloseButton isDismissable={false} size="4xl" scrollBehavior="normal">
         <div className="grid md:grid-cols-[47fr_53fr]">
           <aside className="flex flex-col justify-between gap-10 bg-red p-8 text-white max-md:hidden">
             <div className="flex flex-col gap-5">
