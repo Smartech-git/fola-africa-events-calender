@@ -32,7 +32,6 @@ export default function CitiesTable({
   cities,
   currentCity = DEFAULT_CITY_SLUG,
 }: Props) {
-  // The visitor's city leads; the rest keep their order.
   const ordered = [
     ...cities.filter((city) => city.slug === currentCity),
     ...cities.filter((city) => city.slug !== currentCity),
@@ -47,7 +46,6 @@ export default function CitiesTable({
           "flex gap-8 pt-5 pb-3 text-sm text-red max-lg:hidden",
         )}
       >
-        <span className={COLUMNS.number} />
         <span className="flex-1">City</span>
         <span className={COLUMNS.today}>Today</span>
         <span className={COLUMNS.week}>This week</span>
@@ -57,11 +55,10 @@ export default function CitiesTable({
 
       {ordered.length ? (
         <ul className="flex flex-col">
-          {ordered.map((city, index) => (
+          {ordered.map((city) => (
             <CityRow
               key={city.id}
               city={city}
-              index={index}
               current={city.slug === currentCity}
             />
           ))}
@@ -76,15 +73,7 @@ export default function CitiesTable({
   );
 }
 
-function CityRow({
-  city,
-  index,
-  current,
-}: {
-  city: CityOverview;
-  index: number;
-  current: boolean;
-}) {
+function CityRow({ city, current }: { city: CityOverview; current: boolean }) {
   const season = city.nextSeason;
   const seasonDates = season ? formatSeasonDates(season, city.timezone) : null;
   const seasonDay = season?.startDate
@@ -93,7 +82,7 @@ function CityRow({
   const { today, thisWeek } = city.counts;
 
   return (
-    <li className={cn(!current && "border-t last:border-b border-ink")}>
+    <li className={cn(!current && "border-t border-ink last:border-b")}>
       <Link
         href={`/calendar/${encodeURIComponent(city.slug)}`}
         aria-label={`${city.name}: ${today} today, ${thisWeek} this week${
@@ -104,23 +93,12 @@ function CityRow({
           current ? "bg-red" : "text-ink hover:bg-cream",
         )}
       >
-        <span
-          className={cn(
-            caps,
-            COLUMNS.number,
-            "text-[22px] max-lg:hidden",
-            current && "text-white",
-          )}
-        >
-          {String(index + 1).padStart(2, "0")}
-        </span>
-
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
           <div className="flex items-center gap-3 lg:gap-5">
             <span
               aria-hidden="true"
               className={cn(
-                "size-4 shrink-0 rounded-full lg:size-8",
+                "size-4 shrink-0 rounded-full lg:size-6",
                 current ? "bg-white" : "bg-red",
               )}
             />

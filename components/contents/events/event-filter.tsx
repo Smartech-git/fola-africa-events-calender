@@ -264,34 +264,30 @@ export default function EventFilter({
   );
 
   return (
-    <>
-      <Accordion
-        className="lg:hidden"
-        itemClasses={{
-          base: "border-b-0",
-          trigger: "py-0",
-          content: "pt-4 pb-0",
-        }}
-        items={[
-          {
-            key: "filters",
-            ariaLabel: `Filters${count ? `, ${count} active` : ""}`,
-            title: (
-              <span className="flex items-center gap-2 text-red">
-                Filters
-                {count > 0 && (
-                  <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-ink px-1.5 pt-0.5 text-xs leading-none text-white">
-                    {count}
-                  </span>
-                )}
-              </span>
-            ),
-            content: rows,
-          },
-        ]}
-      />
-      <div className="max-lg:hidden">{rows}</div>
-    </>
+    <Accordion
+      itemClasses={{
+        base: "border-b-0",
+        trigger: "py-0",
+        content: "pt-4 pb-0",
+      }}
+      items={[
+        {
+          key: "filters",
+          ariaLabel: `Filters${count ? `, ${count} active` : ""}`,
+          title: (
+            <span className="flex items-center gap-2 text-red">
+              Filters
+              {count > 0 && (
+                <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-ink px-1.5 pt-0.5 text-xs leading-none text-white">
+                  {count}
+                </span>
+              )}
+            </span>
+          ),
+          content: rows,
+        },
+      ]}
+    />
   );
 }
 

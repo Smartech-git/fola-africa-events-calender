@@ -15,7 +15,7 @@ export const SESSION_DAYS = 30;
 /** What a Happenings account offers: Create Account and the sign-in popup. */
 export const ACCOUNT_BENEFITS = [
   "Submit a happening",
-  "Your details prefilled every time",
+  "Have your details prefilled every time",
   "View your submissions",
   "See whether each is pending, approved or live",
 ];

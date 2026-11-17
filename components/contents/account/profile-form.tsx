@@ -102,6 +102,7 @@ export default function ProfileForm({ email, values, cities }: Props) {
     });
 
   const busy = isSaving || isSigningOut;
+
   const deletionHref = `mailto:${CONTACT_EMAIL}?${new URLSearchParams({
     subject: "Delete my Happenings account",
   })
@@ -216,7 +217,7 @@ export default function ProfileForm({ email, values, cities }: Props) {
           variant="solid"
           size="md"
           isLoading={isSaving}
-          disabled={busy}
+          disabled={busy || !formState.isDirty}
           className="max-sm:w-full"
         >
           <HoverText text="Save changes" />

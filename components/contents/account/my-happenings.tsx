@@ -238,11 +238,11 @@ export default function MyHappenings({ happenings, counts, filter }: Props) {
               ? EMPTY[filter]
               : "You haven’t submitted a happening yet."}
           </p>
-          <Link href="/submit-event/form" className="max-sm:w-full">
+          {/* <Link href="/submit-event" className="max-sm:w-full">
             <Button variant="solid" size="md" className="w-full">
               <HoverText text="Submit a happening" />
             </Button>
-          </Link>
+          </Link> */}
         </div>
       )}
 

@@ -31,11 +31,12 @@ export default function AuthLayout({
   return (
     <div
       className={cn(
-        "grid w-full",
+        "grid w-full lg:items-start",
         wide ? "lg:grid-cols-[47fr_53fr]" : "lg:grid-cols-[55fr_45fr]",
       )}
     >
-      <SectionWrapper className="justify-between gap-4 bg-red text-white max-lg:hidden lg:min-h-[calc(100dvh-var(--spacing-header))]">
+      {/* Pinned under the header; only the form column scrolls with the page. */}
+      <SectionWrapper className="justify-between gap-4 bg-red text-white max-lg:hidden lg:sticky lg:top-header lg:h-[calc(100dvh-var(--spacing-header))] lg:overflow-y-auto lg:scrollbar-none">
         {dotsAt === "top" && dots}
         <div className="flex flex-col gap-6">
           {heading && (
@@ -56,7 +57,7 @@ export default function AuthLayout({
         </div>
         {dotsAt === "bottom" && dots}
       </SectionWrapper>
-      <SectionWrapper className="lg:justify-center">
+      <SectionWrapper className="lg:min-h-[calc(100dvh-var(--spacing-header))] lg:justify-center">
         <div
           className={cn(
             "flex w-full flex-col gap-6",

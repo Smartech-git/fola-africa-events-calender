@@ -58,6 +58,7 @@ export const INDUSTRIES: { label: string; value: string; short?: string }[] = [
   { label: "Food and Drink", value: "food-drink" },
   { label: "Beauty", value: "beauty" },
   { label: "Sport", value: "sport" },
+  { label: "Other", value: "other" },
 ];
 
 export const EVENT_TYPES = [

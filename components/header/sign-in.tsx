@@ -4,8 +4,17 @@ import React from "react";
 
 import Link from "next/link";
 
+import { ChevronDown } from "lucide-react";
+
+import { signOut } from "@/actions/member-auth";
 import HoverText from "@/components/animations/hover-text";
 import Button, { ButtonProps } from "@/components/ui/button";
+import {
+  Dropdown,
+  DropdownItem_,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@/components/ui/drop-down";
 import { useAccount } from "@/hooks/use-account";
 import { cn } from "@/lib/utils";
 
@@ -24,15 +33,29 @@ export default function SignIn({
 
   if (signedIn)
     return (
-      <Link key="account" href="/account" className="has-[.hidden]:hidden">
-        <Button
-          className={className}
-          variant={accountVariant}
-          size={size === "fit" ? "sm" : size}
+      <Dropdown key="account" placement="bottom-end">
+        <DropdownTrigger asChild>
+          <Button
+            className={className}
+            variant={accountVariant}
+            size={size === "fit" ? "sm" : size}
+            endContent={<ChevronDown size={14} aria-hidden="true" />}
+          >
+            <HoverText text="My account" />
+          </Button>
+        </DropdownTrigger>
+        <DropdownMenu
+          aria-label="Account"
+          onAction={(key) => {
+            if (key === "sign-out") void signOut();
+          }}
         >
-          <HoverText text="My account" />
-        </Button>
-      </Link>
+          <DropdownItem_ key="profile" as={Link} href="/account">
+            My profile
+          </DropdownItem_>
+          <DropdownItem_ key="sign-out">Sign out</DropdownItem_>
+        </DropdownMenu>
+      </Dropdown>
     );
 
   return (

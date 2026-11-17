@@ -1,8 +1,6 @@
 import Link from "next/link";
 
-import HoverText from "@/components/animations/hover-text";
 import SignOutButton from "@/components/contents/account/sign-out-button";
-import Button from "@/components/ui/button";
 import { initials } from "@/lib/utils";
 import type { HappeningFilter } from "@/payload/members/member-happenings";
 import type { Member } from "@/payload-types";
@@ -78,11 +76,11 @@ export default function AccountSidebar({ member, counts }: Props) {
       </ul>
 
       <div className="flex flex-col gap-3">
-        <Link href="/submit-event/form" className="w-full">
+        {/* <Link href="/submit-event" className="w-full">
           <Button variant="solid" size="md" className="w-full">
             <HoverText text="Submit a happening" />
           </Button>
-        </Link>
+        </Link> */}
         <SignOutButton />
       </div>
     </aside>

@@ -16,8 +16,7 @@ import { socials } from "@/constants/socials";
 import { useIsPathActive } from "@/hooks/use-is-path-active";
 import { cn } from "@/lib/utils";
 
-const linkClass =
-  "font-montreal sm:text-lg text-lg tracking-cou text-mono normal-case hover:text-cream";
+const linkClass = "hover:text-cream text-inherit";
 
 const captionClass =
   "font-courier text-sm tracking-cou text-white/60  uppercase";
@@ -42,118 +41,112 @@ export default function Footer() {
 
   return (
     <footer className="mt-auto w-full bg-ink pb-[env(safe-area-inset-bottom)] text-white">
-      <SectionWrapper className="gap-12 sm:gap-16">
-        <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+      <SectionWrapper className="gap-12 py-14 sm:gap-16 md:py-28">
+        <div className="flex flex-col gap-10 md:items-start md:justify-between lg:flex-row">
           <div className="flex max-w-160 flex-col gap-5.5">
             <FadeUpText
               as="p"
               className="tracking-mon font-montreal text-2xl md:text-5xl"
-              text="Where Africa’s people, ideas and events meet"
+              text="Connecting the people, ideas and activity shaping Africa"
             />
           </div>
-          <Link href="/submit-event" className="w-full sm:w-fit">
-            <Button className="max-sm:w-full" variant="solid" size="md">
-              <HoverText text="Submit a happening" />
-            </Button>
-          </Link>
+          <nav
+            aria-label="Footer"
+            className="flex flex-wrap gap-x-8 gap-y-8 whitespace-nowrap max-sm:justify-between sm:gap-x-16"
+          >
+            <FooterColumn title="Explore">
+              {NAV.filter((item) => !item.isFooter).map((item) => {
+                const active = isPathActive(item.pathId);
+                return (
+                  <li key={item.pathId}>
+                    <Link
+                      href={item.link}
+                      aria-current={active ? "page" : undefined}
+                      className="w-fit"
+                    >
+                      <Button
+                        variant="flat"
+                        size="fit"
+                        className={linkClass}
+                        startContent={
+                          <span
+                            aria-hidden="true"
+                            className={cn(
+                              "size-2 shrink-0 rounded-full bg-current",
+                              active
+                                ? "animate-fade animate-duration-500"
+                                : "hidden",
+                            )}
+                          />
+                        }
+                      >
+                        <HoverText text={item.title} />
+                      </Button>
+                    </Link>
+                  </li>
+                );
+              })}
+            </FooterColumn>
+            <FooterColumn title="Get in touch">
+              <li>
+                <Contact className={linkClass} />
+              </li>
+            </FooterColumn>
+            <FooterColumn title="Follow">
+              {socials.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href={item.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="Instagram (opens in a new tab)"
+                    className="w-fit"
+                  >
+                    <Button variant="flat" size="fit" className={linkClass}>
+                      <HoverText text={item.name} />
+                    </Button>
+                  </Link>
+                </li>
+              ))}
+            </FooterColumn>
+            <FooterColumn title="Legal">
+              {NAV.filter((item) => item.isLegal).map((item) => {
+                const active = isPathActive(item.pathId);
+                return (
+                  <li key={item.pathId}>
+                    <Link
+                      href={item.link}
+                      aria-current={active ? "page" : undefined}
+                      className="w-fit"
+                    >
+                      <Button
+                        variant="flat"
+                        size="fit"
+                        className={linkClass}
+                        startContent={
+                          <span
+                            aria-hidden="true"
+                            className={cn(
+                              "size-2 shrink-0 rounded-full bg-current",
+                              active
+                                ? "animate-fade animate-duration-500"
+                                : "hidden",
+                            )}
+                          />
+                        }
+                      >
+                        <HoverText text={item.title} />
+                      </Button>
+                    </Link>
+                  </li>
+                );
+              })}
+            </FooterColumn>
+          </nav>
         </div>
 
-        <nav
-          aria-label="Footer"
-          className="flex flex-wrap gap-x-8 gap-y-8 whitespace-nowrap max-sm:justify-between sm:gap-x-16"
-        >
-          <FooterColumn title="Explore">
-            {NAV.filter((item) => !item.isFooter).map((item) => {
-              const active = isPathActive(item.pathId);
-              return (
-                <li key={item.pathId}>
-                  <Link
-                    href={item.link}
-                    aria-current={active ? "page" : undefined}
-                    className="w-fit"
-                  >
-                    <Button
-                      variant="flat"
-                      size="fit"
-                      className={linkClass}
-                      startContent={
-                        <span
-                          aria-hidden="true"
-                          className={cn(
-                            "size-2 shrink-0 rounded-full bg-current",
-                            active
-                              ? "animate-fade animate-duration-500"
-                              : "hidden",
-                          )}
-                        />
-                      }
-                    >
-                      <HoverText text={item.title} />
-                    </Button>
-                  </Link>
-                </li>
-              );
-            })}
-          </FooterColumn>
-          <FooterColumn title="Get in touch">
-            <li>
-              <Contact className={linkClass} />
-            </li>
-          </FooterColumn>
-          <FooterColumn title="Follow">
-            {socials.map((item) => (
-              <li key={item.name}>
-                <Link
-                  href={item.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Instagram (opens in a new tab)"
-                  className="w-fit"
-                >
-                  <Button variant="flat" size="fit" className={linkClass}>
-                    <HoverText text={item.name} />
-                  </Button>
-                </Link>
-              </li>
-            ))}
-          </FooterColumn>
-          <FooterColumn title="Legal">
-            {NAV.filter((item) => item.isLegal).map((item) => {
-              const active = isPathActive(item.pathId);
-              return (
-                <li key={item.pathId}>
-                  <Link
-                    href={item.link}
-                    aria-current={active ? "page" : undefined}
-                    className="w-fit"
-                  >
-                    <Button
-                      variant="flat"
-                      size="fit"
-                      className={linkClass}
-                      startContent={
-                        <span
-                          aria-hidden="true"
-                          className={cn(
-                            "size-2 shrink-0 rounded-full bg-current",
-                            active
-                              ? "animate-fade animate-duration-500"
-                              : "hidden",
-                          )}
-                        />
-                      }
-                    >
-                      <HoverText text={item.title} />
-                    </Button>
-                  </Link>
-                </li>
-              );
-            })}
-          </FooterColumn>
-        </nav>
-
         <div className="flex flex-col gap-3 border-t border-white/25 pt-10">
-          <Logo type="symbol" />
+          <Logo variant="red" type="symbol" />
         </div>
 
         <div className="flex flex-col justify-between gap-4 gap-x-12 border-t border-white/25 pt-5 font-courier text-xs tracking-cou text-white/60 uppercase sm:flex-row">

@@ -8,18 +8,24 @@ const PROTECTED: { path: string; redirectTo: (next: string) => string }[] = [
     path: "/account",
     redirectTo: (next) => `/sign-in?${new URLSearchParams({ next })}`,
   },
+  { path: "/submit-event/success", redirectTo: () => "/submit-event" },
   {
-    path: "/submit-event/form",
+    path: "/submit-event",
     redirectTo: (next) => `/create-account?${new URLSearchParams({ next })}`,
   },
-  { path: "/submit-event/success", redirectTo: () => "/submit-event" },
 ];
+
+// Retired routes kept alive for old links and bookmarks.
+const REDIRECTS: Record<string, string> = {
+  "/calendar": "/cities",
+  "/submit-event/form": "/submit-event",
+};
 
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
-  if (pathname === "/calendar")
-    return NextResponse.redirect(new URL("/cities", request.url));
+  if (pathname in REDIRECTS)
+    return NextResponse.redirect(new URL(REDIRECTS[pathname], request.url));
 
   const guard = PROTECTED.find(
     ({ path }) => pathname === path || pathname.startsWith(`${path}/`),

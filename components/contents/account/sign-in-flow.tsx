@@ -44,8 +44,8 @@ export function useSendLink() {
 }
 
 export const CHECK_EMAIL_ASIDE = {
-  heading: "One link. No password",
-  intro: "We email you a one-time link instead of asking for a password",
+  heading: undefined,
+  intro: undefined,
 };
 
 interface Props {
@@ -68,7 +68,7 @@ export default function SignInFlow({
 
   if (sent)
     return (
-      <AuthLayout {...CHECK_EMAIL_ASIDE}>
+      <AuthLayout wide {...CHECK_EMAIL_ASIDE}>
         <CheckEmail
           key={sent.at}
           email={sent.email}
@@ -91,14 +91,7 @@ export default function SignInFlow({
   const expired = variant === "expired";
 
   return (
-    <AuthLayout
-      heading={expired ? "Know what’s happening" : undefined}
-      intro={
-        expired
-          ? "Your calendar, your submissions and your profile, one step away"
-          : undefined
-      }
-    >
+    <AuthLayout wide heading={undefined} intro={undefined}>
       {expired ? (
         <AuthTitle
           surTitle="Link expired"
@@ -108,8 +101,8 @@ export default function SignInFlow({
       ) : (
         <>
           <AuthTitle
-            title="Sign in to Happenings"
-            intro="Submit your own happenings and follow them from review to live"
+            title="Sign in to your account"
+            intro="Submit your own events and follow them from review to live"
           />
           <AuthTabs active="sign-in" next={next} />
         </>

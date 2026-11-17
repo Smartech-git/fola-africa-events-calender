@@ -98,7 +98,7 @@ export default function CreateAccountFlow({
 
   return (
     <AuthLayout
-      heading="Know what’s happening"
+      heading={undefined}
       intro="With a Happenings account you can:"
       dotsAt="bottom"
       wide
@@ -120,7 +120,7 @@ export default function CreateAccountFlow({
       }
     >
       <AuthTitle
-        title="Create your Happenings profile"
+        title="Create your profile"
         intro="So you don’t have to enter your details every time you submit"
       />
       <AuthTabs active="create-account" next={next} />

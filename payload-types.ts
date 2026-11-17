@@ -283,6 +283,7 @@ export interface Member {
         | 'food-drink'
         | 'beauty'
         | 'sport'
+        | 'other'
       )
     | null;
   city?: (number | null) | City;
@@ -377,7 +378,8 @@ export interface Event {
     | 'film-television'
     | 'food-drink'
     | 'beauty'
-    | 'sport';
+    | 'sport'
+    | 'other';
   secondaryIndustry?:
     | (
         | 'business'
@@ -390,6 +392,7 @@ export interface Event {
         | 'food-drink'
         | 'beauty'
         | 'sport'
+        | 'other'
       )
     | null;
   eventType:

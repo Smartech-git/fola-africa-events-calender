@@ -10,7 +10,7 @@ import HoverText from "@/components/animations/hover-text";
 import { AuthNote, AuthTitle } from "@/components/contents/account/auth-layout";
 import Button from "@/components/ui/button";
 import DateCircle from "@/components/ui/date-circle";
-import { LINK_MINUTES, RESEND_SECONDS } from "@/constants/account";
+import { RESEND_SECONDS } from "@/constants/account";
 import { CONTACT_EMAIL } from "@/constants/socials";
 
 const STEPS = [
@@ -53,15 +53,8 @@ export default function CheckEmail({
     <>
       <AuthTitle
         title="Check your email"
-        intro={`If ${email} is on Happenings, a sign-in link is on its way`}
+        intro={`A sign-in link has been sent to ${email}.`}            
       />
-
-      <div className="flex flex-col gap-1.5 bg-cream px-5 py-4">
-        <span className="font-courier text-xs tracking-cou text-red uppercase">
-          Sent to
-        </span>
-        <span className="font-montreal text-lg break-all">{email}</span>
-      </div>
 
       <ol className="flex flex-col">
         {STEPS.map((step, index) => (
@@ -88,11 +81,7 @@ export default function CheckEmail({
         ))}
       </ol>
 
-      <AuthNote className="uppercase">
-        The link works once and expires in {LINK_MINUTES} minutes.
-      </AuthNote>
-
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap mt-4 items-center gap-4">
         <Button
           type="button"
           variant="bordered"
@@ -143,7 +132,7 @@ export default function CheckEmail({
         )}
       </div>
 
-      <p className="font-montreal text-sm text-ink/70">
+      <p className="font-montreal mt-8 text-sm text-ink/70">
         Nothing there? Check your spam or promotions folder, and add{" "}
         {CONTACT_EMAIL} to your contacts.
       </p>

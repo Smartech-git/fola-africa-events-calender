@@ -1,10 +1,10 @@
-import Link from "next/link";
+// import Link from "next/link";
 
 import DotField from "@/components/animations/dot-field";
 import FadeUpText from "@/components/animations/fade-up-text";
-import HoverText from "@/components/animations/hover-text";
+// import HoverText from "@/components/animations/hover-text";
 import SectionWrapper from "@/components/layout/section-wrapper";
-import Button from "@/components/ui/button";
+// import Button from "@/components/ui/button";
 
 export default function PutItOnHappenings() {
   return (
@@ -24,11 +24,11 @@ export default function PutItOnHappenings() {
           delay={0.15}
           className="max-w-150 font-montreal text-lg text-cream sm:text-2xl"
         />
-        <Link href="/submit-event" className="w-full pt-2 sm:w-fit">
+        {/* <Link href="/submit-event" className="w-full pt-2 sm:w-fit">
           <Button variant="onWhite" size="md" className="w-full">
             <HoverText text="Submit a happening" />
           </Button>
-        </Link>
+        </Link> */}
         <div className="h-40 w-full lg:hidden">
           <DotField />
         </div>

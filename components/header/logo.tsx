@@ -10,7 +10,10 @@ const WORDMARKS = {
   white: "/assets/brand/wordmark-white.svg",
 } as const;
 
-const SYMBOL = { src: "/assets/brand/logo-white.svg", width: 360, height: 17 };
+const SYMBOLS = {
+  red: "/assets/brand/logo-red.svg",
+  white: "/assets/brand/logo-white.svg",
+} as const;
 
 export type LogoVariant = keyof typeof WORDMARKS;
 
@@ -24,15 +27,15 @@ interface Props {
 export default function Logo({
   className,
   wrapperClassName,
-  variant = "red",
+  variant,
   type = "wordmark",
 }: Props) {
   if (type === "symbol")
     return (
       <Image
-        src={SYMBOL.src}
-        width={SYMBOL.width}
-        height={SYMBOL.height}
+        src={SYMBOLS[variant === "red" ? "red" : "white"]}
+        width={360}
+        height={17}
         alt=""
         aria-hidden="true"
         className={cn("h-auto w-full", className)}
@@ -49,7 +52,7 @@ export default function Logo({
       )}
     >
       <Image
-        src={WORDMARKS[variant]}
+        src={WORDMARKS[variant ?? "red"]}
         width={360}
         height={27}
         alt={SITE_NAME}

@@ -27,11 +27,8 @@ export default function ContinueSignIn({ token, next, email }: Props) {
     return <SignInFlow variant="expired" next={next} defaultEmail={email} />;
 
   return (
-    <AuthLayout
-      heading="Know what’s happening"
-      intro="Your calendar, your submissions and your profile, one step away"
-    >
-      <AuthTitle surTitle="One more step" title="Continue to Happenings" />
+    <AuthLayout wide heading={undefined} intro={undefined}>
+      <AuthTitle surTitle="One more step"  title="Continue to Happenings" />
       <div className="flex flex-col gap-1.5 bg-cream px-5 py-4">
         <span className="font-courier text-xs tracking-cou text-red uppercase">
           Signing in as
@@ -49,12 +46,10 @@ export default function ContinueSignIn({ token, next, email }: Props) {
           disabled={isPending}
           className="w-full"
         >
-          <HoverText text="Continue to Happenings" />
+          <HoverText text="Continue" />
         </Button>
       </form>
-      <p className="font-montreal text-sm text-ink/70">
-        This extra step stops email scanners from using up your one-time link.
-      </p>
+
       <AuthNote className="uppercase">
         Not you? Close this page. Nothing happens until you continue.
       </AuthNote>

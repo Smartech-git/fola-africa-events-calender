@@ -1,7 +1,7 @@
 import Audiences from "@/components/contents/about/audiences";
 import Calendar from "@/components/contents/about/calendar";
 import Hero from "@/components/contents/about/hero";
-import Mark from "@/components/contents/about/mark";
+// import Mark from "@/components/contents/about/mark";
 import { SITE_NAME } from "@/constants/brand";
 import { pageMetadata } from "@/lib/metadata";
 
@@ -17,7 +17,7 @@ export default function Page() {
       <Hero />
       <Calendar />
       <Audiences />
-      <Mark />
+      {/* <Mark /> */}
     </div>
   );
 }
