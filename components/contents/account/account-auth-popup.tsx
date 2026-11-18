@@ -50,7 +50,7 @@ export default function AccountAuthPopup() {
       isOpen={open && !hidden}
       onOpenChange={(isOpen) => !isOpen && close()}
     >
-      <Modal.Content hideCloseButton isDismissable={false} size="4xl" scrollBehavior="normal">
+      <Modal.Content isDismissable={false} size="4xl" scrollBehavior="normal">
         <div className="grid md:grid-cols-[47fr_53fr]">
           <aside className="flex flex-col justify-between gap-10 bg-red p-8 text-white max-md:hidden">
             <div className="flex flex-col gap-5">
