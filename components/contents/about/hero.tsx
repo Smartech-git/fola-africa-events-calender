@@ -11,7 +11,7 @@ export default function Hero() {
         <div className="flex w-full min-w-0 flex-col gap-8">
           <FadeUpText
             as="h1"
-            text="People, places, industries and moments, in one shared view"
+            text="Across Africa, there is always something happening"
             delay={0.1}
             className="w-full max-w-450 font-montreal text-5xl font-medium tracking-mono lg:text-7xl xl:text-8xl"
           />
