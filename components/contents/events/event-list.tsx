@@ -117,7 +117,7 @@ export default function EventList({
                 <div className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
                   <h2
                     id={`day-${day.date}`}
-                    className="font-montreal text-2xl font-medium tracking-mono md:text-3xl"
+                    className="font-montreal text-2xl text-ink/70 font-medium tracking-mono md:text-3xl"
                   >
                     <time dateTime={day.date}>
                       <FadeUpText text={formatDay(day.date, "EEEE dd MMMM")} />

@@ -208,7 +208,7 @@ export default function EventWeek({
                               {formatDay(date, "EEE")}
                               {isToday && " · Today"}
                             </span>
-                            <span className="text-xxs text-ink/60">
+                            <span className="text-xxs text-ink/70">
                               {happenings(dayEvents.length)}
                             </span>
                           </span>

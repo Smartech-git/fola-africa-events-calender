@@ -43,7 +43,7 @@ export default function EventsHeader({
             <FadeUpText
               as="h1"
               text={city.name}
-              className="min-w-0 font-montreal text-5xl leading-none font-medium tracking-mono wrap-break-word text-red uppercase md:text-6xl lg:text-7xl xl:text-8xl"
+              className="min-w-0 font-montreal text-5xl leading-none font-medium tracking-mono wrap-break-word text-red uppercase md:text-6xl lg:text-7xl xl:text-[110px]"
             />
           </div>
         </div>

@@ -73,14 +73,14 @@ function State({ happening }: { happening: MemberHappening }) {
         {state}
       </span>
       {happening.pendingChange && (
-        <span className="font-montreal text-sm text-ink/60">
+        <span className="font-montreal text-sm text-ink/70">
           {happening.status === "approved"
             ? "Waiting for approval"
             : "Current version stays live until approved"}
         </span>
       )}
       {happening.status === "rejected" && !matchesFilter(happening, "past") && (
-        <span className="font-montreal text-sm text-ink/60">
+        <span className="font-montreal text-sm text-ink/70">
           Edit it to resubmit for review
         </span>
       )}

@@ -105,7 +105,7 @@ function Hint({
     <p
       className={cn(
         "pt-2 font-courier text-xs tracking-cou uppercase",
-        tone === "red" ? "text-red" : "text-ink/60",
+        tone === "red" ? "text-red" : "text-ink/70",
       )}
     >
       {children}
@@ -313,7 +313,7 @@ export default function EditHappeningForm(props: EditHappeningProps) {
         isReadOnly
         classNames={{
           inputWrapper: "bg-cream! border-cream",
-          input: "text-ink/60!",
+          input: "text-ink/70!",
         }}
       />
       <Hint>Locked · {why}</Hint>
@@ -349,7 +349,7 @@ export default function EditHappeningForm(props: EditHappeningProps) {
             <span className="font-montreal text-2xl font-medium wrap-break-word uppercase">
               {props.title}
             </span>
-            <span className="font-courier text-xs tracking-cou text-ink/60 uppercase">
+            <span className="font-courier text-xs tracking-cou text-ink/70 uppercase">
               {props.meta}
             </span>
             {props.publicHref && (
@@ -402,7 +402,7 @@ export default function EditHappeningForm(props: EditHappeningProps) {
                 ))}
               </ul>
             ) : (
-              <p className="border-y border-ink/20 py-3.5 font-montreal text-sm text-ink/60">
+              <p className="border-y border-ink/20 py-3.5 font-montreal text-sm text-ink/70">
                 Change any field and it appears here.
               </p>
             )}
@@ -429,7 +429,7 @@ export default function EditHappeningForm(props: EditHappeningProps) {
             >
               <HoverText text="Discard changes" />
             </Button>
-            <p className="font-montreal text-sm text-ink/60">
+            <p className="font-montreal text-sm text-ink/70">
               {resubmit
                 ? "It wasn’t approved as it was. Resubmitting sends your edited version back to the team for review."
                 : direct
@@ -628,7 +628,7 @@ export default function EditHappeningForm(props: EditHappeningProps) {
                 {was("endAt")}
               </div>
             </div>
-            <p className="font-montreal text-sm text-ink/60">
+            <p className="font-montreal text-sm text-ink/70">
               All times in {props.cityName} time
               {props.timezoneLabel ? ` (${props.timezoneLabel})` : ""}.
             </p>

@@ -39,7 +39,7 @@ export default function AccountSidebar({ member, counts }: Props) {
               {member.fullName}
             </span>
             {title && (
-              <span className="font-courier text-xs tracking-cou text-ink/60 uppercase">
+              <span className="font-courier text-xs tracking-cou text-ink/70 uppercase">
                 {title}
               </span>
             )}

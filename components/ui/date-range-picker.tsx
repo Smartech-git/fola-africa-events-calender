@@ -54,7 +54,7 @@ const DateRangePicker = forwardRef<HTMLElement, DateRangePickerProps>(
           classNames?.segment,
         ),
         separator: cn(
-          "font-montreal text-base text-ink/60 sm:text-lg",
+          "font-montreal text-base text-ink/70 sm:text-lg",
           classNames?.separator,
         ),
         selectorButton: cn(

@@ -287,7 +287,7 @@ export default function ArtworkUpload({
           </span>
         )}
         {!hasImage && (
-          <span className="font-courier text-[11px] tracking-cou text-ink/60 uppercase">
+          <span className="font-courier text-[11px] tracking-cou text-ink/70 uppercase">
             JPG, PNG or WEBP · Up to {MAX_IMAGE_MB} MB
           </span>
         )}

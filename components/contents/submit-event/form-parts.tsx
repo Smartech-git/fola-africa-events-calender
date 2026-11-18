@@ -166,7 +166,7 @@ export function UploadBox({
         {title}
       </span>
       <span className="font-montreal text-base">{description}</span>
-      <span className="font-courier text-[11px] tracking-cou text-ink/60 uppercase">
+      <span className="font-courier text-[11px] tracking-cou text-ink/70 uppercase">
         Uploads open soon
       </span>
     </div>

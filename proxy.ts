@@ -3,14 +3,26 @@ import type { NextRequest } from "next/server";
 
 import { hasMemberSession, updateCookies } from "@/lib/cookies";
 
-const PROTECTED: { path: string; redirectTo: (next: string) => string }[] = [
+const under = (path: string) => (pathname: string) =>
+  pathname === path || pathname.startsWith(`${path}/`);
+
+const signIn = (next: string) => `/sign-in?${new URLSearchParams({ next })}`;
+
+const PROTECTED: {
+  matches: (pathname: string) => boolean;
+  redirectTo: (next: string) => string;
+}[] = [
+  { matches: under("/account"), redirectTo: signIn },
   {
-    path: "/account",
-    redirectTo: (next) => `/sign-in?${new URLSearchParams({ next })}`,
+    matches: (pathname) => /^\/calendar\/[^/]+\/[^/]+/.test(pathname),
+    redirectTo: signIn,
   },
-  { path: "/submit-event/success", redirectTo: () => "/submit-event" },
   {
-    path: "/submit-event",
+    matches: under("/submit-event/success"),
+    redirectTo: () => "/submit-event",
+  },
+  {
+    matches: under("/submit-event"),
     redirectTo: (next) => `/create-account?${new URLSearchParams({ next })}`,
   },
 ];
@@ -27,9 +39,7 @@ export async function proxy(request: NextRequest) {
   if (pathname in REDIRECTS)
     return NextResponse.redirect(new URL(REDIRECTS[pathname], request.url));
 
-  const guard = PROTECTED.find(
-    ({ path }) => pathname === path || pathname.startsWith(`${path}/`),
-  );
+  const guard = PROTECTED.find(({ matches }) => matches(pathname));
   if (guard && !(await hasMemberSession(request)))
     return updateCookies(
       request,
