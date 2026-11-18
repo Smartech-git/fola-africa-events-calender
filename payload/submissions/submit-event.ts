@@ -251,12 +251,15 @@ export async function createEventSubmission(
           publicContactEmail: data.publicContactEmail
             ? data.publicContactEmail.toLowerCase()
             : undefined,
-          submittedOrganiser: {
-            name: data.organiserName,
-            type: data.organiserType,
-            website: data.organiserWebsite || undefined,
-            contactEmail: data.organiserContact,
-          },
+          // Optional: saved only when an organiser was named.
+          submittedOrganiser: data.organiserName
+            ? {
+                name: data.organiserName,
+                type: data.organiserType || undefined,
+                website: data.organiserWebsite || undefined,
+                contactEmail: data.organiserContact || undefined,
+              }
+            : undefined,
           submittedVenue: data.venueName
             ? {
                 name: data.venueName,

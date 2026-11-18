@@ -121,17 +121,21 @@ const contactPath = (email: string) =>
   `/contacts/${encodeURIComponent(email.toLowerCase())}`;
 
 /** Adds or updates the contact and puts them on the Happenings list. */
-async function subscribe(member: Member, listId: number) {
+async function subscribe(
+  email: string,
+  values: Partial<BrevoAttributes>,
+  listId: number,
+) {
   const attributes = Object.fromEntries(
     // Brevo rejects an empty date; leave it unset instead.
-    Object.entries(brevoAttributes(member)).filter(
+    Object.entries(values).filter(
       ([name, value]) => name !== "OPT_IN_DATE" || value,
     ),
   );
   await brevoRequest("/contacts", {
     method: "POST",
     body: {
-      email: member.email,
+      email,
       attributes,
       listIds: [listId],
       updateEnabled: true,
@@ -185,9 +189,51 @@ export async function syncMemberToBrevo(
     return "deleted" as const;
   }
   if (isBrevoAudience(member)) {
-    await subscribe(member, settings.listId);
+    await subscribe(member.email, brevoAttributes(member), settings.listId);
     return "subscribed" as const;
   }
   await unsubscribe(member.email, settings.listId);
+  return "unsubscribed" as const;
+}
+
+/**
+ * The same for an email-only subscriber. When a subscriber was merged into a
+ * member, the member's own sync owns the contact, so nothing is deleted here.
+ */
+export async function syncSubscriberToBrevo(
+  payload: Payload,
+  { subscriberId, email }: { subscriberId: number; email: string },
+) {
+  const settings = brevoSettings();
+  if (!settings?.listId) return "not-configured" as const;
+  const subscriber = await payload.findByID({
+    collection: "subscribers",
+    id: subscriberId,
+    depth: 0,
+    disableErrors: true,
+    overrideAccess: true,
+  });
+  if (!subscriber) {
+    const member = await payload.find({
+      collection: "members",
+      where: { email: { equals: email } },
+      limit: 1,
+      depth: 0,
+      joins: false,
+      overrideAccess: true,
+    });
+    if (member.docs.length) return "kept-for-member" as const;
+    await deleteContact(email);
+    return "deleted" as const;
+  }
+  if (subscriber.status === "subscribed") {
+    await subscribe(
+      subscriber.email,
+      { OPT_IN_DATE: subscriber.consentAt?.slice(0, 10) ?? "" },
+      settings.listId,
+    );
+    return "subscribed" as const;
+  }
+  await unsubscribe(subscriber.email, settings.listId);
   return "unsubscribed" as const;
 }

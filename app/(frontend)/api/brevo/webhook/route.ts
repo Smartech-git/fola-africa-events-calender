@@ -22,7 +22,8 @@ function authorised(request: Request) {
 /**
  * POST /api/brevo/webhook: Brevo's marketing webhook. When someone unsubscribes
  * (or marks an email as spam) in Brevo, their Happenings profile shows
- * marketing as off, so a later sync never adds them back.
+ * marketing as off (or their subscriber record as unsubscribed), so a later
+ * sync never adds them back.
  */
 export async function POST(request: Request) {
   if (!authorised(request))
@@ -51,16 +52,37 @@ export async function POST(request: Request) {
   if (!emails.length) return Response.json({ updated: 0 });
 
   const payload = await getCalendarPayload();
-  const result = await payload.update({
-    collection: "members",
-    where: {
-      and: [{ email: { in: emails } }, { marketingConsent: { equals: true } }],
-    },
-    data: { marketingConsent: false, marketingConsentAt: null },
+  const trusted = {
     depth: 0,
     overrideAccess: true,
     context: { [SKIP_BREVO_SYNC]: true },
-  });
+  } as const;
+  const [members, subscribers] = await Promise.all([
+    payload.update({
+      collection: "members",
+      where: {
+        and: [
+          { email: { in: emails } },
+          { marketingConsent: { equals: true } },
+        ],
+      },
+      data: { marketingConsent: false, marketingConsentAt: null },
+      ...trusted,
+    }),
+    payload.update({
+      collection: "subscribers",
+      where: {
+        and: [
+          { email: { in: emails } },
+          { status: { equals: "subscribed" } },
+        ],
+      },
+      data: { status: "unsubscribed" },
+      ...trusted,
+    }),
+  ]);
   // Always 200 for a valid request, so Brevo does not retry unknown addresses.
-  return Response.json({ updated: result.docs.length });
+  return Response.json({
+    updated: members.docs.length + subscribers.docs.length,
+  });
 }

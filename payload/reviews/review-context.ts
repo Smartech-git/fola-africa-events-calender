@@ -97,20 +97,21 @@ export async function reviewContext(event: Event, req: PayloadRequest) {
   const venueDetails = event.submittedVenue?.name
     ? event.submittedVenue
     : venue;
-  if (!organiserDetails?.name)
-    throw new Error("No submitted organiser details are available for review.");
-  const organisers = await payload.find({
-    collection: "organisers",
-    depth: 0,
-    limit: 20,
-    req,
-    where: {
-      and: [
-        { name: { like: organiserDetails.name.slice(0, 200) } },
-        { isDemo: { not_equals: true } },
-      ],
-    },
-  });
+  // The organiser is optional; without one there is nothing to match.
+  const organisers = organiserDetails?.name
+    ? await payload.find({
+        collection: "organisers",
+        depth: 0,
+        limit: 20,
+        req,
+        where: {
+          and: [
+            { name: { like: organiserDetails.name.slice(0, 200) } },
+            { isDemo: { not_equals: true } },
+          ],
+        },
+      })
+    : { docs: [] };
   const organiserSummary = (item: {
     id?: number;
     name?: string | null;
@@ -137,7 +138,9 @@ export async function reviewContext(event: Event, req: PayloadRequest) {
   return {
     event: {
       ...snapshot,
-      organiser: organiserSummary(organiserDetails),
+      organiser: organiserDetails?.name
+        ? organiserSummary(organiserDetails)
+        : null,
       venue: venueDetails?.name ? venueSummary(venueDetails) : null,
     },
     city: { name: city.name, country: city.country, timezone: city.timezone },

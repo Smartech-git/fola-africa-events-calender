@@ -13,6 +13,8 @@ import * as migration_20261030_221714_event_artwork from "./20261030_221714_even
 import * as migration_20261103_081745_member_happening_edits from "./20261103_081745_member_happening_edits";
 import * as migration_20261103_183211_review_decision_emails from "./20261103_183211_review_decision_emails";
 import * as migration_20261105_100858_registration_access from "./20261105_100858_registration_access";
+import * as migration_20261118_124844_email_subscribers from "./20261118_124844_email_subscribers";
+import * as migration_20261118_140615_optional_organiser from "./20261118_140615_optional_organiser";
 
 export const migrations = [
   {
@@ -89,5 +91,15 @@ export const migrations = [
     up: migration_20261105_100858_registration_access.up,
     down: migration_20261105_100858_registration_access.down,
     name: "20261105_100858_registration_access",
+  },
+  {
+    up: migration_20261118_124844_email_subscribers.up,
+    down: migration_20261118_124844_email_subscribers.down,
+    name: "20261118_124844_email_subscribers",
+  },
+  {
+    up: migration_20261118_140615_optional_organiser.up,
+    down: migration_20261118_140615_optional_organiser.down,
+    name: "20261118_140615_optional_organiser",
   },
 ];

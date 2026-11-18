@@ -232,6 +232,7 @@ export default function SubmissionForm({ cities, account }: Props) {
     name: "city" | "industry" | "eventType" | "organiserType" | "relationship",
     label: string,
     options: { label: string; value: string }[],
+    { required = true }: { required?: boolean } = {},
   ) => (
     <Controller
       control={control}
@@ -241,7 +242,7 @@ export default function SubmissionForm({ cities, account }: Props) {
           ref={field.ref}
           name={field.name}
           label={label}
-          isRequired
+          isRequired={required}
           options={options}
           selectedKeys={field.value ? [field.value] : []}
           onSelectionChange={(keys) => {
@@ -295,14 +296,13 @@ export default function SubmissionForm({ cities, account }: Props) {
         >
           <FormSection id="the-happening">
             {text("title", "Event name", { required: true })}
-            {text("organiserName", "Organiser, company or brand", {
-              required: true,
-            })}
+            {text("organiserName", "Organiser, company or brand")}
             <FieldRow>
               {select(
                 "organiserType",
                 "What best describes the organiser?",
                 ORGANISER_TYPES,
+                { required: false },
               )}
               {select("city", "City", cities)}
             </FieldRow>
@@ -467,7 +467,6 @@ export default function SubmissionForm({ cities, account }: Props) {
               {text("organiserWebsite", "Organiser website", { type: "url" })}
               {text("organiserContact", "Organiser contact email", {
                 type: "email",
-                required: true,
                 description: "For verification only; never displayed.",
               })}
             </FieldRow>

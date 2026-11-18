@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     members: Member;
+    subscribers: Subscriber;
     cities: City;
     organisers: Organiser;
     venues: Venue;
@@ -102,6 +103,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     members: MembersSelect<false> | MembersSelect<true>;
+    subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     cities: CitiesSelect<false> | CitiesSelect<true>;
     organisers: OrganisersSelect<false> | OrganisersSelect<true>;
     venues: VenuesSelect<false> | VenuesSelect<true>;
@@ -138,6 +140,7 @@ export interface Config {
       'review-event': TaskReviewEvent;
       'send-event-email': TaskSendEventEmail;
       'sync-brevo-contact': TaskSyncBrevoContact;
+      'sync-brevo-subscriber': TaskSyncBrevoSubscriber;
       inline: {
         input: unknown;
         output: unknown;
@@ -437,7 +440,7 @@ export interface Event {
    */
   publicContactEmail?: string | null;
   /**
-   * Choose an existing organiser after reviewing possible AI matches, or create one here. Required before approval for manually entered events.
+   * Optional. Choose an existing organiser after reviewing possible AI matches, or create one here.
    */
   organiser?: (number | null) | Organiser;
   /**
@@ -568,19 +571,22 @@ export interface Organiser {
    * Automatically filled from name. You can edit it manually or use Generate slug to regenerate it.
    */
   slug: string;
-  type:
-    | 'brand'
-    | 'company'
-    | 'agency'
-    | 'promoter'
-    | 'gallery'
-    | 'institution'
-    | 'foundation'
-    | 'media'
-    | 'venue'
-    | 'individual'
-    | 'label'
-    | 'other';
+  type?:
+    | (
+        | 'brand'
+        | 'company'
+        | 'agency'
+        | 'promoter'
+        | 'gallery'
+        | 'institution'
+        | 'foundation'
+        | 'media'
+        | 'venue'
+        | 'individual'
+        | 'label'
+        | 'other'
+      )
+    | null;
   website?: string | null;
   /**
    * Internal only. Never included in public event responses.
@@ -710,6 +716,25 @@ export interface EventReview {
   decisionNotes?: string | null;
   decidedBy?: (number | null) | User;
   decidedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * People who subscribed to Happenings emails with only an email address. Subscribers are synced to the Brevo list.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers".
+ */
+export interface Subscriber {
+  id: number;
+  email: string;
+  /**
+   * Unsubscribed addresses are taken off the Brevo list. Unsubscribing in Brevo sets this automatically.
+   */
+  status: 'subscribed' | 'unsubscribed';
+  source?: ('popup' | 'admin') | null;
+  consentAt?: string | null;
+  unsubscribedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -875,7 +900,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'review-event' | 'send-event-email' | 'sync-brevo-contact';
+        taskSlug: 'inline' | 'review-event' | 'send-event-email' | 'sync-brevo-contact' | 'sync-brevo-subscriber';
         taskID: string;
         input?:
           | {
@@ -908,7 +933,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'review-event' | 'send-event-email' | 'sync-brevo-contact') | null;
+  taskSlug?: ('inline' | 'review-event' | 'send-event-email' | 'sync-brevo-contact' | 'sync-brevo-subscriber') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -937,6 +962,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'members';
         value: number | Member;
+      } | null)
+    | ({
+        relationTo: 'subscribers';
+        value: number | Subscriber;
       } | null)
     | ({
         relationTo: 'cities';
@@ -1116,6 +1145,19 @@ export interface MembersSelect<T extends boolean = true> {
   loginTokenExpiresAt?: T;
   sessionVersion?: T;
   happenings?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers_select".
+ */
+export interface SubscribersSelect<T extends boolean = true> {
+  email?: T;
+  status?: T;
+  source?: T;
+  consentAt?: T;
+  unsubscribedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1503,6 +1545,19 @@ export interface TaskSyncBrevoContact {
     memberId: number;
     email: string;
     previousEmail?: string | null;
+  };
+  output: {
+    result: string;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSync-brevo-subscriber".
+ */
+export interface TaskSyncBrevoSubscriber {
+  input: {
+    subscriberId: number;
+    email: string;
   };
   output: {
     result: string;

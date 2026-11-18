@@ -18,6 +18,7 @@ import { media } from "@/payload/collections/media";
 import { members } from "@/payload/collections/members";
 import { organisers } from "@/payload/collections/organisers";
 import { seasons } from "@/payload/collections/seasons";
+import { subscribers } from "@/payload/collections/subscribers";
 import { users } from "@/payload/collections/users";
 import { venues } from "@/payload/collections/venues";
 import { emailSettings } from "@/payload/emails/email-settings";
@@ -25,7 +26,10 @@ import { sendEventEmailTask } from "@/payload/emails/event-email-task";
 import { zeptomailAdapter } from "@/payload/emails/zeptomail-adapter";
 import { NotificationSettings } from "@/payload/globals/notification-settings";
 import { ReviewSettings } from "@/payload/globals/review-settings";
-import { syncBrevoContactTask } from "@/payload/members/brevo-task";
+import {
+  syncBrevoContactTask,
+  syncBrevoSubscriberTask,
+} from "@/payload/members/brevo-task";
 import { reviewEventTask } from "@/payload/reviews/review-task";
 
 const filename = fileURLToPath(import.meta.url);
@@ -52,6 +56,7 @@ export default buildConfig({
     users,
     media,
     members,
+    subscribers,
     cities,
     organisers,
     venues,
@@ -63,7 +68,12 @@ export default buildConfig({
   ],
   globals: [ReviewSettings, NotificationSettings],
   jobs: {
-    tasks: [reviewEventTask, sendEventEmailTask, syncBrevoContactTask],
+    tasks: [
+      reviewEventTask,
+      sendEventEmailTask,
+      syncBrevoContactTask,
+      syncBrevoSubscriberTask,
+    ],
     enableConcurrencyControl: true,
     access: {
       run: ({ req }) => roleOf(req.user) === "admin",

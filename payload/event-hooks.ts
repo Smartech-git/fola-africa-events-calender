@@ -117,24 +117,7 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
       "Only the website's submission form can mark an event as a public submission. Keep it as a FOLA entry; assigning a member doesn't need it.",
       400,
     );
-  if (
-    event.source === "submission" &&
-    (!originalDoc ||
-      originalDoc.submittedOrganiser?.name ||
-      event.submittedOrganiser?.name) &&
-    (!event.submittedOrganiser?.name ||
-      !event.submittedOrganiser?.type ||
-      !event.submittedOrganiser?.contactEmail)
-  )
-    throw new APIError(
-      "Public submissions require the submitted organiser's name, type and contact email.",
-      400,
-    );
-  if (
-    !event.organiser &&
-    !(event.source === "submission" && event.submittedOrganiser?.name)
-  )
-    throw new APIError("Select an organiser for this event.", 400);
+  // The organiser, submitted or selected, is optional.
   const errors = eventProblems(event);
   if (errors.length) throw new APIError(errors.join(" "), 400);
   // An approved change request is itself the review, so it keeps the listing up.
@@ -344,11 +327,6 @@ export const validateEvent: CollectionBeforeChangeHook = async ({
     data.organiserConfirmedAt = new Date().toISOString();
   }
   if (event.isDemo) data.verified = false;
-  if (
-    ["approved", ...PUBLIC_STATUSES].includes(nextStatus) &&
-    !relationID(data.organiser ?? event.organiser)
-  )
-    throw new APIError("Approval requires an organiser record.", 400);
   if (
     PUBLIC_STATUSES.includes(nextStatus) &&
     !originalDoc?.approvedBy &&

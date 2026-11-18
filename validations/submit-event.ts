@@ -93,14 +93,19 @@ export const submitEventSchema = z
     eventWebsite: url,
     instagram,
     publicContactEmail: optionalEmail,
-    organiserName: requiredText,
-    organiserType: choice<Organiser["type"]>(ORGANISER_TYPES),
+    // The organiser is optional; any detail given must still be valid.
+    organiserName: text,
+    organiserType: z
+      .union([
+        z.literal(""),
+        choice<NonNullable<Organiser["type"]>>(ORGANISER_TYPES),
+      ])
+      .optional(),
     organiserWebsite: url,
-    organiserContact: z
-      .string()
-      .trim()
-      .email("Enter a valid organiser email.")
-      .max(254),
+    organiserContact: z.union([
+      z.literal(""),
+      z.string().trim().email("Enter a valid organiser email.").max(254),
+    ]),
     venueName: text,
     venueArea: text,
     venueAddress: z.string().trim().max(1000),

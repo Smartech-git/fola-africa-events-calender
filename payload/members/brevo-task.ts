@@ -12,11 +12,13 @@ import {
   BREVO_RETRIES,
   brevoConfigured,
   syncMemberToBrevo,
+  syncSubscriberToBrevo,
 } from "@/payload/members/brevo";
 import { relationID } from "@/payload/validation";
-import type { Member } from "@/payload-types";
+import type { Member, Subscriber } from "@/payload-types";
 
 export const SYNC_BREVO_TASK = "sync-brevo-contact";
+export const SYNC_BREVO_SUBSCRIBER_TASK = "sync-brevo-subscriber";
 
 /** Pass in `context` when a change came from Brevo itself, so it is not sent back. */
 export const SKIP_BREVO_SYNC = "skipBrevoSync";
@@ -69,6 +71,19 @@ async function queueSync(
 ) {
   const job = await req.payload.jobs.queue({
     task: SYNC_BREVO_TASK,
+    queue: BREVO_QUEUE,
+    input,
+    req,
+  });
+  runAfterResponse(job.id);
+}
+
+async function queueSubscriberSync(
+  req: PayloadRequest,
+  input: { subscriberId: number; email: string },
+) {
+  const job = await req.payload.jobs.queue({
+    task: SYNC_BREVO_SUBSCRIBER_TASK,
     queue: BREVO_QUEUE,
     input,
     req,
@@ -131,5 +146,50 @@ export const syncBrevoContactTask: TaskConfig<{
   },
   handler: async ({ input, req }) => ({
     output: { result: await syncMemberToBrevo(req.payload, input) },
+  }),
+};
+
+/** Subscriber addresses never change, so only the status and consent matter. */
+export const queueSubscriberBrevoSync: CollectionAfterChangeHook<
+  Subscriber
+> = async ({ doc, previousDoc, operation, context, req }) => {
+  if (context[SKIP_BREVO_SYNC] || !brevoConfigured()) return doc;
+  if (
+    operation === "update" &&
+    doc.status === previousDoc?.status &&
+    doc.consentAt === previousDoc?.consentAt
+  )
+    return doc;
+  await queueSubscriberSync(req, { subscriberId: doc.id, email: doc.email });
+  return doc;
+};
+
+/** Skipped when the subscriber was merged into a member (see subscriptions.ts). */
+export const queueSubscriberBrevoRemoval: CollectionAfterDeleteHook<
+  Subscriber
+> = async ({ doc, context, req }) => {
+  if (context[SKIP_BREVO_SYNC] || !brevoConfigured()) return doc;
+  await queueSubscriberSync(req, { subscriberId: doc.id, email: doc.email });
+  return doc;
+};
+
+export const syncBrevoSubscriberTask: TaskConfig<{
+  input: { subscriberId: number; email: string };
+  output: { result: string };
+}> = {
+  slug: SYNC_BREVO_SUBSCRIBER_TASK,
+  label: "Sync subscriber to Brevo",
+  inputSchema: [
+    { name: "subscriberId", type: "number", required: true },
+    { name: "email", type: "email", required: true },
+  ],
+  outputSchema: [{ name: "result", type: "text", required: true }],
+  concurrency: ({ input }) => `brevo-subscriber-${input.subscriberId}`,
+  retries: {
+    attempts: BREVO_RETRIES,
+    backoff: { type: "exponential", delay: 60_000 },
+  },
+  handler: async ({ input, req }) => ({
+    output: { result: await syncSubscriberToBrevo(req.payload, input) },
   }),
 };

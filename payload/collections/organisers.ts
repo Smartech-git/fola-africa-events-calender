@@ -44,7 +44,6 @@ export const organisers: CollectionConfig = {
     {
       name: "type",
       type: "select",
-      required: true,
       options: ORGANISER_TYPES,
     },
     {

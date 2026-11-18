@@ -10,6 +10,10 @@ import {
   queueBrevoRemoval,
   queueBrevoSync,
 } from "@/payload/members/brevo-task";
+import {
+  absorbSubscriber,
+  removeMergedSubscriber,
+} from "@/payload/subscribers/subscriber-hooks";
 
 // Sign-in secrets are only read and written by trusted server code.
 const noFieldAccess: FieldAccess = () => false;
@@ -59,9 +63,11 @@ export const members: CollectionConfig = {
     update: isAdmin,
     delete: isAdmin,
   },
-  // Members who agreed to marketing are kept in step with the Brevo list.
+  // Members who agreed to marketing are kept in step with the Brevo list. A
+  // newsletter subscriber with the same address is folded into the member.
   hooks: {
-    afterChange: [queueBrevoSync],
+    beforeChange: [absorbSubscriber],
+    afterChange: [queueBrevoSync, removeMergedSubscriber],
     afterDelete: [queueBrevoRemoval],
   },
   fields: [

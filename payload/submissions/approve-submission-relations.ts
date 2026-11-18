@@ -71,10 +71,14 @@ export async function approveSubmissionRelations(
   event: Event,
   req: PayloadRequest,
 ) {
+  // The organiser is optional; without submitted details there is nothing to
+  // resolve, but the venue below still is.
   const submitted = event.submittedOrganiser;
-  if (!submitted?.name) return {};
+  const submittedName = submitted?.name;
   const result: Partial<Event> = {};
-  if (
+  if (!submitted || !submittedName) {
+    // Nothing to resolve.
+  } else if (
     ["use-existing", "update-existing"].includes(
       event.organiserResolution || "",
     )
@@ -123,23 +127,18 @@ export async function approveSubmissionRelations(
       result.organiserUpdate = null;
     }
   } else if (event.organiserResolution === "create-new") {
-    if (!submitted.type || !submitted.contactEmail)
-      throw new APIError(
-        "Complete the submitted organiser type and contact email before approval.",
-        400,
-      );
-    await preventDuplicate("organisers", submitted.name, req);
+    await preventDuplicate("organisers", submittedName, req);
     const organiser = await req.payload.create({
       collection: "organisers",
       req,
       depth: 0,
       overrideAccess: true,
       data: {
-        name: submitted.name,
-        type: submitted.type,
-        slug: await createSlug("organisers", submitted.name, req),
+        name: submittedName,
+        type: submitted.type || undefined,
+        slug: await createSlug("organisers", submittedName, req),
         website: submitted.website,
-        contact: { email: submitted.contactEmail },
+        contact: { email: submitted.contactEmail || undefined },
         isDemo: false,
       },
     });
