@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
+
 import { ArrowUpRight, CalendarPlus, ChevronDown, Share2 } from "lucide-react";
 
 import HoverText from "@/components/animations/hover-text";
-import Button, { type ButtonProps } from "@/components/ui/button";
+import Button, { button, type ButtonProps } from "@/components/ui/button";
 import {
   Dropdown,
   DropdownTrigger,
@@ -16,7 +18,7 @@ import {
   shareLink,
 } from "@/lib/events/event-actions";
 import { googleCalendarUrl } from "@/lib/events/event-calendar";
-import { eventSharePath } from "@/lib/events/event-list";
+import { eventSharePath, externalUrl } from "@/lib/events/event-list";
 import { cn } from "@/lib/utils";
 import { actionURL } from "@/payload/validation";
 import type { PublicEvent } from "@/requests/events/get-events-by-city";
@@ -34,22 +36,20 @@ export function EventExternalAction({
   size?: ButtonProps["size"];
   className?: string;
 }) {
-  const href = actionURL(url);
+  const action = actionURL(url);
+  const email = action?.startsWith("mailto:") ?? false;
+  const href = email ? action : externalUrl(action);
   if (!href) return null;
-  const email = href.startsWith("mailto:");
   return (
-    <Button
-      variant={variant}
-      size={size}
-      className={className}
-      onPress={() =>
-        email ? window.location.assign(href) : openExternal(href)
-      }
+    <Link
+      href={href}
+      {...(email ? {} : { target: "_blank", rel: "noopener noreferrer" })}
+      className={cn(button({ variant, size }), className)}
       aria-label={`${label} (${email ? "opens your email app" : "opens in a new tab"})`}
-      endContent={<ArrowUpRight size={16} aria-hidden="true" />}
     >
       <HoverText text={label} />
-    </Button>
+      <ArrowUpRight size={16} aria-hidden="true" />
+    </Link>
   );
 }
 
