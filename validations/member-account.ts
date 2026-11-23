@@ -20,14 +20,27 @@ const optionalChoice = (options: { value: string }[], message: string) =>
       message,
     );
 
-/** Only same-site paths, so a sign-in link can never send someone elsewhere. */
+const NEXT_BASE = "https://same-site.invalid";
+
+/**
+ * Only same-site paths, so a sign-in link can never send someone elsewhere.
+ * Browsers drop tabs and line breaks from URLs and read "\" as "/", so values
+ * with those are refused; the rest is resolved the way a browser would and
+ * kept only if it stays on this site.
+ */
 export function safeNextPath(value: unknown) {
-  return typeof value === "string" &&
-    value.startsWith("/") &&
-    !value.startsWith("//") &&
-    !value.startsWith("/\\")
-    ? value
-    : undefined;
+  if (typeof value !== "string" || value.length > 500) return undefined;
+  if (!value.startsWith("/") || /[\u0000-\u001f\u007f\\]/.test(value))
+    return undefined;
+  try {
+    const url = new URL(value, NEXT_BASE);
+    // Resolving can turn "/..//host" into "//host", which is another site.
+    if (url.origin !== NEXT_BASE || url.pathname.startsWith("//"))
+      return undefined;
+    return `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    return undefined;
+  }
 }
 
 export const signInSchema = z.object({
