@@ -12,6 +12,7 @@ import { roleOf } from "@/payload/access";
 import { cities } from "@/payload/collections/cities";
 import { emailNotifications } from "@/payload/collections/email-notifications";
 import { eventChanges } from "@/payload/collections/event-changes";
+import { eventImports } from "@/payload/collections/event-imports";
 import { eventReviews } from "@/payload/collections/event-reviews";
 import { events } from "@/payload/collections/events";
 import { media } from "@/payload/collections/media";
@@ -64,6 +65,7 @@ export default buildConfig({
     events,
     eventReviews,
     eventChanges,
+    eventImports,
     emailNotifications,
   ],
   globals: [ReviewSettings, NotificationSettings],

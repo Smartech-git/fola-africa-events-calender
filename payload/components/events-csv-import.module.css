@@ -1,0 +1,130 @@
+.panel {
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 6px;
+  background: var(--theme-elevation-50);
+  color: var(--theme-text);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.text {
+  flex: 1 1 420px;
+}
+
+.text h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.text p,
+.note {
+  margin: 0;
+  color: var(--theme-elevation-800);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--theme-elevation-150);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--theme-elevation-800);
+}
+
+.field select,
+.field input {
+  min-height: 32px;
+  padding: 4px 8px;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 4px;
+  background: var(--theme-input-bg, var(--theme-elevation-0));
+  color: var(--theme-text);
+}
+
+.help summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.help ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: var(--theme-elevation-800);
+}
+
+.help li + li {
+  margin-top: 4px;
+}
+
+.summary {
+  margin: 0;
+}
+
+.error {
+  color: var(--theme-error-500);
+}
+
+.tableWrap {
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 4px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--theme-elevation-100);
+  text-align: left;
+  vertical-align: top;
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--theme-elevation-100);
+}
+
+.bad td {
+  background: color-mix(in srgb, var(--theme-error-500) 6%, transparent);
+}
+
+.messages {
+  margin: 4px 0 0;
+  padding-left: 16px;
+  font-size: 12px;
+  color: var(--theme-elevation-800);
+}
+
+.link {
+  align-self: center;
+  text-decoration: underline;
+}

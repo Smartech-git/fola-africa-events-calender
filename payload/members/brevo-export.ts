@@ -1,5 +1,6 @@
 import type { PayloadHandler, PayloadRequest } from "payload";
 
+import { csvCell } from "@/lib/csv";
 import { roleOf } from "@/payload/access";
 import {
   BREVO_ATTRIBUTES,
@@ -11,12 +12,6 @@ export const BREVO_EXPORT_PATH = "/brevo-export";
 
 // The same attributes the automatic sync sends (payload/members/brevo.ts).
 const COLUMNS = ["EMAIL", ...BREVO_ATTRIBUTES.map(({ name }) => name)];
-
-/** CSV-quoted, and never read as a formula if the file is opened in a spreadsheet. */
-function cell(value: string) {
-  const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
-  return /[",\r\n]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe;
-}
 
 async function brevoCsv(req: PayloadRequest) {
   const members = await req.payload.find({
@@ -34,7 +29,7 @@ async function brevoCsv(req: PayloadRequest) {
     return [
       member.email,
       ...BREVO_ATTRIBUTES.map(({ name }) => attributes[name]),
-    ].map(cell);
+    ].map(csvCell);
   });
   return [COLUMNS.join(","), ...rows.map((row) => row.join(","))].join("\r\n");
 }

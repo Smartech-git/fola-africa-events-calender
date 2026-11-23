@@ -78,6 +78,7 @@ export interface Config {
     events: Event;
     'event-reviews': EventReview;
     'event-changes': EventChange;
+    'event-imports': EventImport;
     'email-notifications': EmailNotification;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
@@ -111,6 +112,7 @@ export interface Config {
     events: EventsSelect<false> | EventsSelect<true>;
     'event-reviews': EventReviewsSelect<false> | EventReviewsSelect<true>;
     'event-changes': EventChangesSelect<false> | EventChangesSelect<true>;
+    'event-imports': EventImportsSelect<false> | EventImportsSelect<true>;
     'email-notifications': EmailNotificationsSelect<false> | EmailNotificationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -790,6 +792,37 @@ export interface EventChange {
   createdAt: string;
 }
 /**
+ * Every CSV import of events: who ran it, the file, and what happened to each row. Import from the Events list.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-imports".
+ */
+export interface EventImport {
+  id: number;
+  fileName?: string | null;
+  status?: ('published' | 'submitted') | null;
+  importedBy?: (number | null) | User;
+  rows?: number | null;
+  created?: number | null;
+  updated?: number | null;
+  failed?: number | null;
+  events?: (number | Event)[] | null;
+  /**
+   * The file's row number and why it wasn’t saved.
+   */
+  failures?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Private delivery records for publication emails, submission alerts to the team and historical submission receipts. Sent through ZeptoMail. A failure marked uncertain may have been delivered: check the ZeptoMail logs before sending again.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -994,6 +1027,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'event-changes';
         value: number | EventChange;
+      } | null)
+    | ({
+        relationTo: 'event-imports';
+        value: number | EventImport;
       } | null)
     | ({
         relationTo: 'email-notifications';
@@ -1349,6 +1386,23 @@ export interface EventChangesSelect<T extends boolean = true> {
   declineReason?: T;
   reviewedBy?: T;
   reviewedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-imports_select".
+ */
+export interface EventImportsSelect<T extends boolean = true> {
+  fileName?: T;
+  status?: T;
+  importedBy?: T;
+  rows?: T;
+  created?: T;
+  updated?: T;
+  failed?: T;
+  events?: T;
+  failures?: T;
   updatedAt?: T;
   createdAt?: T;
 }

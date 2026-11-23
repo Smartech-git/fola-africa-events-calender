@@ -43,16 +43,16 @@ export default function Footer() {
     <footer className="mt-auto w-full bg-ink pb-[env(safe-area-inset-bottom)] text-white">
       <SectionWrapper className="gap-12 py-14 sm:gap-16 md:py-28">
         <div className="flex flex-col gap-10 md:items-start md:justify-between lg:flex-row">
-          <div className="flex max-w-160 flex-col gap-5.5">
+          <div className="flex max-w-120 flex-col gap-5.5">
             <FadeUpText
               as="p"
-              className="tracking-mon font-montreal text-2xl md:text-5xl"
+              className="tracking-mon font-montreal text-2xl md:text-4xl"
               text="Connecting the people, ideas and activity shaping Africa"
             />
           </div>
           <nav
             aria-label="Footer"
-            className="flex flex-wrap gap-x-8 gap-y-8 whitespace-nowrap max-sm:justify-between sm:gap-x-16"
+            className="flex flex-wrap gap-x-8 gap-y-8 whitespace-nowrap max-sm:justify-between sm:gap-x-12"
           >
             <FooterColumn title="Explore">
               {NAV.filter((item) => !item.isFooter).map((item) => {

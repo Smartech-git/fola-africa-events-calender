@@ -7,6 +7,7 @@ import { CityDateInput as CityDateInput_8e48796888cdef9452515e4de4024887 } from 
 import { RelationResolution as RelationResolution_8524ee1d0dfbe087f0e566e2b0b73e41 } from '@/payload/components/relation-resolution'
 import { RelationUpdateData as RelationUpdateData_8524ee1d0dfbe087f0e566e2b0b73e41 } from '@/payload/components/relation-resolution'
 import { EventsMetrics as EventsMetrics_0dd1b1bf463cb154ac44058a6e474ec8 } from '@/payload/components/events-metrics'
+import { EventsCsvImport as EventsCsvImport_059d4c11212c8a31c9b9dfa616a43ccd } from '@/payload/components/events-csv-import'
 import { ReviewPrompt as ReviewPrompt_dc331a26ac0d395b7d62f53008418258 } from '@/payload/components/review-fields'
 import { ReviewFindings as ReviewFindings_dc331a26ac0d395b7d62f53008418258 } from '@/payload/components/review-fields'
 import { ReviewSummary as ReviewSummary_dc331a26ac0d395b7d62f53008418258 } from '@/payload/components/review-fields'
@@ -30,6 +31,7 @@ export const importMap = {
   "@/payload/components/relation-resolution#RelationResolution": RelationResolution_8524ee1d0dfbe087f0e566e2b0b73e41,
   "@/payload/components/relation-resolution#RelationUpdateData": RelationUpdateData_8524ee1d0dfbe087f0e566e2b0b73e41,
   "@/payload/components/events-metrics#EventsMetrics": EventsMetrics_0dd1b1bf463cb154ac44058a6e474ec8,
+  "@/payload/components/events-csv-import#EventsCsvImport": EventsCsvImport_059d4c11212c8a31c9b9dfa616a43ccd,
   "@/payload/components/review-fields#ReviewPrompt": ReviewPrompt_dc331a26ac0d395b7d62f53008418258,
   "@/payload/components/review-fields#ReviewFindings": ReviewFindings_dc331a26ac0d395b7d62f53008418258,
   "@/payload/components/review-fields#ReviewSummary": ReviewSummary_dc331a26ac0d395b7d62f53008418258,

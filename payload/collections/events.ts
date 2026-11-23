@@ -20,6 +20,8 @@ import {
   validateEvent,
 } from "@/payload/event-hooks";
 import { slugField } from "@/payload/fields/slug-field";
+import { eventImportHandler } from "@/payload/imports/event-import";
+import { EVENT_IMPORT_PATH } from "@/payload/imports/event-import-columns";
 import {
   actionLink,
   approvalDecision,
@@ -46,9 +48,15 @@ export const events: CollectionConfig = {
     description:
       "Public submissions get one AI review when received, then need administrator approval. Choose existing organiser/venue records or create them from the submitted details on approval. Publishing records approval too. Content changes require reapproval.",
     components: {
-      beforeListTable: ["@/payload/components/events-metrics#EventsMetrics"],
+      beforeListTable: [
+        "@/payload/components/events-metrics#EventsMetrics",
+        "@/payload/components/events-csv-import#EventsCsvImport",
+      ],
     },
   },
+  endpoints: [
+    { path: EVENT_IMPORT_PATH, method: "post", handler: eventImportHandler },
+  ],
   // Raw records and counts stay private. Public callers use the whitelisted calendar projection.
   access: {
     create: isStaff,
