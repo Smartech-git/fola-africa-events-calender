@@ -1,5 +1,7 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
+
 import Link from "next/link";
 
 import { ArrowUpRight, CalendarPlus, ChevronDown, Share2 } from "lucide-react";
@@ -13,6 +15,7 @@ import {
   DropdownItem_,
 } from "@/components/ui/drop-down";
 import {
+  copyLink,
   downloadEventCalendar,
   openExternal,
   shareLink,
@@ -91,6 +94,7 @@ export function EventDetailActions({
   timezone: string;
 }) {
   const path = eventSharePath(event);
+  const canShare = useCanShare();
   const icon = { size: 18, "aria-hidden": true } as const;
   return (
     <div className="grid flex-wrap gap-3 sm:grid-cols-2 md:flex">
@@ -137,18 +141,50 @@ export function EventDetailActions({
           </DropdownItem_>
         </DropdownMenu>
       </Dropdown>
-      <Button
-        variant="bordered"
-        aria-label={`Share ${event.title}`}
-        startContent={<Share2 {...icon} />}
-        className="max-md:w-full"
-        size="sm"
-        onPress={() => {
-          void shareLink(event.title, path);
-        }}
-      >
-        <HoverText text="Share" />
-      </Button>
+      <Dropdown>
+        <DropdownTrigger asChild>
+          <Button
+            size="sm"
+            variant="bordered"
+            aria-label={`Share ${event.title}`}
+            startContent={<Share2 {...icon} />}
+            endContent={<ChevronDown size={14} aria-hidden="true" />}
+            className="max-md:w-full"
+          >
+            <HoverText text="Share" />
+          </Button>
+        </DropdownTrigger>
+        <DropdownMenu
+          aria-label={`Share options for ${event.title}`}
+          onAction={(key) => {
+            if (key === "copy") void copyLink(path);
+            if (key === "share") void shareLink(event.title, path);
+          }}
+        >
+          {(canShare ? SHARE_OPTIONS : SHARE_OPTIONS.slice(0, 1)).map(
+            ({ key, label }) => (
+              <DropdownItem_ key={key}>{label}</DropdownItem_>
+            ),
+          )}
+        </DropdownMenu>
+      </Dropdown>
     </div>
+  );
+}
+
+const SHARE_OPTIONS = [
+  { key: "copy", label: "Copy link" },
+  { key: "share", label: "Share event via…" },
+];
+
+const noSubscription = () => () => {};
+
+// Only offer the device share sheet where the browser has one. False on the
+// server so the first render matches before the client checks.
+function useCanShare() {
+  return useSyncExternalStore(
+    noSubscription,
+    () => typeof navigator.share === "function",
+    () => false,
   );
 }
