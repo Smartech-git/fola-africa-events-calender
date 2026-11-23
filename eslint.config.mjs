@@ -19,7 +19,6 @@ export default defineConfig([
       "payload/migrations/**",
       // "payload.config.ts",
       // "payload-types.ts",
-      // "app/my-route/**"
     ],
   },
   ...nextCoreWebVitals,

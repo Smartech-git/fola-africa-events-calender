@@ -92,6 +92,8 @@ export default buildConfig({
     }),
   },
   editor: lexicalEditor(),
+  // Nothing uses GraphQL; the site and admin use REST and the Local API.
+  graphQL: { disable: true },
   email: emailSettings() ? zeptomailAdapter() : undefined,
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

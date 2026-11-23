@@ -2,20 +2,16 @@ import { withPayload } from "@payloadcms/next/withPayload";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   experimental: {
     serverActions: {
-      bodySizeLimit: "15mb",
+      // Forms send text only; artwork uploads go through their own route.
+      bodySizeLimit: "1mb",
     },
   },
 
   images: {
     qualities: [100, 70, 75],
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.shopify.com",
-      },
       // Event artwork in Vercel Blob.
       {
         protocol: "https",
@@ -25,4 +21,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withPayload(withPayload(nextConfig));
+export default withPayload(nextConfig);
