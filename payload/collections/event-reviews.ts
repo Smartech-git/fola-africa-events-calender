@@ -122,6 +122,15 @@ export const eventReviews: CollectionConfig = {
       access: { update: () => false },
     },
     {
+      name: "changesSinceSubmission",
+      type: "ui",
+      admin: {
+        components: {
+          Field: "@/payload/components/review-changes#ReviewChanges",
+        },
+      },
+    },
+    {
       name: "originalListing",
       type: "json",
       required: true,

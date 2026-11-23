@@ -199,9 +199,14 @@ export default function EditHappeningForm(props: EditHappeningProps) {
             });
         return;
       }
-      router.push(
-        `/account/happenings/${eventId}/done?result=${resubmit ? "resubmitted" : direct ? "saved" : "submitted"}`,
-      );
+      const outcome = resubmit
+        ? "resubmitted"
+        : result.answered
+          ? "answered"
+          : direct
+            ? "saved"
+            : "submitted";
+      router.push(`/account/happenings/${eventId}/done?result=${outcome}`);
     });
 
   const discard = () => {

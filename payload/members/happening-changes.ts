@@ -247,7 +247,13 @@ export function changesSubmittedMessage(args: {
   });
 }
 
-/** To the team: a member edited a happening that wasn't approved and sent it back. */
+/** Why a member's edit sent a happening back to the review queue. */
+export type ReturnReason = "rejected" | "information-request";
+
+/**
+ * To the team: a member edited a happening that wasn't approved, or answered
+ * a request for information, and it is back in the review queue.
+ */
 export function resubmittedMessage(args: {
   to: string;
   sender: string;
@@ -255,18 +261,23 @@ export function resubmittedMessage(args: {
   member: Person;
   request: ChangeSet;
   reviewUrl: string;
+  reason?: ReturnReason;
 }) {
+  const answered = args.reason === "information-request";
+  const who = `${args.member.fullName} (${args.member.email})`;
   return happeningUpdateTemplate({
     to: args.to,
     sender: args.sender,
-    subject: `Resubmitted for review: ${args.title}`,
-    kicker: "Resubmitted",
+    subject: `${answered ? "Updated after your request" : "Resubmitted for review"}: ${args.title}`,
+    kicker: answered ? "Information received" : "Resubmitted",
     heading: "Back for review",
     paragraphs: [
-      `${args.member.fullName} (${args.member.email}) edited their happening after it wasn’t approved and sent it back for review. It is in the review queue again.`,
+      answered
+        ? `${who} updated their happening after you asked for more information. Its review is back to pending.`
+        : `${who} edited their happening after it wasn’t approved and sent it back for review. It is in the review queue again.`,
     ],
     title: args.title,
-    status: "In review · resubmitted",
+    status: answered ? "In review · updated" : "In review · resubmitted",
     rows: changeRows(args.request),
     button: { label: "Open the review", url: args.reviewUrl },
   });
@@ -437,13 +448,14 @@ export const queueChangeDecisionEmail: CollectionAfterChangeHook<
   return doc;
 };
 
-/** Tells the team a happening that wasn't approved is back in the review queue. */
+/** Tells the team a member's edit put a happening back in the review queue. */
 export async function queueResubmittedEmails(
   req: PayloadRequest,
   event: Event,
   member: Member,
   request: ChangeSet,
   reviewId: number | undefined,
+  reason: ReturnReason,
 ) {
   const from = sender();
   if (!from) return;
@@ -453,7 +465,7 @@ export async function queueResubmittedEmails(
   const stamp = Date.now();
   for (const recipient of await teamRecipients(req))
     await queueNotification(req, {
-      key: `event-${event.id}-resubmitted-${stamp}-team-${recipient}`,
+      key: `event-${event.id}-${reason === "rejected" ? "resubmitted" : "answered"}-${stamp}-team-${recipient}`,
       eventId: event.id,
       kind: "changes",
       recipient,
@@ -464,6 +476,7 @@ export async function queueResubmittedEmails(
         member,
         request,
         reviewUrl,
+        reason,
       }),
     });
 }

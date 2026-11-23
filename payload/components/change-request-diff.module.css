@@ -44,3 +44,13 @@
   color: var(--theme-elevation-600);
   font-size: 13px;
 }
+
+.lead {
+  margin: 0 0 12px;
+  color: var(--theme-elevation-800);
+  font-size: 14px;
+}
+
+.text {
+  white-space: pre-wrap;
+}

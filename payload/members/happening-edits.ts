@@ -40,6 +40,8 @@ export interface EditResult {
   fieldErrors?: Partial<Record<keyof EditHappeningValues, string[]>>;
   /** Labels of the fields that changed. */
   changed?: string[];
+  /** The edit answered the team's request for information. */
+  answered?: boolean;
 }
 
 const trusted = { overrideAccess: true } as const;
@@ -196,17 +198,26 @@ export async function saveHappeningEdits(
         ...trusted,
         data: { alt: `Artwork for ${next.title}` },
       });
-    if (resubmitting) {
-      const review = await reopenReview(payload, event.id);
+    // Back to the team when it wasn't approved, or on the first edit after the
+    // team asked for more information. Later edits wait for the next decision.
+    const review = await latestReview(payload, event.id);
+    const answering = review?.humanDecision === "request-information";
+    if (resubmitting || answering) {
+      const reopened = review ? await reopenReview(payload, review.id) : null;
       await queueResubmittedEmails(
         req,
         { ...event, title: next.title },
         member,
         { changes: pick(next, changed), previous: pick(live, changed) },
-        review?.id,
+        reopened?.id,
+        resubmitting ? "rejected" : "information-request",
       );
     }
-    return { ok: true, changed: changed.map(fieldLabel) };
+    return {
+      ok: true,
+      changed: changed.map(fieldLabel),
+      answered: !resubmitting && answering,
+    };
   }
 
   // A live listing: the change request holds the edits until approved.
@@ -249,8 +260,7 @@ export async function saveHappeningEdits(
   return { ok: true, changed: changed.map(fieldLabel) };
 }
 
-/** Puts the latest Event Review back in the queue; its earlier decision stays in its versions. */
-async function reopenReview(payload: Payload, eventId: number) {
+async function latestReview(payload: Payload, eventId: number) {
   const { docs } = await payload.find({
     collection: "event-reviews",
     where: { event: { equals: eventId } },
@@ -259,10 +269,14 @@ async function reopenReview(payload: Payload, eventId: number) {
     depth: 0,
     ...trusted,
   });
-  if (!docs[0]) return undefined;
+  return docs[0] ?? null;
+}
+
+/** Puts an Event Review back in the queue; its earlier decision stays in its versions. */
+async function reopenReview(payload: Payload, reviewId: number) {
   return payload.update({
     collection: "event-reviews",
-    id: docs[0].id,
+    id: reviewId,
     depth: 0,
     ...trusted,
     data: { humanDecision: "pending", decidedBy: null, decidedAt: null },
