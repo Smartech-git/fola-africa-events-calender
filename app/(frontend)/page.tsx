@@ -62,7 +62,7 @@ export default async function Home({ searchParams }: Props) {
         events={weekEvents}
       />
       <Industries />
-      <Cities cities={cities} />
+      <Cities cities={cities} current={city.slug} />
 
       <InTheDiary seasons={seasons.data} />
       <PutItOnHappenings />

@@ -13,7 +13,8 @@ interface Props {
 }
 
 export default async function Header({ className, isLight = false }: Props) {
-  // The remembered choice; the header cannot read the page's siteCity param.
+  // The remembered choice or a location guess; the header cannot read the
+  // page's siteCity param.
   const siteCity = await getSiteCity({});
   return (
     <header
@@ -24,7 +25,7 @@ export default async function Header({ className, isLight = false }: Props) {
       )}
     >
       <Logo variant={isLight ? "white" : "red"} />
-      <div className="flex items-center sm:gap-2 gap-1 lg:gap-6">
+      <div className="flex items-center gap-1 sm:gap-2 lg:gap-6">
         <HeaderNav className="flex items-center max-lg:hidden" />
         <SearchEvent siteCity={siteCity} />
         <SubmitEvent

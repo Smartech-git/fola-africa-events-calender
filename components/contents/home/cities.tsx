@@ -16,10 +16,16 @@ import type { Cities as CitiesType, CitySummary } from "@/requests/get-cities";
 
 interface Props {
   cities: CitiesType;
+  /** The visitor's city, as the page resolved it. */
+  current?: string;
   headingLevel?: "h1" | "h2";
 }
 
-export default function Cities({ cities, headingLevel = "h2" }: Props) {
+export default function Cities({
+  cities,
+  current = DEFAULT_CITY_SLUG,
+  headingLevel = "h2",
+}: Props) {
   return (
     <section
       id="cities"
@@ -45,7 +51,7 @@ export default function Cities({ cities, headingLevel = "h2" }: Props) {
           {cities.data.length ? (
             <ul className="flex flex-col">
               {cities.data.map((city) => (
-                <CityRow key={city.id} city={city} />
+                <CityRow key={city.id} city={city} current={current} />
               ))}
             </ul>
           ) : (
@@ -60,11 +66,17 @@ export default function Cities({ cities, headingLevel = "h2" }: Props) {
   );
 }
 
-function CityRow({ city }: { city: CitySummary }) {
+function CityRow({
+  city,
+  current: siteCity,
+}: {
+  city: CitySummary;
+  current: string;
+}) {
   const { totalEvents } = useCalendarToday({ city });
   const { getFilterValue } = useRouteParam();
   const current =
-    city.slug === (getFilterValue(FILTER_KEYS.siteCity) ?? DEFAULT_CITY_SLUG);
+    city.slug === (getFilterValue(FILTER_KEYS.siteCity) ?? siteCity);
 
   return (
     <li className="border-t border-white/90 last:border-b sm:last:border-b-0">
