@@ -54,7 +54,9 @@ export const media: CollectionConfig = {
   },
   hooks: { beforeOperation: [limitFileSize] },
   access: {
-    read: () => true,
+    // Staff only: the list holds unapproved artwork and who uploaded it. Public
+    // pages get approved artwork through the event projection, served from Blob.
+    read: isStaff,
     create: isStaff,
     update: isStaff,
     delete: isAdmin,
