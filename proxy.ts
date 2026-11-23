@@ -14,10 +14,6 @@ const PROTECTED: {
 }[] = [
   { matches: under("/account"), redirectTo: signIn },
   {
-    matches: (pathname) => /^\/calendar\/[^/]+\/[^/]+/.test(pathname),
-    redirectTo: signIn,
-  },
-  {
     matches: under("/submit-event/success"),
     redirectTo: () => "/submit-event",
   },
