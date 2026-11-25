@@ -42,6 +42,7 @@ export const members: CollectionConfig = {
       "email",
       "fullName",
       "organisation",
+      "happeningsSubmitted",
       "status",
       "createdAt",
     ],
@@ -115,6 +116,20 @@ export const members: CollectionConfig = {
       options: MEMBER_TYPES,
     },
     {
+      name: "happeningsSubmitted",
+      label: "Happenings submitted",
+      type: "number",
+      defaultValue: 0,
+      // Kept in step by the events' hooks (payload/members/happening-count.ts).
+      access: { create: noFieldAccess, update: noFieldAccess },
+      admin: {
+        position: "sidebar",
+        readOnly: true,
+        description:
+          "Every happening linked to this member, whatever its status. They are listed under Happenings.",
+      },
+    },
+    {
       name: "marketingConsent",
       label: "Agreed to marketing emails",
       type: "checkbox",
@@ -159,7 +174,11 @@ export const members: CollectionConfig = {
       type: "join",
       collection: "events",
       on: "member",
-      admin: { description: "Happenings this member submitted." },
+      // Listed on the member's page; the table shows the count instead.
+      admin: {
+        description: "Happenings this member submitted.",
+        disableListColumn: true,
+      },
     },
   ],
 };

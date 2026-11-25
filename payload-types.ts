@@ -310,6 +310,10 @@ export interface Member {
         | 'other'
       )
     | null;
+  /**
+   * Every happening linked to this member, whatever its status. They are listed under Happenings.
+   */
+  happeningsSubmitted?: number | null;
   marketingConsent?: boolean | null;
   termsAcceptedAt?: string | null;
   marketingConsentAt?: string | null;
@@ -1176,6 +1180,7 @@ export interface MembersSelect<T extends boolean = true> {
   city?: T;
   country?: T;
   describes?: T;
+  happeningsSubmitted?: T;
   marketingConsent?: T;
   termsAcceptedAt?: T;
   marketingConsentAt?: T;

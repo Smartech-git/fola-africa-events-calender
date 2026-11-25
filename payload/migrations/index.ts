@@ -17,6 +17,7 @@ import * as migration_20261118_124844_email_subscribers from "./20261118_124844_
 import * as migration_20261118_140615_optional_organiser from "./20261118_140615_optional_organiser";
 import * as migration_20261123_094849_csv_event_imports from "./20261123_094849_csv_event_imports";
 import * as migration_20261123_114808_payload_3_94_upgrade from "./20261123_114808_payload_3_94_upgrade";
+import * as migration_20261125_081104_member_happening_count from "./20261125_081104_member_happening_count";
 
 export const migrations = [
   {
@@ -113,5 +114,10 @@ export const migrations = [
     up: migration_20261123_114808_payload_3_94_upgrade.up,
     down: migration_20261123_114808_payload_3_94_upgrade.down,
     name: "20261123_114808_payload_3_94_upgrade",
+  },
+  {
+    up: migration_20261125_081104_member_happening_count.up,
+    down: migration_20261125_081104_member_happening_count.down,
+    name: "20261125_081104_member_happening_count",
   },
 ];

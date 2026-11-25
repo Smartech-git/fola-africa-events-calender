@@ -23,6 +23,10 @@ import { slugField } from "@/payload/fields/slug-field";
 import { eventImportHandler } from "@/payload/imports/event-import";
 import { EVENT_IMPORT_PATH } from "@/payload/imports/event-import-columns";
 import {
+  countMemberHappenings,
+  uncountMemberHappening,
+} from "@/payload/members/happening-count";
+import {
   actionLink,
   approvalDecision,
   httpURL,
@@ -69,8 +73,14 @@ export const events: CollectionConfig = {
   indexes: [{ fields: ["city", "status", "startAt"] }],
   hooks: {
     beforeChange: [validateEvent],
-    afterChange: [queueEventReview, queueEventEmail, queueTeamAlert],
+    afterChange: [
+      queueEventReview,
+      queueEventEmail,
+      queueTeamAlert,
+      countMemberHappenings,
+    ],
     beforeDelete: [deleteEventReviews],
+    afterDelete: [uncountMemberHappening],
   },
   fields: [
     { name: "title", type: "text", required: true },
